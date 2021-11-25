@@ -18,6 +18,15 @@
  * El estado global de la aplicación.
  */
 class State {
+    /**
+     * Constructor de State
+     * @param {String} name 
+     * @param {[User]} users 
+     * @param {[Group]} groups 
+     * @param {[Movie]} movies 
+     * @param {[Rating]} ratings 
+     * @param {[Request]} requests 
+     */
     constructor(name, users, groups, movies, ratings, requests) {
         this.name = name;
         this.users = users || [];
@@ -32,6 +41,16 @@ class State {
  * Un usuario; requests y ratings contiene sólo IDs
  */
 class User {
+    /**
+     * Constructor de User
+     * @param {number} id 
+     * @param {string} username 
+     * @param {string} password (los que recibes vienen *sin* este campo)
+     * @param {string} role ("USER", ó "ADMIN,USER" para administradores)
+     * @param {[number]} groups (ids de grupos a los que pertenece)
+     * @param {[number]} requests (ids de peticiones en las que participa)
+     * @param {[number]} ratings (ids de ratings que ha hecho)
+     */
     constructor(id, username, password, role, groups, requests, ratings) {
         this.id = id;
         this.username = username;
@@ -47,9 +66,20 @@ class User {
  * Una película; ratings contiene sólo IDs
  */
 class Movie {
+    /**
+     * Constructor de Movie
+     * @param {number} id 
+     * @param {string} imdb (de la forma "tt" + digitos)
+     * @param {string} name 
+     * @param {string} director 
+     * @param {string} actors 
+     * @param {number} year 
+     * @param {number} minutes 
+     * @param {[number]} ratings (ids de ratings de usuarios que la han visto)
+     */
     constructor(id, imdb, name, director, actors, year, minutes, ratings) {
         this.id = id;
-        this.imdb = imdb; // nota: en img/<imdb>.jpg tienes el póster (para el top-400)
+        this.imdb = imdb; // nota: en servidor/poster/<imdb> tienes el póster (para el top-400)
         this.name = name;
         this.director = director;
         this.actors = actors;
@@ -63,6 +93,14 @@ class Movie {
  * Un grupo de usuarios; requests contiene sólo IDs
  */
 class Group {
+    /**
+     * Constructor de Group
+     * @param {number} id 
+     * @param {string} name 
+     * @param {number} owner (id del propietario)
+     * @param {[number]} members (ids de miembros, excluyendo al owner)
+     * @param {[number]} requests (ids de peticiones de adhesión)
+     */
     constructor(id, name, owner, members, requests) {
         this.id = id;
         this.name = name;
@@ -77,7 +115,7 @@ class Group {
  */
 const RequestStatus = {
     AWAITING_GROUP: 'awaiting_group', // usuario pide ser invitado a grupo
-    AWAITING_USER: 'awaiting_user', // grupo ofrece unirse a usuario
+    AWAITING_USER: 'awaiting_user', // propietario de grupo ofrece unirse a usuario
     ACCEPTED: 'accepted', // para aceptar una oferta
     REJECTED: 'rejected', // para rechazar una oferta
 }
@@ -86,6 +124,13 @@ const RequestStatus = {
  * Una petición de entrar en grupo
  */
 class Request {
+    /**
+     * Constructor de Request
+     * @param {number} id 
+     * @param {number} user id de usuario
+     * @param {number} group id de grupo
+     * @param {RequestStatus} status 
+     */
     constructor(id, user, group, status) {
         this.id = id;
         this.user = user;
@@ -99,12 +144,20 @@ class Request {
  * Una valoración de una película
  */
 class Rating {
+    /**
+     * Constructor de Rating
+     * @param {number} id 
+     * @param {number} user 
+     * @param {number} movie 
+     * @param {number} rating -1 para "no sabe, no contesta", o entero entre 0 y 5
+     * @param {string} labels texto, separado por comas; "" para vacío
+     */
     constructor(id, user, movie, rating, labels) {
         this.id = id;
         this.user = user;
         this.movie = movie;
-        this.rating = rating; // -1 para "no sabe, no contesta", o entero entre 0 y 5
-        this.labels = labels; // texto, separado por comas; "" para vacío
+        this.rating = rating;
+        this.labels = labels;
     }
 }
 
@@ -121,6 +174,8 @@ class Util {
      * via, say, insertAdjacentHTML or insertHTML.
      * 
      * (see https://stackoverflow.com/a/9756789/15472)
+     * 
+     * @param {string} s
      */
     static escape(s) {
         return ('' + s) /* Forces the conversion to string. */
@@ -139,6 +194,9 @@ class Util {
      * Quote attribute values to prevent XSS/breakage
      * 
      * (see https://stackoverflow.com/a/9756789/15472)
+     * 
+     * @param {string} s
+     * @param {boolean|undefined} preserveCR (por defecto false) para permitir `\n`
      */
     static quoteattr(s, preserveCR) {
         preserveCR = preserveCR ? '&#13;' : '\n';
@@ -158,7 +216,9 @@ class Util {
     }
 
     /**
-     * throws an error if value is not in an enum
+     * Lanza excepción si el parámetro no existe como clave en el objeto pasado como segundo valor
+     * @param {string} a
+     * @param {*} enumeration, un objeto
      */
     static checkEnum(a, enumeration) {
         const valid = Object.values(enumeration);
@@ -181,16 +241,29 @@ class Util {
         return Math.floor(Math.random() * (max - min + 1)) + min
     }
 
+    /**
+     * Devuelve un carácter al azar de la cadena pasada como argumento
+     * @param {string} alphabet 
+     */
     static randomChar(alphabet) {
         return alphabet.charAt(Math.floor(Math.random() * alphabet.length));
     }
 
+    /**
+     * Devuelve una cadena de longitud `count` extraida del alfabeto pasado como
+     * segundo argumento
+     * @param {number} count 
+     * @param {(string|undefined)} alphabet, por defecto alfanuméricos con mayúsculas y minúsculas
+     */
     static randomString(count, alphabet) {
         const n = count || 5;
         const valid = alphabet || UPPER + LOWER + DIGITS;
         return new Array(n).fill('').map(() => this.randomChar(valid)).join('');
     }
 
+    /**
+     * Devuelve una contraseña al azar (7 caracteres, con mayúculas, minúsculas y dígitos)
+     */
     static randomPass() {
         const n = 7;
         const prefix = this.randomChar(UPPER) + this.randomChar(LOWER) + this.randomChar(DIGITS);
@@ -199,7 +272,10 @@ class Util {
     }
 
     /**
-     * Genera un identificador "unico" de 5 caracteres
+     * Genera una palabra, opcionalmente empezando por mayúsculas
+     * 
+     * @param {number} count longitud
+     * @param {(boolean|undefined)} capitalized, por defecto false; si true, 1er caracter en mayuscula
      */
     static randomWord(count, capitalized) {
         return capitalized ?
@@ -209,6 +285,10 @@ class Util {
 
     /**
      * Genera palabras al azar, de forma configurable
+     * 
+     * @param {number} wordCount a generar
+     * @param {(boolean|undefined)} allCapitalized si todas deben empezar por mayúsculas (por defecto, sólo 1a)
+     * @param {(string|undefined)} delimiter delimitador a usar (por defecto, espacio)
      */
     static randomText(wordCount, allCapitalized, delimiter) {
         let words = [this.randomWord(5, true)]; // primera empieza en mayusculas
@@ -218,6 +298,8 @@ class Util {
 
     /**
      * Devuelve algo al azar de un array
+     * 
+     * @param {[*]} array 
      */
     static randomChoice(array) {
         return array[Math.floor(Math.random() * array.length)];
@@ -226,6 +308,9 @@ class Util {
     /**
      * Genera una fecha al azar entre 2 dadas
      * https://stackoverflow.com/a/19691491
+     * 
+     * @param {string} fechaIni, en formato válido para `new Date(fechaIni)`
+     * @param {number} maxDias 
      */
     static randomDate(fechaIni, maxDias) {
         let dia = new Date(fechaIni);
@@ -236,6 +321,9 @@ class Util {
     /**
      * Devuelve n elementos no-duplicados de un array
      * de https://stackoverflow.com/a/11935263/15472
+     *
+     * @param {[*]} array 
+     * @param {size} cuántos elegir (<= array.length)
      */
     static randomSample(array, size) {
         var shuffled = array.slice(0),
@@ -252,24 +340,33 @@ class Util {
 
     /**
      * Genera hasta n parejas no-repetidas de elementos de dos arrays
-     * los arrays deben ser numéricos (por ejemplo, IDs)
+     * los elementos deben ser números o texto que no contenga el separador
+     * 
+     * @param {number} count 
+     * @param {[(string|number)]} as 
+     * @param {[(string|number)]} bs 
+     * @param {string|undefined} separator a usar, por defecto `,`
      */
-    static randomPairs(count, as, bs) {
+    static randomPairs(count, as, bs, separator) {
+        separator = separator || ",";
         const pairs = new Set();
         let retries = 0;
         while (pairs.size < count && retries < 100) {
-            let p = `${Util.randomChoice(as)},${Util.randomChoice(bs)}`;
+            let p = `${Util.randomChoice(as)}${separator}${Util.randomChoice(bs)}`;
             if (pairs.has(p)) {
                 retries++;
             } else {
                 pairs.add(p);
             }
         }
-        return Array.from(pairs).map(p => p.split(",").map(s => +s));
+        return Array.from(pairs).map(p => p.split(separator).map(s => +s));
     }
 
     /**
-     * Llena un array con el resultado de llamar a una funcion
+     * Llena un array con el resultado de llamar a una funcion varias veces
+     * 
+     * @param {number} count 
+     * @param {Function} f 
      */
     static fill(count, f) {
         // new Array(count).map(f) fails: map only works on existing indices
@@ -373,7 +470,7 @@ class Util {
      *   reemplazados por IDs, están malformados...
      */
     static randomGroup(id, users, pInclude, pInvite, pRequest) {
-        const pre = Util.randomChoice(["Los", "Las", "Club"]);
+        const pre = Util.randomChoice(["Los", "Las", "Cineclub"]);
         const post = Util.randomChoice(Util.randomLastNames);
         const owner = Util.randomChoice(users);
         const g = new Group(id, `${pre} ${post}`, owner.id);
@@ -401,27 +498,47 @@ class Util {
         const labels = Util.fill(Util.randomInRange(1, 3),
             () => Util.randomChoice(Util.randomLabels)).join(",");
         return new Rating(id, user, movie,
-            Math.random() > 0.5 ? Util.randomInRange(0, 5) : -1,
+            Math.random() < 0.5 ? -1 :
+            Math.max(Util.randomInRange(0, 5), Util.randomInRange(0, 5)),
             Math.random() > 0.5 ? labels : "");
     }
-
-    /**
-     * Genera solicitudes al azar
-     */
 }
 
-// funcion para generar datos de ejemplo
-// se puede no-usar, o modificar libremente
-async function populate(usersCount, groupsCount, moviesCount, ratingsCount) {
-    const U = Util;
+/**
+ * Genera datos de prueba, vía llamadas a addX; o si no está conectado, en local.
+ * 
+ * @param {*} settings 
+ */
+async function populate(settings) {
+
+    // pasa un objeto con este aspecto para 
+    const defaults = {
+        usersCount: 10,
+        groupsCount: 3,
+        moviesCount: 10,
+        ratingsCount: 100
+    }
+    settings = settings || {}
+
+    // usa opciones-por-defecto 
+    const options = {...settings, ...defaults };
 
     // genera datos de ejemplo
     let lastId = 0;
 
-    const users = U.fill(usersCount, () => U.randomUser(lastId++));
-    const groups = U.fill(groupsCount, () => U.randomGroup(lastId++, users, 30, 20, 20));
-    const movies = U.fill(moviesCount, () => U.randomMovie(lastId++));
-    const ratings = U.randomPairs(ratingsCount, users.map(o => o.id), movies.map(o => o.id))
+    // pero usa películas que ya haya, si hay suficientes de partida
+    const generateMovies = (state.movies.length < options.moviesCount);
+
+    const U = Util;
+    const users = U.fill(options.usersCount,
+        () => U.randomUser(lastId++));
+    const groups = U.fill(options.groupsCount,
+        () => U.randomGroup(lastId++, users, 30, 20, 20));
+    const movies = state.movies.length >= options.moviesCount ? state.movies :
+        U.fill(options.moviesCount,
+            () => U.randomMovie(lastId++));
+    const ratings = U.randomPairs(options.ratingsCount,
+            users.map(o => o.id), movies.map(o => o.id))
         .map(p => U.randomRating(lastId++, p[0], p[1]));
 
     if (serverToken != notConnectedToken) {
@@ -452,14 +569,17 @@ async function populate(usersCount, groupsCount, moviesCount, ratingsCount) {
                 await addRequest(r);
             }
         }
-        for (let m of movies) {
-            await addMovie(m);
-            idMap[m.id] = state.movies.filter(x => x.imdb == m.imdb)[0].id;
+
+        if (generateMovies) {
+            for (let m of movies) {
+                await addMovie(m);
+                idMap[m.id] = state.movies.filter(x => x.imdb == m.imdb)[0].id;
+            }
         }
 
         for (let r of ratings) {
             r.user = idMap[r.user];
-            r.movie = idMap[r.movie];
+            r.movie = generateMovies ? idMap[r.movie] : r.movie;
             await addRating(r);
         }
     } else {
@@ -501,18 +621,31 @@ let serverApiUrl = "//localhost:8080/api/";
 // el token actual (procedente del ultimo login)
 let serverToken = notConnectedToken;
 
-// llama a esto con la URL de la api a la que te quieres conectar
+/**
+ * Guarda, para su uso en todas las funciones de la API, el servidor que 
+ * vas a usar. 
+ * 
+ * @param {string} apiUrl 
+ */
 function connect(apiUrl) {
+    if (!apiUrl.length || apiUrl.charAt(apiUrl.length - 1) != '/') {
+        throw Error("Argumento debe acabar por `/`");
+    }
     serverApiUrl = apiUrl;
     serverToken = notConnectedToken;
 }
 
-// acceso externo a la cache
+/**
+ * Devuelve el objeto (User, Movie, Group, Request, ó Rating) con esa id
+ * @param {number} id a buscar
+ * @returns {(User|Movie|Group|Request|Rating|undefined)} 
+ */
 function resolve(id) {
     return cache[id];
 }
 
-// cache de IDs; esto no se exporta
+// cache de IDs; privado 
+// (se llena vía getId, y se consulta vía resolve, que sí es público)
 let cache = {};
 
 // acceso y refresco de la cache de IDs; privado
@@ -528,6 +661,7 @@ function getId(id, object) {
 }
 
 // actualiza el estado de la aplicación con el resultado de una petición
+// privado
 function updateState(data) {
     cache = {};
     state = new State(data.name,
@@ -541,15 +675,24 @@ function updateState(data) {
     return data;
 }
 
-// sube datos en json, espera json de vuelta; lanza error por fallos (status != 200)
-// - encadena con un .then() para gestionar el JSON devuelto si todo va bien
-// - y con un .catch() para gestionar un error. El catch recibe objetos con 
-//   {
-//      url: <direccion a la que estabas accediendo>, 
-//      data: <datos que enviaste>,
-//      status: <codigo de estado, por ejemplo 403>, 
-//      text: <texto describiendo el error enviado por el servidor>
-//   }
+/**
+ * Realiza una petición "ajax" al servidor. Envía JSON y espera JSON de vuelta.
+ * 
+ * @param {string} url 
+ * @param {string} method (GET|POST)
+ * @param {*} data, típicamente un objeto JSON-izable, como User
+ * 
+ * @return {Promise}, que debes encadenar con un `.then()`
+ *             para gestionar el JSON devuelto si todo va bien, 
+ *             y con un .catch() para gestionar un error. 
+ *             El catch recibe objetos de la forma
+ *  {
+ *     url: <direccion a la que estabas accediendo>, 
+ *     data: <datos que enviaste>,
+ *     status: <codigo de estado, por ejemplo 403>, 
+ *     text: <texto describiendo el error enviado por el servidor>
+ *  }
+ */
 function go(url, method, data = {}) {
     let params = {
         method: method, // POST, GET, POST, PUT, DELETE, etc.
@@ -579,7 +722,13 @@ function go(url, method, data = {}) {
         });
 }
 
-// hace login. Todas las futuras operaciones usan el token devuelto
+/**
+ * hace login. Todas las futuras operaciones usan el token devuelto
+ * @param {string} username 
+ * @param {string} password 
+ * 
+ * @return {Promise} - ver uso en go()
+ */
 function login(username, password) {
     return go(serverApiUrl + "login", 'POST', { username, password })
         .then(d => {
@@ -588,7 +737,13 @@ function login(username, password) {
         });
 }
 
-// auxiliar para añadir
+/**
+ * Añade un objeto al servidor
+ * @param {*} object a añadir, donde su ID se ignora
+ * @param {string} type 
+ * 
+ * @return {Promise} - ver uso en go() 
+ */
 function addSomething(object, type) {
     if (object.id !== undefined) {
         console.log("OJO: cuando añades cosas, el ID se ignora");
@@ -596,7 +751,13 @@ function addSomething(object, type) {
     return go(serverApiUrl + serverToken + "/add" + type, 'POST', object)
         .then(d => updateState(d));
 }
-// auxiliar para modificar
+/**
+ * Elimina un objeto del servidor, por ID
+ * @param {*} object, que debe existir ya (y en particular, debe tener una ID correcta)
+ * @param {string} type 
+ * 
+ * @return {Promise} - ver uso en go() 
+ */
 function setSomething(object, type) {
     if (object.id === undefined || resolve[id] === undefined) {
         error("para modificar cosas, debes de usar ID válido");
@@ -604,47 +765,72 @@ function setSomething(object, type) {
     return go(serverApiUrl + serverToken + "/set" + type, 'POST', object)
         .then(d => updateState(d));
 }
-// auxiliar para eliminar
+/**
+ * Elimina un objeto del servidor, por ID
+ * @param {number} id 
+ * @param {string} type 
+ * 
+ * @return {Promise} - ver uso en go() 
+ */
 function rmSomething(id, type) {
     return go(serverApiUrl + serverToken + "/rm" + type, 'POST', { id })
         .then(d => updateState(d));
 }
 
+/** añade un usuario pasado como argumento. Ver detalles en addSomething */
 function addUser(o) { return addSomething(o, "user"); }
 
+/** añade un grupo pasado como argumento. Ver detalles en addSomething */
 function addGroup(o) { return addSomething(o, "group"); }
 
+/** añade una pelicula pasado como argumento. Ver detalles en addSomething */
 function addMovie(o) { return addSomething(o, "movie"); }
 
+/** añade un rating pasado como argumento. Ver detalles en addSomething */
 function addRating(o) { return addSomething(o, "rating"); }
 
+/** añade una peticion pasada como argumento. Ver detalles en addSomething */
 function addRequest(o) { return addSomething(o, "request"); }
 
+/** modifica un usuario pasado como argumento. Ver detalles en addSomething */
 function setUser(o) { return setSomething(o, "user"); }
 
+/** modifica un grupo pasado como argumento. Ver detalles en addSomething */
 function setGroup(o) { return setSomething(o, "group"); }
 
+/** modifica una pelicula pasado como argumento. Ver detalles en addSomething */
 function setMovie(o) { return setSomething(o, "movie"); }
 
+/** modifica un rating pasado como argumento. Ver detalles en addSomething */
 function setRating(o) { return setSomething(o, "rating"); }
 
+/** modifica una peticion pasada como argumento. Ver detalles en addSomething */
 function setRequest(o) { return setSomething(o, "request"); }
 
+/** elimina el usuario con ese id. Ver detalles en rmSomething */
 function rmUser(id) { return rmSomething(id, "user"); }
 
+/** elimina el grupo con ese id. Ver detalles en rmSomething */
 function rmGroup(id) { return rmSomething(id, "group"); }
 
+/** elimina la película con ese id. Ver detalles en rmSomething */
 function rmMovie(id) { return rmSomething(id, "movie"); }
 
+/** elimina el rating con ese id. Ver detalles en rmSomething */
 function rmRating(id) { return rmSomething(id, "rating"); }
 
-// actualiza el estado de la aplicación
+/**
+ * actualiza el estado de la aplicación
+ * 
+ * @return {Promise} - ver uso en go() 
+ */
 function list() {
     return go(serverApiUrl + serverToken + "/list", 'POST')
         .then(d => updateState(d));
 }
 
 // cosas que estarán disponibles desde fuera de este módulo
+// todo lo que no se mencione aquí es privado (= inaccesible) desde fuera
 export {
 
     // Clases
@@ -687,6 +873,6 @@ export {
     // Refresca state, sin hacer cambios
     list,
 
-    // Genera datos de partida
+    // Llama a add* para generar datos al azar. Usar con moderación
     populate,
 };

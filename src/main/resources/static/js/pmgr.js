@@ -45,7 +45,14 @@ function createMovieItem(movie) {
 
     <div>
         <div class="card-body pcard">
-            ${movie.director} / ${movie.actors} (${movie.minutes} min.)            
+            <div class="row">
+                <div class="col-auto">
+                    <img class="iuthumb" src="${serverUrl}poster/${movie.imdb}"/>
+                </div>
+                <div class="col">
+                    ${movie.director} / ${movie.actors} (${movie.minutes} min.)            
+                </div>
+            </div>
         </div>
     </div>
     </div>
@@ -107,10 +114,18 @@ function createUserItem(user) {
  */
 let oldHandler = false;
 
+/**
+ * Comportamiento de filtrado dinámico para un select-con-busqueda.
+ * 
+ * Cada vez que se modifica la búsqueda, se refresca el select para mostrar sólo 
+ * aquellos elementos que contienen lo que está escrito en la búsqueda
+ * 
+ * @param {string} div selector que devuelve el div sobre el que operar
+ * @param {Function} actualiza el contenido del select correspondiente
+ */
 function activaBusquedaDropdown(div, actualiza) {
     let search = document.querySelector(`${div} input[type=search]`);
     let select = document.querySelector(`${div} select`);
-    console.log(search, select);
 
     // vacia el select, lo llena con elementos validos
     actualiza(`${div} select`);
@@ -120,6 +135,7 @@ function activaBusquedaDropdown(div, actualiza) {
         let w = search.value.trim().toLowerCase();
         let items = document.querySelectorAll(`${div} select>option`);
 
+        // filtrado; poner o.style.display = '' muestra, = 'none' oculta
         items.forEach(o =>
             o.style.display = (o.innerText.toLowerCase().indexOf(w) > -1) ? '' : 'none');
 
@@ -138,7 +154,7 @@ function activaBusquedaDropdown(div, actualiza) {
 // Función que refresca toda la interfaz. Debería llamarse tras cada operación
 // por ejemplo, Pmgr.addGroup({"name": "nuevoGrupo"}).then(update()); // <--
 //
-function update(result) {
+function update() {
     const appendTo = (sel, html) =>
         document.querySelector(sel).insertAdjacentHTML("beforeend", html);
     const empty = (sel) => {
@@ -166,7 +182,8 @@ function update(result) {
     activaBusquedaDropdown('#dropdownBuscablePelis',
         (select) => {
             empty(select);
-            Pmgr.state.movies.forEach(m => appendTo(select, `<option value="${m.id}">${m.name}</option>`));
+            Pmgr.state.movies.forEach(m =>
+                appendTo(select, `<option value="${m.id}">${m.name}</option>`));
         }
     );
 }
@@ -175,9 +192,9 @@ function update(result) {
 // PARTE 2:
 // Código de pegamento, ejecutado sólo una vez que la interfaz esté cargada.
 //
-const serverUrl = "http://localhost:8080/api/";
-Pmgr.connect(serverUrl);
-Pmgr.login("g01", "aa")
+const serverUrl = "http://localhost:8080/";
+Pmgr.connect(serverUrl + "api/");
+Pmgr.login("g02", "g02")
     .then(d => {
         console.log("login ok!", d);
         update(d);
