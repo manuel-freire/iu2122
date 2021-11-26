@@ -395,6 +395,11 @@ public class ApiController {
             throw new ApiException("No such user: " + data.get("id"), null);
         }
 
+        // remove from groups
+        for (Group g : o.getGroups()) {
+            g.getMembers().remove(o);
+        }
+
         entityManager.remove(o);
         entityManager.flush();
         return u.getRealm().toTransfer();
@@ -430,22 +435,6 @@ public class ApiController {
         checkMandatory(data, "minutes",
                 ApiController::canParseAsLong, "must be an integer",
                 s->o.setMinutes(Integer.parseInt(s)));
-
-        if (data.has("ratings") && data.get("ratings").isArray()) {
-            List<Rating> nextRatings = new ArrayList<>();
-            Iterator<JsonNode> it = data.get("ratings").elements();
-            while (it.hasNext()) {
-                long id = it.next().asLong();
-                Rating r = entityManager.find(Rating.class, id);
-                if (r == null || r.getUser().getRealm().getId() != u.getRealm().getId()) {
-                    throw new ApiException("No such rating: " + id, null);
-                }
-                r.setMovie(o);
-                nextRatings.add(r);
-            }
-            o.getRatings().clear();
-            o.getRatings().addAll(nextRatings);
-        }
 
         entityManager.persist(o);
         entityManager.flush();
@@ -487,22 +476,6 @@ public class ApiController {
         checkOptional(data, "minutes",
                 ApiController::canParseAsLong, "must be an integer",
                 s->o.setMinutes(Integer.parseInt(s)));
-
-        if (data.has("ratings") && data.get("ratings").isArray()) {
-            List<Rating> nextRatings = new ArrayList<>();
-            Iterator<JsonNode> it = data.get("ratings").elements();
-            while (it.hasNext()) {
-                long id = it.next().asLong();
-                Rating r = entityManager.find(Rating.class, id);
-                if (r == null || r.getUser().getRealm().getId() != u.getRealm().getId()) {
-                    throw new ApiException("No such rating: " + id, null);
-                }
-                r.setMovie(o);
-                nextRatings.add(r);
-            }
-            o.getRatings().clear();
-            o.getRatings().addAll(nextRatings);
-        }
 
         entityManager.flush();
         return u.getRealm().toTransfer();

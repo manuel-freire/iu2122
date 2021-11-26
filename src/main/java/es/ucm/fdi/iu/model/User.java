@@ -53,6 +53,10 @@ public class User implements Transferable<User.Transfer> {
     private boolean enabled;
     private String roles; // split by ',' to separate roles
 
+    @OneToMany(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "owner_id")
+    private List<Group> managedGroups = new ArrayList<>();
+
     @ManyToMany(mappedBy = "members")
     private List<Group> groups = new ArrayList<>();
     @OneToMany(cascade = CascadeType.REMOVE)
