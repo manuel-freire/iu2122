@@ -15,14 +15,59 @@
 </head>
 
 <body>
+
+    <!-- Modal para editar películas -->
+    <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movieEditLabel">Editando película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="movieEditForm">
+                        <input type="hidden" name="id">
+                        <!-- llenar desde JS -->
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Título" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f2" name="imdb" placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="director" placeholder="Director" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="actors" placeholder="Actores" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" name="year" placeholder="Año de estreno" min="1800" max="2022" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" name="minutes" placeholder="Duración en minutos" min="0" max="600" required>
+                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- barra de navegación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <!-- nombre del sitio; es un enlace que lleva a la página ppal -->
             <a class="navbar-brand" href="#">IU 2021-22</a>
             <!-- menu hamburguesa si no cabe todo -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
@@ -34,8 +79,8 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Dropdown
-                </a>
+                            Dropdown
+                        </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="#">Action</a>
                             <a class="dropdown-item" href="#">Another action</a>
@@ -60,6 +105,36 @@
                 <div class="accordion" id="movies">
 
                 </div>
+                <div id="addMovie" class="formularioValidado">
+                    <h3>Añadir película</h3>
+                    <form class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Título" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f2" name="imdb" placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="director" placeholder="Director" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="actors" placeholder="Actores" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" name="year" placeholder="Año de estreno" min="1800" max="2022" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" name="minutes" placeholder="Duración en minutos" min="0" max="600" required>
+                        </div>
+
+                        <div class="col-12 botones">
+                            <button class="btn btn-primary" type="submit">Añadir</button>
+                            <button class="btn btn-secondary generar" type="button">Generar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
             <div class="col-sm-4 iulist">
@@ -67,11 +142,17 @@
                 <div id="groups">
 
                 </div>
+                <div id="addGroup">
+
+                </div>
             </div>
 
             <div class="col-sm-4 iulist">
                 <h2>Usuarios</h2>
                 <div id="users">
+
+                </div>
+                <div id="addUser">
 
                 </div>
             </div>
@@ -92,8 +173,8 @@
                                 <input type="text" class="form-control" readonly id="inputCategorias" placeholder="(ninguna)">
                                 <div class="input-group-append">
                                     <button class="btn btn-outline-secondary" type="button" data-bs-toggle="modal" data-bs-target="#modalSeleccionCategoria">
-                                    Cambiar
-                                </button>
+                                        Cambiar
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -101,7 +182,7 @@
                     <div class="form-row texto-anuncio">
                         <div class="form-group col">
                             <label for="inputTextoAnuncio">Cuerpo del
-                            anuncio</label>
+                                anuncio</label>
                             <textarea id="inputTextoAnuncio" class="form-control">
 Hello, World!
                 </textarea>
@@ -110,7 +191,7 @@ Hello, World!
                     <!-- botón para enviar el formulario; justify-content-end lo justifica a la derecha -->
                     <div class="form-row justify-content-end">
                         <button type="submit" id="boton-publicar" class="btn btn-primary">Publicar anuncio
-                    </button>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -122,9 +203,9 @@ Hello, World!
                 </div>
                 <div class="row-md-4">
                     <select class="multiple from-control" multiple size="6">
-                    <option value="a">a</option>
-                    <option value="b">b</option>
-                </select>
+                        <option value="a">a</option>
+                        <option value="b">b</option>
+                    </select>
                 </div>
             </div>
 
@@ -170,13 +251,18 @@ Hello, World!
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar
-                </button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="button-save-cats">Guardar y
-                    salir
-                </button>
+                    </button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="button-save-cats">Guardar
+                        y
+                        salir
+                    </button>
                 </div>
             </div>
         </div>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Launch demo modal
+        </button>
     </div>
 
     <!-- JavaScript -->

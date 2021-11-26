@@ -3,3 +3,23 @@
 .iuthumb {
     height: 50px;
 }
+
+.formularioValidado {
+    border: 1px solid lightblue;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+}
+
+.formularioValidado input {
+    margin-top: 4px;
+}
+
+.formularioValidado .botones {
+    margin-top: 6px;
+}
+
+.iucontrol button {
+    border: 1px solid lightgray;
+    border-radius: 10px;
+}
