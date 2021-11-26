@@ -9,12 +9,6 @@ import java.util.stream.Collectors;
 
 /**
  * A label on a movie, authored by a user. Can optionally provide a rating.
- *
- * printers have a unique alias, a model, a location, an IP,
- * a print-queue with jobs, and a state.
- * the state can be printing (because queue not empty and not blocked), paused
- * (because queue empty and not blocked), out of paper, or out of ink
- * (the last two mean that it is blocked, and thus neither printing or paused)
  */
 @Entity
 @Data
