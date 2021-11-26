@@ -19,7 +19,7 @@
  */
 class State {
     /**
-     * Constructor de State
+     * Constructor de State, el estado global interno de la aplicación
      * @param {String} name 
      * @param {[User]} users 
      * @param {[Group]} groups 
@@ -43,7 +43,7 @@ class State {
 class User {
     /**
      * Constructor de User
-     * @param {number} id 
+     * @param {number} id existente, o -1 si no tiene
      * @param {string} username 
      * @param {string} password (los que recibes vienen *sin* este campo)
      * @param {string} role ("USER", ó "ADMIN,USER" para administradores)
@@ -52,7 +52,7 @@ class User {
      * @param {[number]} ratings (ids de ratings que ha hecho)
      */
     constructor(id, username, password, role, groups, requests, ratings) {
-        this.id = id;
+        if (id != -1) this.id = +id;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -68,7 +68,7 @@ class User {
 class Movie {
     /**
      * Constructor de Movie
-     * @param {number} id 
+     * @param {number} id existente, o -1 si no tiene
      * @param {string} imdb (de la forma "tt" + digitos)
      * @param {string} name 
      * @param {string} director 
@@ -78,13 +78,13 @@ class Movie {
      * @param {[number]} ratings (ids de ratings de usuarios que la han visto)
      */
     constructor(id, imdb, name, director, actors, year, minutes, ratings) {
-        this.id = id;
+        if (id != -1) this.id = +id;
         this.imdb = imdb; // nota: en servidor/poster/<imdb> tienes el póster (para el top-400)
         this.name = name;
         this.director = director;
         this.actors = actors;
-        this.year = year;
-        this.minutes = minutes;
+        this.year = +year;
+        this.minutes = +minutes;
         this.ratings = ratings || [];
     }
 }
@@ -95,16 +95,16 @@ class Movie {
 class Group {
     /**
      * Constructor de Group
-     * @param {number} id 
+     * @param {number} id existente, o -1 si no tiene
      * @param {string} name 
      * @param {number} owner (id del propietario)
      * @param {[number]} members (ids de miembros, excluyendo al owner)
      * @param {[number]} requests (ids de peticiones de adhesión)
      */
     constructor(id, name, owner, members, requests) {
-        this.id = id;
+        if (id != -1) this.id = +id;
         this.name = name;
-        this.owner = owner;
+        this.owner = +owner;
         this.members = members || [];
         this.requests = requests || [];
     }
@@ -126,13 +126,13 @@ const RequestStatus = {
 class Request {
     /**
      * Constructor de Request
-     * @param {number} id 
+     * @param {number} id existente, o -1 si no tiene
      * @param {number} user id de usuario
      * @param {number} group id de grupo
      * @param {RequestStatus} status 
      */
     constructor(id, user, group, status) {
-        this.id = id;
+        if (id != -1) this.id = +id;
         this.user = user;
         this.group = group;
         Util.checkEnum(status, RequestStatus);
@@ -146,17 +146,17 @@ class Request {
 class Rating {
     /**
      * Constructor de Rating
-     * @param {number} id 
+     * @param {number} id existente, o -1 si no tiene
      * @param {number} user 
      * @param {number} movie 
      * @param {number} rating -1 para "no sabe, no contesta", o entero entre 0 y 5
      * @param {string} labels texto, separado por comas; "" para vacío
      */
     constructor(id, user, movie, rating, labels) {
-        this.id = id;
-        this.user = user;
-        this.movie = movie;
-        this.rating = rating;
+        if (id != -1) this.id = +id;
+        this.user = +user;
+        this.movie = +movie;
+        this.rating = +rating;
         this.labels = labels;
     }
 }
@@ -641,7 +641,7 @@ function connect(apiUrl) {
  * @returns {(User|Movie|Group|Request|Rating|undefined)} 
  */
 function resolve(id) {
-    return cache[id];
+    return cache[+id];
 }
 
 // cache de IDs; privado 
@@ -650,13 +650,13 @@ let cache = {};
 
 // acceso y refresco de la cache de IDs; privado
 function getId(id, object) {
-    const found = cache[id] !== undefined;
+    const found = cache[+id] !== undefined;
     if (object) {
         if (found) throw Error("duplicate ID: " + id);
-        cache[id] = object;
+        cache[+id] = object;
     } else {
         if (!found) throw Error("ID not found: " + id);
-        return cache[id];
+        return cache[+id];
     }
 }
 
@@ -746,7 +746,7 @@ function login(username, password) {
  */
 function addSomething(object, type) {
     if (object.id !== undefined) {
-        console.log("OJO: cuando añades cosas, el ID se ignora");
+        console.log(`[aviso] el servidor va a ignorar tu id=${object.id}`);
     }
     return go(serverApiUrl + serverToken + "/add" + type, 'POST', object)
         .then(d => updateState(d));
@@ -759,8 +759,8 @@ function addSomething(object, type) {
  * @return {Promise} - ver uso en go() 
  */
 function setSomething(object, type) {
-    if (object.id === undefined || resolve[id] === undefined) {
-        error("para modificar cosas, debes de usar ID válido");
+    if (object.id === undefined || resolve(object.id) === undefined) {
+        new Error(`[petición ignorada] el id ${object.id} no parece existir`);
     }
     return go(serverApiUrl + serverToken + "/set" + type, 'POST', object)
         .then(d => updateState(d));
@@ -773,7 +773,10 @@ function setSomething(object, type) {
  * @return {Promise} - ver uso en go() 
  */
 function rmSomething(id, type) {
-    return go(serverApiUrl + serverToken + "/rm" + type, 'POST', { id })
+    if (id === undefined || resolve(id) === undefined) {
+        new Error(`[petición ignorada] el id ${id} no parece existir`);
+    }
+    return go(serverApiUrl + serverToken + "/rm" + type, 'POST', { id: +id })
         .then(d => updateState(d));
 }
 
