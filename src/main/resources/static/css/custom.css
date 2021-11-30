@@ -9,14 +9,31 @@
     border-radius: 20px;
     padding: 10px;
     margin: 10px;
+    height: 240px;
+}
+
+.formularioValidado2 {
+    border: 1px solid lightblue;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px;
+    height: 240px;
 }
 
 .formularioValidado input {
     margin-top: 4px;
 }
 
+.formularioValidado2 input {
+    margin-top: 4px;
+}
+
 .formularioValidado .botones {
     margin-top: 6px;
+}
+
+.formularioValidado2 .botones {
+    margin-top: 50px;
 }
 
 .iucontrol button {
