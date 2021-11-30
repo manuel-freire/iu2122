@@ -296,24 +296,27 @@ function update() {
 // modales, para poder abrirlos y cerrarlos desde código JS
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 
-const serverUrl = "http://localhost:8080/";
+// si lanzas un servidor en local, usa http://localhost:8080/
+const serverUrl = "http://gin.fdi.ucm.es/iu/";
+
 Pmgr.connect(serverUrl + "api/");
-Pmgr.login("g01", "aa")
+
+Pmgr.login("g01", "aa") // <-- tu nombre de usuario y password aquí
     .then(d => {
         console.log("login ok!", d);
         update(d);
-
-        // Pmgr.populate(); -- genera datos de prueba, usar sólo 1 vez
     })
     .catch(e => {
         console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
         console.log(`el servidor dice: "${e.text}"`);
-
-        //Pmgr.populate();
     });
 
 {
-    // formulario para añadir peliculas
+    /** 
+     * Asocia comportamientos al formulario de añadir películas 
+     * en un bloque separado para que las constantes y variables no salgan de aquí, 
+     * manteniendo limpio el espacio de nombres del fichero
+     */
     const f = document.querySelector("#addMovie form");
     // botón de enviar
     f.querySelector("button[type='submit']").addEventListener('click', (e) => {
@@ -326,7 +329,9 @@ Pmgr.login("g01", "aa")
     f.querySelector("button.generar").addEventListener('click',
         (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
 } {
-    // formulario para modificar películas
+    /**
+     * formulario para modificar películas
+     */
     const f = document.querySelector("#movieEditForm");
     // botón de enviar
     document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
@@ -340,7 +345,11 @@ Pmgr.login("g01", "aa")
     });
 }
 
-// cosas que exponemos para usarlas desde la consola
+// cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
 window.update = update;
-window.P = Pmgr;
+window.Pmgr = Pmgr;
+
+// ejecuta Pmgr.populate() en una consola para generar datos de prueba en servidor
+// ojo - hace *muchas* llamadas a la API (mira su cabecera para más detalles)
+// Pmgr.populate();
