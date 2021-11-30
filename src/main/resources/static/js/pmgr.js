@@ -301,7 +301,7 @@ const serverUrl = "http://gin.fdi.ucm.es/iu/";
 
 Pmgr.connect(serverUrl + "api/");
 
-Pmgr.login("g01", "aa") // <-- tu nombre de usuario y password aquí
+Pmgr.login("g2", "eSMDK") // <-- tu nombre de usuario y password aquí
     .then(d => {
         console.log("login ok!", d);
         update(d);
