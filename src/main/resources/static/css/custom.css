@@ -5,19 +5,20 @@
 }
 
 .formularioValidado {
-    border: 1px solid lightblue;
-    border-radius: 20px;
-    padding: 10px;
-    margin: 10px;
-    height: 240px;
+    height: 86%;    
+    border:2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 25px;
+    
 }
 
 .formularioValidado2 {
-    border: 1px solid lightblue;
-    border-radius: 20px;
-    padding: 10px;
-    margin: 10px;
-    height: 240px;
+    border: 2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px;
+    height: 86%;
 }
 
 .formularioValidado input {
