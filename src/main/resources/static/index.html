@@ -152,9 +152,16 @@
         <div class="row">
             <!-- panel lateral, demostrando acordeones (secciones expansibles) -->
             <div class="col-sm-4 iulist">
-                <h2>Peliculas</h2>
+                <div class="row">
+                    <div class="col-auto">
+                        <h2>Peliculas </h2>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <input type="search" class="form-control" id="movieSearch" placeholder="palabras del título" aria-describedby="searchMovieLabel">
+                        <span class="input-group-text" id="searchMovieLabel">🔍</span>
+                    </div>
+                </div>
                 <div class="accordion" id="movies">
-
                 </div>
                 <div id="addMovie" class="formularioValidado">
                     <h3>Añadir película</h3>

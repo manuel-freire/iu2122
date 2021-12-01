@@ -96,7 +96,7 @@ function createMovieItem(movie) {
     ).join("");
 
     return `
-    <div class="card">
+    <div class="card" data-id="${movie.id}">
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -509,6 +509,19 @@ login("p", "p");
     // activa rating con estrellitas
     stars("#movieRateForm .estrellitas");
 }
+
+/**
+ * búsqueda básica de películas, por título
+ */
+document.querySelector("#movieSearch").addEventListener("input", e => {
+    const v = e.target.value.toLowerCase();
+    document.querySelectorAll("#movies div.card").forEach(c => {
+        const m = Pmgr.resolve(c.dataset.id);
+        // aquí podrías aplicar muchos más criterios
+        const ok = m.name.toLowerCase().indexOf(v) >= 0;
+        c.style.display = ok ? '' : 'none';
+    });
+})
 
 // cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
