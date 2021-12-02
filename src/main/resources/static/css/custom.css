@@ -21,11 +21,23 @@
     height: 86%;
 }
 
+.formularioValidado3 {
+    border: 2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px;
+    height: 86%;
+}
+
 .formularioValidado input {
     margin-top: 4px;
 }
 
 .formularioValidado2 input {
+    margin-top: 4px;
+}
+
+.formularioValidado3 input {
     margin-top: 4px;
 }
 
@@ -37,6 +49,9 @@
     margin-top: 50px;
 }
 
+.formularioValidado3 .botones {
+    margin-top: 50px;
+}
 .iucontrol button {
     border: 1px solid lightblue;
     border-radius: 10px;
