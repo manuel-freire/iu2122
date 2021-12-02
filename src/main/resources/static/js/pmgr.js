@@ -31,9 +31,72 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
+/**
+ * 
+ * @param {string} sel CSS usado para indicar qué fieldset quieres convertir
+ * en estrellitas. Se espera que el fieldset tenga este aspecto:
+ *      <label title="Atómico - 5 estrellas">
+            <input type="radio" name="rating" value="5" />
+        </label>
+
+        <label title="Muy buena - 4 estrellas">
+            <input type="radio" name="rating" value="4" />
+        </label>
+
+        <label title="Pasable - 3 estrellas">
+            <input type="radio" name="rating" value="3" />
+        </label>
+
+        <label title="Más bien mala - 2 estrellas">
+            <input type="radio" name="rating" value="2" />
+        </label>
+
+        <label title="Horrible - 1 estrella">
+            <input type="radio" name="rating" value="1" />
+        </label>
+ */
+function stars(sel) {
+    const changeClassOnEvents = (ss, s) => {
+        s.addEventListener("change", e => {
+            // find current index
+            const idx = e.target.value;
+            // set selected for previous & self, remove for next
+            ss.querySelectorAll("label").forEach(label => {
+                if (label.children[0].value <= idx) {
+                    label.classList.add("selected");
+                } else {
+                    label.classList.remove("selected");
+                }
+            });
+        });
+    };
+    const activateStars = (ss) => {
+        ss.classList.add("rating");
+        ss.querySelectorAll("input").forEach(s =>
+            changeClassOnEvents(ss, s));
+        let parent = ss;
+        while (!parent.matches("form")) {
+            parent = parent.parentNode;
+        }
+        parent.addEventListener("reset", () => {
+            ss.querySelectorAll("input").forEach(e => e.checked = false);
+            ss.querySelectorAll("label").forEach(e => e.classList.remove("selected"));
+        });
+    }
+    document.querySelectorAll(sel).forEach(activateStars);
+}
+
 function createMovieItem(movie) {
+    const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
+    const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
+        `<span class="badge bg-${r.user==userId?"primary":"secondary"}">
+        ${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
+        </span>
+        `
+    ).join("");
+
     return `
-    <div class="card">
+    <div class="card" data-id="${movie.id}">
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -47,13 +110,17 @@ function createMovieItem(movie) {
                     <img class="iuthumb" src="${serverUrl}poster/${movie.imdb}"/>
                 </div>
                 <div class="col">
-                    <div class="row-sm-11">
-                    ${movie.director} / ${movie.actors} (${movie.minutes} min.)
-                    </div>
-                    <div class="row-sm-1 iucontrol movie">
+                    <div class="row-12">
+                        ${movie.director} / ${movie.actors} (${movie.minutes} min.)
+                    </div>        
+                    <div class="row-12">
+                        ${ratings}
+                    </div>        
+                    <div class="iucontrol movie">
                         <button class="rm" data-id="${movie.id}">🗑️</button>
                         <button class="edit" data-id="${movie.id}">✏️</button>
-                    </div>                    
+                        <button class="rate" data-id="${movie.id}">⭐</button>
+                    </div>  
                 </div>
             </div>
         </div>
@@ -167,6 +234,41 @@ function modificaPelicula(formulario) {
 }
 
 /**
+ * Usa valores de un formulario para añadir un rating
+ * @param {Element} formulario para con los valores a subir
+ */
+function nuevoRating(formulario) {
+    const rating = new Pmgr.Rating(-1,
+        formulario.querySelector('input[name="user"]').value,
+        formulario.querySelector('input[name="movie"]').value,
+        formulario.querySelector('input[name="rating"]:checked').value,
+        formulario.querySelector('input[name="labels"]').value);
+    Pmgr.addRating(rating).then(() => {
+        formulario.reset() // limpia el formulario si todo OK
+        modalRateMovie.hide(); // oculta el formulario
+        update();
+    }).catch(e => console.log(e));
+}
+
+/**
+ * Usa valores de un formulario para modificar un rating
+ * @param {Element} formulario para con los valores a subir
+ */
+function modificaRating(formulario) {
+    const rating = new Pmgr.Rating(
+        formulario.querySelector('input[name="id"]').value,
+        formulario.querySelector('input[name="user"]').value,
+        formulario.querySelector('input[name="movie"]').value,
+        formulario.querySelector('input[name="rating"]:checked').value,
+        formulario.querySelector('input[name="labels"]').value);
+    Pmgr.setRating(rating).then(() => {
+        formulario.reset() // limpia el formulario si todo OK
+        modalRateMovie.hide(); // oculta el formulario
+        update();
+    }).catch(e => console.log(e));
+}
+
+/**
  * Usa valores de un formulario para añadir una película
  * @param {Element} formulario para con los valores a subir
  */
@@ -266,6 +368,38 @@ function update() {
 
                 modalEditMovie.show(); // ya podemos mostrar el formulario
             }));
+        // botones de evaluar películas
+        document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
+            b.addEventListener('click', e => {
+                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+                const formulario = document.querySelector("#movieRateForm");
+                const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
+                if (prev) {
+                    // viejo: copia valores
+                    formulario.querySelector("input[name=id]").value = prev.id;
+                    const input = formulario.querySelector(`input[value="${prev.rating}"]`);
+                    if (input) {
+                        input.checked;
+                    }
+                    // lanza un envento para que se pinten las estrellitas correctas
+                    // see https://stackoverflow.com/a/2856602/15472
+                    if ("createEvent" in document) {
+                        const evt = document.createEvent("HTMLEvents");
+                        evt.initEvent("change", false, true);
+                        input.dispatchEvent(evt);
+                    } else {
+                        input.fireEvent("onchange");
+                    }
+                    formulario.querySelector("input[name=labels]").value = prev.labels;
+                } else {
+                    // nuevo
+                    formulario.reset();
+                    formulario.querySelector("input[name=id]").value = -1;
+                }
+                formulario.querySelector("input[name=movie]").value = id;
+                formulario.querySelector("input[name=user]").value = userId;
+                modalRateMovie.show(); // ya podemos mostrar el formulario
+            }));
         // botones de borrar grupos
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
@@ -295,21 +429,30 @@ function update() {
 
 // modales, para poder abrirlos y cerrarlos desde código JS
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
+const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
 
 Pmgr.connect(serverUrl + "api/");
 
-Pmgr.login("g01", "aa") // <-- tu nombre de usuario y password aquí
-    .then(d => {
-        console.log("login ok!", d);
-        update(d);
-    })
-    .catch(e => {
-        console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
-        console.log(`el servidor dice: "${e.text}"`);
-    });
+// guarda el ID que usaste para hacer login en userId
+let userId = -1;
+const login = (username, password) => {
+    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
+        .then(d => {
+            console.log("login ok!", d);
+            update(d);
+            userId = Pmgr.state.users.find(u =>
+                u.username == username).id;
+        })
+        .catch(e => {
+            console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
+            console.log(`el servidor dice: "${e.text}"`);
+        });
+}
+
+login("p", "p");
 
 {
     /** 
@@ -343,11 +486,48 @@ Pmgr.login("g01", "aa") // <-- tu nombre de usuario y password aquí
             f.querySelector("button[type=submit]").click(); // fuerza validacion local
         }
     });
+} {
+    /**
+     * formulario para evaluar películas; usa el mismo modal para añadir y para editar
+     */
+    const f = document.querySelector("#movieRateForm");
+    // botón de enviar
+    document.querySelector("#movieRate button.edit").addEventListener('click', e => {
+        console.log("enviando formulario!");
+        if (f.checkValidity()) {
+            if (f.querySelector("input[name=id]").value == -1) {
+                nuevoRating(f);
+            } else {
+                modificaRating(f); // modifica la evaluación según los campos previamente validados
+            }
+        } else {
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click(); // fuerza validacion local
+        }
+    });
+    // activa rating con estrellitas
+    stars("#movieRateForm .estrellitas");
 }
+
+/**
+ * búsqueda básica de películas, por título
+ */
+document.querySelector("#movieSearch").addEventListener("input", e => {
+    const v = e.target.value.toLowerCase();
+    document.querySelectorAll("#movies div.card").forEach(c => {
+        const m = Pmgr.resolve(c.dataset.id);
+        // aquí podrías aplicar muchos más criterios
+        const ok = m.name.toLowerCase().indexOf(v) >= 0;
+        c.style.display = ok ? '' : 'none';
+    });
+})
 
 // cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
+window.modalRateMovie = modalRateMovie;
 window.update = update;
+window.login = login;
+window.userId = userId;
 window.Pmgr = Pmgr;
 
 // ejecuta Pmgr.populate() en una consola para generar datos de prueba en servidor
