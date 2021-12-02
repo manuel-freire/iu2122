@@ -19,6 +19,57 @@
 
 <body>
 
+    <!-- Modal para dar un rating a una película -->
+    <div class="modal fade" id="movieRate" tabindex="-1" aria-labelledby="movieRateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movieRateLabel">Evaluando película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="movieRateForm">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="movie">
+                        <input type="hidden" name="user">
+                        <!-- llenar desde JS -->
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" name="labels" placeholder="Etiquetas" required>
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset class="estrellitas">
+                                <label title="Atómico - 5 estrellas">
+                                        <input type="radio" name="rating" value="5" />
+                                    </label>
+
+                                <label title="Muy buena - 4 estrellas">
+                                        <input type="radio" name="rating" value="4" />
+                                    </label>
+
+                                <label title="Pasable - 3 estrellas">
+                                        <input type="radio" name="rating" value="3" />
+                                    </label>
+
+                                <label title="Más bien mala - 2 estrellas">
+                                        <input type="radio" name="rating" value="2" />
+                                    </label>
+
+                                <label title="Horrible - 1 estrella">
+                                        <input type="radio" name="rating" value="1" />
+                                    </label>
+                            </fieldset>
+                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para editar películas -->
     <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -102,13 +153,26 @@
 
     <!-- container-fluid expande el contenedor para que ocupe todo el espacio disponible -->
     <div class="container-fluid">
+        <div class="row">
         <div class="row" style="text-align: left;">
             <!-- panel lateral, demostrando acordeones (secciones expansibles) -->
+            <div class="col-sm-4 iulist">
+                <div class="row">
+                    <div class="col-auto">
+                        <h2>Peliculas </h2>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <input type="search" class="form-control" id="movieSearch" placeholder="palabras del título" aria-describedby="searchMovieLabel">
+                        <span class="input-group-text" id="searchMovieLabel">🔍</span>
+                    </div>
             <div class="col-sm-4 iulist" style="padding: 0px; background-color: #840000; color: #FFFFFF; border-radius: 20px; border: 2px solid white;">
                 <h2 style="text-align: center;">Películas</h2>
                 <div class="accordion" id="movies"> 
 
                 </div>
+                <div class="accordion" id="movies">
+                </div>
+                <div id="addMovie" class="formularioValidado">
                 <div id="addMovie" style="background-color: #FF5353;" class="formularioValidado">
                     <h3>Añadir película</h3>
                     <form class="row">
@@ -141,11 +205,15 @@
                 </div>
             </div>
 
+            <div class="col-sm-4 iulist">
+                <h2>Grupos</h2>
+                <div id="groups">
             <div class="col-sm-4 iulist" style="padding: 0%;  background-color: #840000; color: #FFFFFF; border-radius: 20px; border: 2px solid white;">
                 <h2 style="text-align: center;">Grupos</h2>
                 <div class="accordion" id="groups">
 
                 </div>
+                <div id="addGroup">
 
                  <div id="addGroup" style = "background-color: #FF5353;" class="formularioValidado2">
                     <h3>Añadir grupo</h3>
@@ -166,6 +234,9 @@
             </div>
             
 
+            <div class="col-sm-4 iulist">
+                <h2>Usuarios</h2>
+                <div id="users">
             <div class="col-sm-4 iulist" style="padding: 0%; background-color: #840000; color: #FFFFFF; border-radius: 20px; border: 2px solid white;">
                 <h2 style="text-align: center;">Usuarios</h2>
                 <div class="accordion" id="users">  
@@ -175,6 +246,9 @@
                             <div class="col-md-6">
                                 <input type="text" class="form-control" id="f1" name="name" placeholder="Nombre" required>
                             </div>
+
+                </div>
+                <div id="addUser">
 
                             <div class="col-12 botones">
                                 <button class="btn btn-primary" type="submit">Añadir</button>
@@ -193,7 +267,7 @@
                     <div class="form-row datos-anuncio">
                         <div class="form-group col-md-6">
                             <label for="inputTitulo">Título del anuncio</label>
-                            <input type="text" class="form-control" id="inputTitulo" placeholder="Vendo Opel Corsa" required>
+                            <input type="text" class="form-control" id="inputTitulo" placeholder="Vendo Moto" required>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="inputCategorias">Categorías</label>
@@ -212,6 +286,7 @@
                             <label for="inputTextoAnuncio">Cuerpo del
                                 anuncio</label>
                             <textarea id="inputTextoAnuncio" class="form-control">
+Hello, World!
 Hola mundo!
                 </textarea>
                         </div>
