@@ -201,7 +201,24 @@
             <div class="col-sm-4 iulist">
                 <h2>Grupos</h2>
                 
-                <div id="addGroup">
+                <div id="addGroup" class="formularioValidado">
+                    
+                    <h3>Añadir Grupo</h3>
+                    <form class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Nombre de grupo" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f2" name="prop" placeholder="Nombre de propietario" required pattern="tt[0-9]+">
+                        </div>
+
+                
+                        <div class="col-12 botones">
+                            <button class="btn btn-primary" type="submit">Añadir</button>
+                            <button class="btn btn-secondary generar" type="button">Generar</button>
+                        </div>
+                    </form>
+
 
                 </div>
 
@@ -214,7 +231,25 @@
             <div class="col-sm-4 iulist">
                 <h2>Usuarios</h2>
                 
-                <div id="addUser">
+                <div id="addUser" class="formularioValidado">
+
+                    <h3>Añadir Usuario</h3>
+                    <form class="row">
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Nombre de usuario" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="password" class="form-control" id="f2" name="prop" placeholder="Contraseña" required pattern="tt[0-9]+">
+                        </div>
+
+                
+                        <div class="col-12 botones">
+                            <button class="btn btn-primary" type="submit">Añadir</button>
+                            <button class="btn btn-secondary generar" type="button">Generar</button>
+                        </div>
+                    </form>
+
+
 
                 </div>
 
