@@ -146,6 +146,23 @@ function nuevaPelicula(formulario) {
         update();
     });
 }
+
+//CREATED
+/**
+ * Usa valores de un formulario para añadir una película
+ * @param {Element} formulario para con los valores a subir
+ */
+ function nuevoGrupo(formulario) {
+    const group = new Pmgr.Group(-1,
+        formulario.querySelector('input[name="name"]').value,
+        formulario.querySelector('input[name="propietario"]').value);
+    Pmgr.addGroup(group).then(() => {
+        formulario.reset() // limpia el formulario si todo OK
+        update();
+    });
+}
+
+//END CREATED
 /**
  * Usa valores de un formulario para modificar una película
  * @param {Element} formulario para con los valores a subir
