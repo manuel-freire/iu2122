@@ -197,6 +197,8 @@ public class ApiController {
                 d->!d.isEmpty(), "cannot be empty", null);
         String password = checkMandatory(data, "password",
                 d->!d.isEmpty(), "cannot be empty", null);
+        String renew = checkOptional(data, "renew",
+                "true"::equals, "if specified, must be true", null);
 
         List<User> results = entityManager.createQuery(
                 "from User where username = :username", User.class)
@@ -211,7 +213,10 @@ public class ApiController {
             throw new ApiAuthException("Invalid username or password for " + username + "");
         }
 
-        u.setToken(generateRandomBase64Token(TOKEN_LENGTH));
+        // only change token if it was null, or "renew" requested
+        if (u.getToken() == null || "true".equals(renew)) {
+            u.setToken(generateRandomBase64Token(TOKEN_LENGTH));
+        }
         return u.toTokenTransfer();
     }
 
