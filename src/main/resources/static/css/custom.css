@@ -5,7 +5,7 @@
 }
 
 .formularioValidado {
-    height: 86%;    
+    height: 270px;    
     border:2px solid white;
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
@@ -18,7 +18,7 @@
     border-bottom-right-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 20px;
-    height: 86%;
+    height: 270px;
 }
 
 .formularioValidado3 {
