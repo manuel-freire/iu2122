@@ -229,6 +229,18 @@ function nuevaPelicula(formulario) {
     });
 }
 
+/**
+ * Usa valores de un formulario para añadir una película
+ * @param {Element} formulario para con los valores a subir
+ */
+ function nuevoUsuario(formulario) {
+    const usuario = new Pmgr.User(-1,
+        formulario.querySelector('input[name="name"]').value);
+    Pmgr.addUser(usuario).then(() => {
+        formulario.reset() // limpia el formulario si todo OK
+        update();
+    });
+}
 //END CREATED
 /**
  * Usa valores de un formulario para modificar una película
