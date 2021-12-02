@@ -88,3 +88,61 @@ fieldset.rating,
 
 
 /** fin CSS para controles de estrellas */
+/* usa este fichero para personalizar tus vistas */
+
+.iuthumb {
+    height: 50px;
+}
+
+.formularioValidado {
+    height: 270px;    
+    border:2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 25px;
+    
+}
+
+.formularioValidado2 {
+    border: 2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px;
+    height: 270px;
+}
+
+.formularioValidado3 {
+    border: 2px solid white;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px;
+    height: 270px;
+}
+
+.formularioValidado input {
+    margin-top: 4px;
+}
+
+.formularioValidado2 input {
+    margin-top: 4px;
+}
+
+.formularioValidado3 input {
+    margin-top: 4px;
+}
+
+.formularioValidado .botones {
+    margin-top: 6px;
+}
+
+.formularioValidado2 .botones {
+    margin-top: 50px;
+}
+
+.formularioValidado3 .botones {
+    margin-top: 95px;
+}
+.iucontrol button {
+    border: 1px solid lightblue;
+    border-radius: 10px;
+}
