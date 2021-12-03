@@ -89,7 +89,7 @@ function stars(sel) {
 function createMovieItem(movie) {
     const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
     const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${r.user==userId?"primary":"secondary"}">
+        `<span class="badge bg-${r.user == userId ? "primary" : "secondary"}">
         ${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
         </span>
         `
@@ -324,6 +324,12 @@ function activaBusquedaDropdown(div, actualiza) {
     oldHandler = search.addEventListener('input', handler);
 }
 
+const hide_all = () => {
+    document.querySelectorAll(".filmy_view").forEach(div => {
+        div.classList.add("d-none");
+    });
+}
+
 //
 // Función que refresca toda la interfaz. Debería llamarse tras cada operación
 // por ejemplo, Pmgr.addGroup({"name": "nuevoGrupo"}).then(update); // <--
@@ -338,75 +344,100 @@ function update() {
         }
     }
     try {
-        // vaciamos los contenedores
-        empty("#movies");
-        empty("#groups");
-        empty("#users");
 
-        // y los volvemos a rellenar con su nuevo contenido
-        Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
-        Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
-        Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
+        document.querySelectorAll(".nav_input").forEach(button => {
+            button.addEventListener('click', e => {
+                console.log(e.target.dataset.id);
 
-        // y añadimos manejadores para los eventos de los elementos recién creados
-        // botones de borrar películas
-        document.querySelectorAll(".iucontrol.movie button.rm").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                Pmgr.rmMovie(id).then(update);
-            }));
-        // botones de editar películas
-        document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                const movie = Pmgr.resolve(id);
-                const formulario = document.querySelector("#movieEditForm");
-                for (let [k, v] of Object.entries(movie)) {
-                    // rellenamos el formulario con los valores actuales
-                    const input = formulario.querySelector(`input[name="${k}"]`);
-                    if (input) input.value = v;
+                hide_all();
+                switch (e.target.dataset.id) {
+                    case "groups":
+                        document.querySelector("#group_view").classList.remove("d-none");
+                        break;
+                    case "help":
+                        document.querySelector("#help_view").classList.remove("d-none");
+                        break;
+                    case "profile":
+                        document.querySelector("#profile_view").classList.remove("d-none");
+                        break;
+                    case "home":
+                    default:
+                        document.querySelector("#home_view").classList.remove("d-none");
+                        break;
                 }
+            });
+        });
 
-                modalEditMovie.show(); // ya podemos mostrar el formulario
-            }));
-        // botones de evaluar películas
-        document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                const formulario = document.querySelector("#movieRateForm");
-                const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
-                if (prev) {
-                    // viejo: copia valores
-                    formulario.querySelector("input[name=id]").value = prev.id;
-                    const input = formulario.querySelector(`input[value="${prev.rating}"]`);
-                    if (input) {
-                        input.checked;
-                    }
-                    // lanza un envento para que se pinten las estrellitas correctas
-                    // see https://stackoverflow.com/a/2856602/15472
-                    if ("createEvent" in document) {
-                        const evt = document.createEvent("HTMLEvents");
-                        evt.initEvent("change", false, true);
-                        input.dispatchEvent(evt);
-                    } else {
-                        input.fireEvent("onchange");
-                    }
-                    formulario.querySelector("input[name=labels]").value = prev.labels;
-                } else {
-                    // nuevo
-                    formulario.reset();
-                    formulario.querySelector("input[name=id]").value = -1;
-                }
-                formulario.querySelector("input[name=movie]").value = id;
-                formulario.querySelector("input[name=user]").value = userId;
-                modalRateMovie.show(); // ya podemos mostrar el formulario
-            }));
-        // botones de borrar grupos
-        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
-            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
-        // botones de borrar usuarios
-        document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
-            b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
+
+        // // vaciamos los contenedores
+        // empty("#movies");
+        // empty("#groups");
+        // empty("#users");
+
+        // // y los volvemos a rellenar con su nuevo contenido
+        // Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
+        // Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
+        // Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
+
+        // // y añadimos manejadores para los eventos de los elementos recién creados
+        // // botones de borrar películas
+        // document.querySelectorAll(".iucontrol.movie button.rm").forEach(b =>
+        //     b.addEventListener('click', e => {
+        //         const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+        //         Pmgr.rmMovie(id).then(update);
+        //     }));
+        // // botones de editar películas
+        // document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
+        //     b.addEventListener('click', e => {
+        //         const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+        //         const movie = Pmgr.resolve(id);
+        //         const formulario = document.querySelector("#movieEditForm");
+        //         for (let [k, v] of Object.entries(movie)) {
+        //             // rellenamos el formulario con los valores actuales
+        //             const input = formulario.querySelector(`input[name="${k}"]`);
+        //             if (input) input.value = v;
+        //         }
+
+        //         modalEditMovie.show(); // ya podemos mostrar el formulario
+        //     }));
+        // // botones de evaluar películas
+        // document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
+        //     b.addEventListener('click', e => {
+        //         const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+        //         const formulario = document.querySelector("#movieRateForm");
+        //         const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
+        //         if (prev) {
+        //             // viejo: copia valores
+        //             formulario.querySelector("input[name=id]").value = prev.id;
+        //             const input = formulario.querySelector(`input[value="${prev.rating}"]`);
+        //             if (input) {
+        //                 input.checked;
+        //             }
+        //             // lanza un envento para que se pinten las estrellitas correctas
+        //             // see https://stackoverflow.com/a/2856602/15472
+        //             if ("createEvent" in document) {
+        //                 const evt = document.createEvent("HTMLEvents");
+        //                 evt.initEvent("change", false, true);
+        //                 input.dispatchEvent(evt);
+        //             } else {
+        //                 input.fireEvent("onchange");
+        //             }
+        //             formulario.querySelector("input[name=labels]").value = prev.labels;
+        //         } else {
+        //             // nuevo
+        //             formulario.reset();
+        //             formulario.querySelector("input[name=id]").value = -1;
+        //         }
+        //         formulario.querySelector("input[name=movie]").value = id;
+        //         formulario.querySelector("input[name=user]").value = userId;
+        //         modalRateMovie.show(); // ya podemos mostrar el formulario
+        //     }));
+        // // botones de borrar grupos
+        // document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+        //     b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+        // // botones de borrar usuarios
+        // document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
+        //     b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
 
 
     } catch (e) {
@@ -453,7 +484,7 @@ const login = (username, password) => {
         });
 }
 
-login("p", "p");
+login("g2", "eSMDK");
 
 {
     /** 
