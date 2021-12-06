@@ -584,6 +584,71 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
     
 }
 
+//nuevo grupo
+{
+
+    const f = document.querySelector("#addGroupForm");
+    
+    document.querySelector("#addGroup button.add").addEventListener('click', e => {
+        console.log("grupo enviado");
+        if(f.checkValidity()){
+            //console.log("correcto");
+          /*const us = new Pmgr.User(-1,  //esto funciona
+                "cleo",
+                "c");/*
+        /*Pmgr.addUser(us).then(() => {   //esto tambien
+                   update();
+               });*/
+           /* Pmgr.addUser({username:"sergi", password:"s"}).then(() => {  //esto tambien
+                   update();
+               });*/
+          
+//             let  uid = Pmgr.state.users.find(u =>
+//                u.username ==  "Rebe").id; //coge bien su id 6071
+
+ //               let  uid = Pmgr.state.users.find(u =>
+//                  u.username ==  f.querySelector('input[name="owner"]').value).id; //funciona
+            let  uid = Pmgr.state.users.find(u =>
+                    u.username ==  f.querySelector('input[name="owner"]').value).id;
+
+                   // Pmgr.addGroup({name:"los rebe", owner:6071});
+
+                Pmgr.addGroup({name: f.querySelector('input[name="name"]').value, owner:uid}).then(() =>{
+                    f.reset();
+                    update();
+                });
+
+
+//f.querySelector('input[name="name"]').value
+             //  userId = Pmgr.state.users.find(u =>
+               //     u.username == username).id;
+               console.log(uid);
+//Pmgr.addUser({username:"raul", password:"r"});
+          /*    const gr = new Pmgr.Group(
+                f.querySelector('input[name="name"]').value,
+                    f.querySelector('input[name="owner"]').value);
+               Pmgr.addGroup(gr).then(() => {   
+                   f.reset();
+                    update();
+            });*/
+            
+        }
+        else{
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click();
+            console.log("fallo");
+        }
+    
+        //    Pmgr.addUser(us).then(() => {
+          //      //formulario.reset() // limpia el formulario si todo OK
+            //    update();
+           // });
+    
+      //  }
+    });
+    
+}
+
 
 
 

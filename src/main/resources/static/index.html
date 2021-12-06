@@ -204,20 +204,22 @@
                 <div id="addGroup" class="formularioValidado">
                     
                     <h3>Añadir Grupo</h3>
-                    <form class="row">
+                    <form class="row" id="addGroupForm">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="f1" name="name" placeholder="Nombre de grupo" required>
+                            <input type="text" class="form-control" id="f3" name="name" placeholder="Nombre de grupo" required>
                         </div>
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="f2" name="prop" placeholder="Nombre de propietario" required pattern="tt[0-9]+">
+                            <input type="text" class="form-control" id="f4" name="owner" placeholder="Nombre de propietario" required>
                         </div>
 
-                
-                        <div class="col-12 botones">
-                            <button class="btn btn-primary" type="submit">Añadir</button>
-                            <button class="btn btn-secondary generar" type="button">Generar</button>
-                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                        
                     </form>
+                    <!-- botones fuera del form, para cogerlos desde el js con el id addGroup-->
+                    <div class="col-12 botones">
+                        <button class="btn btn-primary add" type="submit">Añadir</button>
+                        <button class="btn btn-secondary generar" type="button">Generar</button>
+                    </div>
 
 
                 </div>
@@ -234,22 +236,22 @@
                 <div id="addUser" class="formularioValidado">
 
                     <h3>Añadir Usuario</h3>
-                    <form class="row">
+                    <form class="row" id="addUserForm">
                         <div class="col-md-6">
-                            <input type="text" class="form-control" id="f1" name="name" placeholder="Nombre de usuario" required>
+                            <input type="text" class="form-control" id="f5" name="name" placeholder="Nombre de usuario" required>
                         </div>
                         <div class="col-md-6">
-                            <input type="password" class="form-control" id="f2" name="prop" placeholder="Contraseña" required pattern="tt[0-9]+">
+                            <input type="password" class="form-control" id="f6" name="passw" placeholder="Contraseña" required>
                         </div>
 
-                
-                        <div class="col-12 botones">
-                            <button class="btn btn-primary" type="submit">Añadir</button>
-                            <button class="btn btn-secondary generar" type="button">Generar</button>
-                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                        
                     </form>
 
-
+                    <div class="col-12 botones">
+                        <button class="btn btn-primary add" type="submit">Añadir</button>
+                        <button class="btn btn-secondary generar" type="button">Generar</button>
+                    </div>
 
                 </div>
 
