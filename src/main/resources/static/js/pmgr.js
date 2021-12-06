@@ -397,6 +397,49 @@ function update() {
 
                 modalEditMovie.show(); // ya podemos mostrar el formulario
             }));
+
+// botones de editar usuarios
+document.querySelectorAll(".iucontrol.user button.edit").forEach(b =>
+    b.addEventListener('click', e => {
+
+        const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+        console.log(id); //id es el del usuario que se ha pulsado el boton editar
+        editButtonUserId = id;
+        console.log(editButtonUserId);
+
+      //  if(userId == id)//-----------solo permitimos que un usuario modifique sus propios datos y no los de los demas--------
+     //   {                     //--No se puede hacer, ya que se necesita permisos admin para cabiar usuarios, por tanto cada uno no puede cambiar sus propios datos
+            //console.log("modificando tu usario");
+            const user = Pmgr.resolve(id);
+        const formulario = document.querySelector("#userEditForm");
+       // console.log(Object.entries(user).username); //asi no funciona
+        console.log(user.username);
+        console.log(user.password);//los usuarios que recibimos vienen sin ese campo. No se podra rellenar en el formulario-------------------------
+
+      //const no permite hacer const variable; ya que son variables onctates y deben estar inicializadas a algo. En ese caso usar let
+        let sobreescribir;
+
+
+       sobreescribir = formulario.querySelector('input[name="name"]');
+      sobreescribir.value = user.username;
+   //  sobreescribir = formulario.querySelector('input[name="passw"]');
+    //  sobreescribir.value = user.password;
+        /*for (let [k, v] of Object.entries(user)) {
+            // rellenamos el formulario con los valores actuales
+            const input = formulario.querySelector(`input[name="${k}"]`);
+            if (input) input.value = v;
+        }*/
+
+        modalEditUser.show(); // ya podemos mostrar el formulario
+      //  }
+     /*   else{
+            console.log("modificando otro usuario. accion no permitida");
+        }*/
+        
+    }));
+
+
+
         // botones de evaluar películas
         document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
             b.addEventListener('click', e => {
@@ -460,10 +503,16 @@ function update() {
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
 
+//nuevos modales
+const modalEditUser = new bootstrap.Modal(document.querySelector('#userEdit')); //modal modificar usuario
+
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
 
 Pmgr.connect(serverUrl + "api/");
+
+
+let editButtonUserId; //----variable que guarda el id del usuario a modificar (del que se pulso el boton edit)------------------------------
 
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
@@ -582,6 +631,48 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
       //  }
     });
     
+}
+
+
+
+{
+    /**
+     * formulario para modificar usuarios
+     */
+    const f = document.querySelector("#userEditForm");
+    // botón de enviar
+    document.querySelector("#userEdit button.edit").addEventListener('click', e => {
+        console.log("enviando formulario!");
+        if (f.checkValidity()) {
+            console.log(editButtonUserId); //funciona bien. Es el id del usuario del que s epulso el boton editar sus datos
+           // modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+
+          /* const us = new Pmgr.User(-1,
+            f.querySelector('input[name="name"]').value,
+            f.querySelector('input[name="passw"]').value);
+            Pmgr.addUser(us).then(() => {   
+                f.reset();
+                 update();
+         });*/
+
+         const us = new Pmgr.User(editButtonUserId,
+            f.querySelector('input[name="name"]').value,
+            f.querySelector('input[name="passw"]').value);
+            Pmgr.setUser(us).then(() => {   
+                f.reset();
+                 update();
+                 modalEditUser.hide();
+
+            });
+         
+        } else {
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click(); // fuerza validacion local
+        }
+        //f.reset();
+        //update();
+
+    });
 }
 
 //nuevo grupo
