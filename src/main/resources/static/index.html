@@ -127,11 +127,13 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <div class="navbar-nav me-auto mb-2 mb-lg-0">
                     <a class="nav-link nav_input" href="#" data-id="groups">Groups</a>
+                    <a class="nav-link nav_input" href="#" data-id="users">Users</a>
                     <a class="nav-link nav_input" href="#" data-id="help">Help</a>
                 </div>
                 <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
+                    <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button> -->
+                    <a class="nav-link nav_input" href="#" data-id="search">Search🔎</a>
                 </form>
                 <div class="navbar-nav mb-2 mb-lg-0">
                     <a class="nav-link nav_input" href="#" data-id="profile">Profile</a>
@@ -142,13 +144,22 @@
 
 
     <!-- pseudoview of home -->
-    <div id="home_view" class="filmy_view">
-        Hello, im the home_view
+    <div id="home_view" class="filmy_view mx-6 container-fluid">
+        <div id="home_row" class="row">
+        </div>
     </div>
 
     <!-- pseudoview of groups -->
     <div id="group_view" class="d-none filmy_view">
-        Hello, im the group_view
+        <div id="group_row" class="row">
+        </div>
+    </div>
+
+    <!-- pseudoview of users -->
+    <div id="user_view" class="d-none filmy_view">        
+        <div id="" class="list-group">
+
+        </div>
     </div>
 
     <!-- pseudoview of help -->
@@ -156,9 +167,17 @@
         Hello, im the help_view
     </div>
 
+     <!-- pseudoview of search -->
+     <div id="search_view" class="d-none filmy_view">
+        <div id="search-container">
+            
+        </div>
+    </div>
+
     <!-- pseudoview of profile -->
     <div id="profile_view" class="d-none filmy_view">
-        Hello, im the profile_view
+        <button id="profile_button"></button>
+        <div id="test_profile"> </div>
     </div>
 
 

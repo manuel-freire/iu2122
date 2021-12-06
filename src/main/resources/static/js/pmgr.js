@@ -96,7 +96,8 @@ function createMovieItem(movie) {
     ).join("");
 
     return `
-    <div class="card" data-id="${movie.id}">
+    <div class="col-sm-3 d-flex align-items-stretch">
+    <div class="card mx-4 my-3" data-id="${movie.id}">
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -126,6 +127,7 @@ function createMovieItem(movie) {
         </div>
     </div>
     </div>
+    </div>
  `;
 }
 
@@ -150,8 +152,11 @@ function createGroupItem(group) {
     </div>
     <div class="card-body pcard">
         <div class="row-sm-11">
+            <h5 class="card-title">Administrador</h5>
             <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+            <h5 class="card-title">Usuarios</h5>
             ${allMembers}
+            <h5 class="card-title">Solicitudes de Unión</h5>
             ${allPending}
         </div>
         <div class="row-sm-1 iucontrol group">
@@ -162,6 +167,7 @@ function createGroupItem(group) {
     </div>
     </div>
 `;
+
 }
 
 function createUserItem(user) {
@@ -188,12 +194,14 @@ function createUserItem(user) {
             ${allPending}
         <div>
         <div class="row-sm-1 iucontrol user">
-            <button class="rm" data-id="${user.id}">🗑️</button>
             <button class="edit" data-id="${user.id}">✏️</button>
         </div>        
     </div>
     </div>
 `;
+
+    //<button class="rm" data-id="${user.id}">🗑️</button>
+
 }
 
 /**
@@ -357,6 +365,12 @@ function update() {
                     case "help":
                         document.querySelector("#help_view").classList.remove("d-none");
                         break;
+                    case "users":
+                        document.querySelector("#user_view").classList.remove("d-none");
+                        break;
+                    case "search":
+                        document.querySelector("#search_view").classList.remove("d-none");
+                        break;
                     case "profile":
                         document.querySelector("#profile_view").classList.remove("d-none");
                         break;
@@ -368,6 +382,21 @@ function update() {
             });
         });
 
+        Pmgr.state.movies.forEach(o => appendTo('#home_row', createMovieItem(o)));
+
+        Pmgr.state.groups.forEach(o => appendTo('#group_row', createGroupItem(o)));
+
+        Pmgr.state.users.forEach(o => appendTo("#user_row", createUserItem(o)));
+
+        
+
+        //Search 
+       
+
+        // PROFILE
+        document.querySelector("#profile_button").addEventListener("click", e => {
+            appendTo("#test_profile", "hello world");
+        });
 
         // // vaciamos los contenedores
         // empty("#movies");
