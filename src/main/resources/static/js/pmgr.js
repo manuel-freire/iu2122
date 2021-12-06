@@ -540,6 +540,53 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
     stars("#movieRateForm .estrellitas");
 }
 
+
+//nuevo usuario
+{
+
+    const f = document.querySelector("#addUserForm");
+    
+    document.querySelector("#addUser button.add").addEventListener('click', e => {
+        console.log("usuario enviado");
+        if(f.checkValidity()){
+            //console.log("correcto");
+          /*const us = new Pmgr.User(-1,  //esto funciona
+                "cleo",
+                "c");/*
+        /*Pmgr.addUser(us).then(() => {   //esto tambien
+                   update();
+               });*/
+           /* Pmgr.addUser({username:"sergi", password:"s"}).then(() => {  //esto tambien
+                   update();
+               });*/
+           
+               const us = new Pmgr.User(-1,
+               f.querySelector('input[name="name"]').value,
+               f.querySelector('input[name="passw"]').value);
+               Pmgr.addUser(us).then(() => {   
+                   f.reset();
+                    update();
+            });
+        }
+        else{
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click();
+            console.log("fallo");
+        }
+    
+        //    Pmgr.addUser(us).then(() => {
+          //      //formulario.reset() // limpia el formulario si todo OK
+            //    update();
+           // });
+    
+      //  }
+    });
+    
+}
+
+
+
+
 /**
  * búsqueda básica de películas, por título
  */
