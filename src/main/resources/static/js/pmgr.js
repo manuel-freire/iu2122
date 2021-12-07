@@ -102,6 +102,7 @@ function createMovieItem(movie) {
     return `
     <div class="col-sm-3 d-flex align-items-stretch">
     <div class="card mx-4 my-3" data-id="${movie.id}">
+
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -148,22 +149,33 @@ function createGroupItem(group) {
     ).join(" ");
 
     return `
-    <div class="card">
+    <div class="col-sm-3 ">
+    <div class="card mx-4 my-3" data-id="${group.id}">
+    <div class="card-body pcard">
     <div class="card-header">
         <h4 class="mb-0" title="${group.id}">
-            <b class="pcard">${group.name}</b>
+            ${group.name} 
+            <br>
+            <span class="badge badge-pill bg-success"><small>${group.members.length} 🙍</small></span>
         </h4>
     </div>
     <div class="card-body pcard">
-        <div class="row-sm-11">
-            <h5 class="card-title">Administrador</h5>
-            <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
-            <h5 class="card-title">Usuarios</h5>
+        <h7 class="mb-0">Administrador: </h7>
+        <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+        <details>
+            <summary>Detalles</summary>
+            <div class="row-sm-11">
+            <h7 class="mb-0"">Usuarios: </h7>
+            <br>
             ${allMembers}
-            <h5 class="card-title">Solicitudes de Unión</h5>
+            <br>
+            <h7 class="mb-0"">Solicitudes de Unión: </h7>
+            <br>
             ${allPending}
         </div>
-        <div class="row-sm-1 iucontrol group">
+        </details>
+        <br>
+        <div class="card-subtitle iucontrol group">
             <button class="rm" data-id="${group.id}">🗑️</button>
             <button class="edit" data-id="${group.id}">✏️</button>
         </div>
@@ -174,38 +186,48 @@ function createGroupItem(group) {
 
 }
 
-function createUserItem(user) {
-    let allGroups = user.groups.map((id) =>
-        `<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
-    ).join(" ");
-    const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
-    let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
-            title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
-            ${Pmgr.resolve(r.group).name}</span>`
-    ).join(" ");
 
-    return `
-    <div class="card">
-    <div class="card-header">
-        <h4 class="mb-0" title="${user.id}">
-            <b class="pcard">${user.username}</b>
-        </h4>
-    </div>
-    <div class="card-body pcard">
-        <div class="row-sm-11">
-            ${allGroups}
-            ${allPending}
-        <div>
-        <div class="row-sm-1 iucontrol user">
-            <button class="edit" data-id="${user.id}">✏️</button>
-        </div>        
-    </div>
-    </div>
-`;
+//user.groups
+//user.id
+//user.ratings : []
+//user.requests : []
+//user.role
+//user.username
+function createUserItem(user) {
+    // let allGroups = user.groups.map((id) =>
+    //     `<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
+    // ).join(" ");
+    // const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
+    // let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
+    //     `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
+    //         title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
+    //         ${Pmgr.resolve(r.group).name}</span>`
+    // ).join(" ");
+
+    let role = "User";
+    let color = "";
+    let button = "btn-primary"
+    if (user.role.split(",").includes("ADMIN")) {
+        role = "Admin";
+        color = "bg-success text-light";
+        button = "btn-warning"
+    }
+    if (user.role.split(",").includes("ROOT")) {
+        role = "Root";
+        color = "bg-danger";
+        button = "btn-dark";
+    }
+
+    return `<li title="${user.id}" data-role="${role}" class="list-group-item d-flex justify-content-between align-items-start ${color}">
+                <div class="ms-2 me-auto">
+                <div class="fw-bold">${user.username}</div>
+                        ${role}
+                </div>
+                <button type="button" class="btn ${button}" data-id="${user.id}">View</button>
+            </li>
+            `;
 
     //<button class="rm" data-id="${user.id}">🗑️</button>
-
 }
 
 /**
@@ -342,20 +364,110 @@ const hide_all = () => {
     });
 }
 
+
 //
 // Función que refresca toda la interfaz. Debería llamarse tras cada operación
 // por ejemplo, Pmgr.addGroup({"name": "nuevoGrupo"}).then(update); // <--
 //
 function update() {
+
     const appendTo = (sel, html) =>
         document.querySelector(sel).insertAdjacentHTML("beforeend", html);
+
     const empty = (sel) => {
         const destino = document.querySelector(sel);
         while (destino.firstChild) {
             destino.removeChild(destino.firstChild);
         }
     }
+
+    const create_user_site = () => {
+
+        const users_on_page = 12;
+        let pages = "";
+
+        for (let i = 0; i < Pmgr.state.users.length / users_on_page; ++i) {
+            pages += `<li class="page-item user_page_btn user_num_button"><a id="user_pag_${i}" class="page-link" href="#">${i + 1}</a></li>`;
+        }
+
+        document.querySelector("#user_prev_pag").parentElement.insertAdjacentHTML("afterend", pages);
+
+        document.querySelector("#user_pag").children[1].classList.add("disabled");
+
+        document.querySelectorAll(".user_page_btn").forEach(button => {
+            button.addEventListener("click", e => {
+
+                let pagenums = Array.from(document.querySelectorAll(".user_num_button"));
+
+                let last_user_page = pagenums[pagenums.length - 1].firstChild.id.slice(-1);
+                let current_user_page = pagenums.find(e => e.classList.contains("disabled")).firstChild.id.slice(-1);
+
+                switch (e.target.id) {
+                    case 'user_prev_pag':
+                        if (current_user_page != 0) {
+
+                            if (current_user_page == last_user_page)
+                                document.querySelector("#user_next_pag").parentElement.classList.remove("disabled");
+
+                            pagenums.find(e => e.classList.contains("disabled")).classList.remove("disabled");
+                            let prev_pg = +current_user_page - 1;
+                            document.querySelector("#user_pag_" + prev_pg).parentElement.classList.add("disabled");
+
+                            if (prev_pg == 0)
+                                e.target.parentElement.classList.add("disabled");
+
+                            console.log(+current_user_page - 1);
+                            generate_user_list(+current_user_page - 1);
+                        }
+                        break;
+                    case 'user_next_pag':
+                        if (current_user_page != last_user_page) {
+
+                            if (current_user_page == 0)
+                                document.querySelector("#user_prev_pag").parentElement.classList.remove("disabled");
+
+                            pagenums.find(e => e.classList.contains("disabled")).classList.remove("disabled");
+                            let next_pg = +current_user_page + 1;
+                            document.querySelector("#user_pag_" + next_pg).parentElement.classList.add("disabled");
+
+                            if (next_pg == last_user_page)
+                                e.target.parentElement.classList.add("disabled");
+
+                            generate_user_list(+current_user_page + 1);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            });
+        });
+
+    }
+
+    const generate_user_list = (num_page = 0) => {
+
+        const users_on_page = 12;
+
+        let users = Pmgr.state.users;
+
+        let min = 0 + (num_page * users_on_page);
+        let max = users_on_page + (num_page * users_on_page);
+
+        console.log(users.length);
+
+        if ((users.length / users_on_page) < num_page) {
+            min = 0;
+            max = users_on_page;
+        }
+
+        console.log({min}, {max});
+        empty('#user_list');
+        users.slice(min, max).forEach(o => appendTo('#user_list', createUserItem(o)));
+
+    }
+
     try {
+
 
         document.querySelectorAll(".nav_input").forEach(button => {
             button.addEventListener('click', e => {
@@ -447,12 +559,10 @@ function update() {
 
         Pmgr.state.groups.forEach(o => appendTo('#group_row', createGroupItem(o)));
 
-        Pmgr.state.users.forEach(o => appendTo("#user_row", createUserItem(o)));
-
-        
+        create_user_site();
 
         //Search 
-       
+
 
         // // vaciamos los contenedores
         // empty("#movies");
@@ -517,9 +627,9 @@ function update() {
         //         formulario.querySelector("input[name=user]").value = userId;
         //         modalRateMovie.show(); // ya podemos mostrar el formulario
         //     }));
-        // // botones de borrar grupos
-        // document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
-        //     b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+        // botones de borrar grupos
+        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
         // // botones de borrar usuarios
         // document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
         //     b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
@@ -556,21 +666,12 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
-        .then(d => {
-            console.log("login ok!", d);
-            update(d);
-            userId = Pmgr.state.users.find(u =>
-                u.username == username).id;
-        })
-        .catch(e => {
-            console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
-            console.log(`el servidor dice: "${e.text}"`);
-        });
-}
+Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
 
-login("g2", "eSMDK");
-
+                 // -- IMPORTANTE --
+login("p", "p"); // <-- tu nombre de usuario y password aquí
+                 //   y puedes re-logearte como alguien distinto desde  la consola
+                 //   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
@@ -579,16 +680,16 @@ login("g2", "eSMDK");
      */
     const f = document.querySelector("#addMovie form");
     // botón de enviar
-    /*f.querySelector("button[type='submit']").addEventListener('click', (e) => {
-        if (f.checkValidity()) {
-            e.preventDefault(); // evita que se haga lo normal cuando no hay errores
-            nuevaPelicula(f); // añade la pelicula según los campos previamente validados
-        }
-    });
+    // f.querySelector("button[type='submit']").addEventListener('click', (e) => {
+    //     if (f.checkValidity()) {
+    //         e.preventDefault(); // evita que se haga lo normal cuando no hay errores
+    //         nuevaPelicula(f); // añade la pelicula según los campos previamente validados
+    //     }
+    // });
     // botón de generar datos (sólo para pruebas)
-    f.querySelector("button.generar").addEventListener('click',
-        (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
-*/} {
+    // f.querySelector("button.generar").addEventListener('click',
+    //     (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
+} {
     /**
      * formulario para modificar películas
      */
@@ -629,17 +730,17 @@ login("g2", "eSMDK");
 /**
  * búsqueda básica de películas, por título
  */
-/*
-document.querySelector("#movieSearch").addEventListener("input", e => {
-    const v = e.target.value.toLowerCase();
-    document.querySelectorAll("#movies div.card").forEach(c => {
-        const m = Pmgr.resolve(c.dataset.id);
-        // aquí podrías aplicar muchos más criterios
-        const ok = m.name.toLowerCase().indexOf(v) >= 0;
-        c.style.display = ok ? '' : 'none';
-    });
-})
-*/
+
+// document.querySelector("#movieSearch").addEventListener("input", e => {
+//     const v = e.target.value.toLowerCase();
+//     document.querySelectorAll("#movies div.card").forEach(c => {
+//         const m = Pmgr.resolve(c.dataset.id);
+//         // aquí podrías aplicar muchos más criterios
+//         const ok = m.name.toLowerCase().indexOf(v) >= 0;
+//         c.style.display = ok ? '' : 'none';
+//     });
+// })
+
 // cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
