@@ -22,5 +22,5 @@ Creado por:
 - [ ] Petición de integración a grupo
 - [ ] Gestión de peticiones de integración al grupo
 - [ ] Eliminar a usuario de un grupo
-- [+] Listar todos los grupos
+[+] Listar todos los grupos
 
