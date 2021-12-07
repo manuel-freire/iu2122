@@ -66,3 +66,15 @@ fieldset.rating,
 
 
 /** fin CSS para controles de estrellas */
+
+#search_view .container{
+    margin-top: 4rem;
+    background-color: lightseagreen;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-radius: 2rem;
+}
+
+.search-forms{
+    margin: 1rem auto;
+}

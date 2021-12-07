@@ -1,3 +1,11 @@
 .inactive{
     visibility: hidden;
 }
+
+
+/** Search page  css *//
+
+.container{
+    margin-top: 20rem;
+    padding: 5rem 4rem;
+}
