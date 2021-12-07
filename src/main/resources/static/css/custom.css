@@ -1,5 +1,10 @@
 /* usa este fichero para personalizar tus vistas */
 
+/*body{
+    background: rgb(13,27,61);
+    background: linear-gradient(287deg, rgba(13,27,61,1) 0%, rgba(42,18,108,1) 35%, rgba(0,30,36,1) 100%); 
+}*/
+
 .iuthumb {
     height: 75px;
 }

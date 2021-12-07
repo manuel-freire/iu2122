@@ -89,18 +89,24 @@ function stars(sel) {
 function createMovieItem(movie) {
     const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
     const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${r.user==userId?"primary":"secondary"}">
+        `<span class="badge bg-${r.user == userId ? "primary" : "secondary"}">
         ${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
         </span>
         `
     ).join("");
 
     return `
-    <div class="card" data-id="${movie.id}">
+    <div class="col" data-id="${movie.id}">
+        <div class="card">
+            <img class="card-img-top rounded" alt="${movie.id}" src="${serverUrl}poster/${movie.imdb}">
+
+    <!-- Codigo de ejemplo
+    
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
         </h4>
+        </div>
     </div>
 
     <div>
@@ -125,6 +131,8 @@ function createMovieItem(movie) {
             </div>
         </div>
     </div>
+    
+    -->
     </div>
  `;
 }
@@ -407,7 +415,32 @@ function update() {
         // botones de borrar usuarios
         document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
+        // botones de informacion de cada pelicula
+        document.querySelectorAll("#movies .card").forEach(m => {
+            m.addEventListener('click', e => {
+                const movieId = e.target.getAttribute("alt")
+                // console.log(id);
+                // console.log(e.target)
+                console.log(`Seleccionada película ${movieId}`);
 
+                var movie = Pmgr.resolve(movieId)
+                var modalTitle = document.getElementById('movieInfoLabel')
+                var modalImage = document.getElementById('movieInfoImage')
+                var modalDirector = document.getElementById('movieInfoDirector')
+                var modalYear = document.getElementById('movieInfoYear')
+                var modalLength = document.getElementById('movieInfoYear')
+
+                //TODO ratings
+
+                modalTitle.textContent = movie.name + " - " + movie.year
+                modalDirector.textContent = movie.director
+                modalLength.textContent = movie.minutes
+                modalYear.textContent = movie.year
+                modalImage.src = serverUrl + "poster/" + movie.imdb
+
+                modalMovieInfo.show()
+            })
+        })
 
     } catch (e) {
         console.log('Error actualizando', e);
@@ -431,6 +464,8 @@ function update() {
 // modales, para poder abrirlos y cerrarlos desde código JS
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
+const modalAddMovie = new bootstrap.Modal(document.querySelector('#movieAdd'));
+const modalMovieInfo = new bootstrap.Modal(document.querySelector('#movieInfo'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
@@ -440,7 +475,7 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
+    Pmgr.login(username, password)
         .then(d => {
             console.log("login ok!", d);
             update(d);
@@ -453,8 +488,10 @@ const login = (username, password) => {
         });
 }
 
-login("p", "p");
-
+                 // -- IMPORTANTE --
+login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
+                 //   y puedes re-logearte como alguien distinto desde  la consola
+                 //   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
@@ -526,6 +563,8 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
 // cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
+window.modalAddMovie = modalAddMovie; //TODO modalRateMovie uses js to share modal with Add
+window.modalMovieInfo = modalMovieInfo;
 window.update = update;
 window.login = login;
 window.userId = userId;
