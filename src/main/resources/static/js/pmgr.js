@@ -2,6 +2,10 @@
 
 import * as Pmgr from './pmgrapi.js'
 
+let user = "g2"
+let password = "eSMDK"
+
+
 /**
  * Librería de cliente para interaccionar con el servidor de PeliManager (pmgr).
  * Prácticas de IU 2021-22
@@ -386,23 +390,58 @@ function update() {
         /*document.querySelector("#profile_button").addEventListener("click", e => {
             appendTo("#test_profile", "hello world");
         });*/
+
+        let actualUser = Pmgr.state.users.find(e => e.username == user)
+
+
         appendTo('#title_profile', `MY PROFILE`)
+
+        appendTo('#id_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
+            <label for="floatingInputGrid">Id</label>
+          </div>
+        </div>`)
+
         appendTo('#user_profile', 
         `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            <input type="user" class="form-control" id="floatingInputGrid" placeholder="User Name" value="g2">
+            <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${user}">
             <label for="floatingInputGrid">User Name</label>
           </div>
         </div>`)
+
         appendTo('#password_profile', 
         `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            <input type="password" class="form-control" id="floatingInputGrid" placeholder="Password" value="la que sea">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${password}">
             <label for="floatingInputGrid">Password</label>
           </div>
         </div>`)
+
+        appendTo('#role_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
+            <label for="floatingInputGrid">Role</label>
+          </div>
+        </div>`)
+
+        appendTo('#groups_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
+            <label for="floatingInputGrid">Groups</label>
+          </div>
+        </div>`)
+
+        console.log(actualUser)
 
         Pmgr.state.movies.forEach(o => appendTo('#home_row', createMovieItem(o)));
 
@@ -540,7 +579,7 @@ login("g2", "eSMDK");
      */
     const f = document.querySelector("#addMovie form");
     // botón de enviar
-    f.querySelector("button[type='submit']").addEventListener('click', (e) => {
+    /*f.querySelector("button[type='submit']").addEventListener('click', (e) => {
         if (f.checkValidity()) {
             e.preventDefault(); // evita que se haga lo normal cuando no hay errores
             nuevaPelicula(f); // añade la pelicula según los campos previamente validados
@@ -549,7 +588,7 @@ login("g2", "eSMDK");
     // botón de generar datos (sólo para pruebas)
     f.querySelector("button.generar").addEventListener('click',
         (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
-} {
+*/} {
     /**
      * formulario para modificar películas
      */
@@ -590,6 +629,7 @@ login("g2", "eSMDK");
 /**
  * búsqueda básica de películas, por título
  */
+/*
 document.querySelector("#movieSearch").addEventListener("input", e => {
     const v = e.target.value.toLowerCase();
     document.querySelectorAll("#movies div.card").forEach(c => {
@@ -599,7 +639,7 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
         c.style.display = ok ? '' : 'none';
     });
 })
-
+*/
 // cosas que exponemos para poder usarlas desde la consola
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
