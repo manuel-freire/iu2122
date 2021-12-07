@@ -2,6 +2,10 @@
 
 import * as Pmgr from './pmgrapi.js'
 
+let user = "g2"
+let password = "eSMDK"
+
+
 /**
  * Librería de cliente para interaccionar con el servidor de PeliManager (pmgr).
  * Prácticas de IU 2021-22
@@ -494,6 +498,63 @@ function update() {
             });
         });
 
+        // PROFILE
+        /*document.querySelector("#profile_button").addEventListener("click", e => {
+            appendTo("#test_profile", "hello world");
+        });*/
+
+        let actualUser = Pmgr.state.users.find(e => e.username == user)
+
+
+        appendTo('#title_profile', `MY PROFILE`)
+
+        appendTo('#id_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
+            <label for="floatingInputGrid">Id</label>
+          </div>
+        </div>`)
+
+        appendTo('#user_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${user}">
+            <label for="floatingInputGrid">User Name</label>
+          </div>
+        </div>`)
+
+        appendTo('#password_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${password}">
+            <label for="floatingInputGrid">Password</label>
+          </div>
+        </div>`)
+
+        appendTo('#role_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
+            <label for="floatingInputGrid">Role</label>
+          </div>
+        </div>`)
+
+        appendTo('#groups_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
+            <label for="floatingInputGrid">Groups</label>
+          </div>
+        </div>`)
+
+        console.log(actualUser)
+
         Pmgr.state.movies.forEach(o => appendTo('#home_row', createMovieItem(o)));
 
         Pmgr.state.groups.forEach(o => appendTo('#group_row', createGroupItem(o)));
@@ -502,11 +563,6 @@ function update() {
 
         //Search 
 
-
-        // PROFILE
-        document.querySelector("#profile_button").addEventListener("click", e => {
-            appendTo("#test_profile", "hello world");
-        });
 
         // // vaciamos los contenedores
         // empty("#movies");
@@ -674,6 +730,7 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
 /**
  * búsqueda básica de películas, por título
  */
+
 // document.querySelector("#movieSearch").addEventListener("input", e => {
 //     const v = e.target.value.toLowerCase();
 //     document.querySelectorAll("#movies div.card").forEach(c => {
