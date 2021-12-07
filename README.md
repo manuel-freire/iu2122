@@ -4,7 +4,7 @@
 
 Creado por:
 
-* Adrián Álvarez Bernabé
+* Adrián González Cabanillas
 * Pablo Álvarez García
 * Artur Amon
 * Cristian Emanuel Anei
