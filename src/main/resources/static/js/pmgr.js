@@ -144,22 +144,33 @@ function createGroupItem(group) {
     ).join(" ");
 
     return `
-    <div class="card">
+    <div class="col-sm-3 ">
+    <div class="card mx-4 my-3" data-id="${group.id}">
+    <div class="card-body pcard">
     <div class="card-header">
         <h4 class="mb-0" title="${group.id}">
-            <b class="pcard">${group.name}</b>
+            ${group.name} 
+            <br>
+            <span class="badge badge-pill bg-success"><small>${group.members.length} 🙍</small></span>
         </h4>
     </div>
     <div class="card-body pcard">
-        <div class="row-sm-11">
-            <h5 class="card-title">Administrador</h5>
-            <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
-            <h5 class="card-title">Usuarios</h5>
+        <h7 class="mb-0">Administrador: </h7>
+        <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+        <details>
+            <summary>Detalles</summary>
+            <div class="row-sm-11">
+            <h7 class="mb-0"">Usuarios: </h7>
+            <br>
             ${allMembers}
-            <h5 class="card-title">Solicitudes de Unión</h5>
+            <br>
+            <h7 class="mb-0"">Solicitudes de Unión: </h7>
+            <br>
             ${allPending}
         </div>
-        <div class="row-sm-1 iucontrol group">
+        </details>
+        <br>
+        <div class="card-subtitle iucontrol group">
             <button class="rm" data-id="${group.id}">🗑️</button>
             <button class="edit" data-id="${group.id}">✏️</button>
         </div>
