@@ -472,9 +472,9 @@ function update() {
         //         formulario.querySelector("input[name=user]").value = userId;
         //         modalRateMovie.show(); // ya podemos mostrar el formulario
         //     }));
-        // // botones de borrar grupos
-        // document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
-        //     b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+        // botones de borrar grupos
+        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
         // // botones de borrar usuarios
         // document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
         //     b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
