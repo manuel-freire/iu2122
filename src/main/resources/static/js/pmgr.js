@@ -98,6 +98,7 @@ function createMovieItem(movie) {
     return `
     <div class="col-sm-3 d-flex align-items-stretch">
     <div class="card mx-4 my-3" data-id="${movie.id}">
+
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -144,22 +145,33 @@ function createGroupItem(group) {
     ).join(" ");
 
     return `
-    <div class="card">
+    <div class="col-sm-3 ">
+    <div class="card mx-4 my-3" data-id="${group.id}">
+    <div class="card-body pcard">
     <div class="card-header">
         <h4 class="mb-0" title="${group.id}">
-            <b class="pcard">${group.name}</b>
+            ${group.name} 
+            <br>
+            <span class="badge badge-pill bg-success"><small>${group.members.length} 🙍</small></span>
         </h4>
     </div>
     <div class="card-body pcard">
-        <div class="row-sm-11">
-            <h5 class="card-title">Administrador</h5>
-            <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
-            <h5 class="card-title">Usuarios</h5>
+        <h7 class="mb-0">Administrador: </h7>
+        <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+        <details>
+            <summary>Detalles</summary>
+            <div class="row-sm-11">
+            <h7 class="mb-0"">Usuarios: </h7>
+            <br>
             ${allMembers}
-            <h5 class="card-title">Solicitudes de Unión</h5>
+            <br>
+            <h7 class="mb-0"">Solicitudes de Unión: </h7>
+            <br>
             ${allPending}
         </div>
-        <div class="row-sm-1 iucontrol group">
+        </details>
+        <br>
+        <div class="card-subtitle iucontrol group">
             <button class="rm" data-id="${group.id}">🗑️</button>
             <button class="edit" data-id="${group.id}">✏️</button>
         </div>
@@ -353,6 +365,7 @@ function update() {
     }
     try {
 
+
         document.querySelectorAll(".nav_input").forEach(button => {
             button.addEventListener('click', e => {
                 console.log(e.target.dataset.id);
@@ -461,9 +474,9 @@ function update() {
         //         formulario.querySelector("input[name=user]").value = userId;
         //         modalRateMovie.show(); // ya podemos mostrar el formulario
         //     }));
-        // // botones de borrar grupos
-        // document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
-        //     b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+        // botones de borrar grupos
+        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
         // // botones de borrar usuarios
         // document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
         //     b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
@@ -500,21 +513,12 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
-        .then(d => {
-            console.log("login ok!", d);
-            update(d);
-            userId = Pmgr.state.users.find(u =>
-                u.username == username).id;
-        })
-        .catch(e => {
-            console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
-            console.log(`el servidor dice: "${e.text}"`);
-        });
-}
+Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
 
-login("g2", "eSMDK");
-
+                 // -- IMPORTANTE --
+login("p", "p"); // <-- tu nombre de usuario y password aquí
+                 //   y puedes re-logearte como alguien distinto desde  la consola
+                 //   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 

@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import es.ucm.fdi.iu.model.*;
+import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -14,7 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.function.Consumer;
@@ -192,6 +197,8 @@ public class ApiController {
                 d->!d.isEmpty(), "cannot be empty", null);
         String password = checkMandatory(data, "password",
                 d->!d.isEmpty(), "cannot be empty", null);
+        String renew = checkOptional(data, "renew",
+                "true"::equals, "if specified, must be true", null);
 
         List<User> results = entityManager.createQuery(
                 "from User where username = :username", User.class)
@@ -206,8 +213,55 @@ public class ApiController {
             throw new ApiAuthException("Invalid username or password for " + username + "");
         }
 
-        u.setToken(generateRandomBase64Token(TOKEN_LENGTH));
+        // only change token if it was null, or "renew" requested
+        if (u.getToken() == null || "true".equals(renew)) {
+            u.setToken(generateRandomBase64Token(TOKEN_LENGTH));
+        }
         return u.toTokenTransfer();
+    }
+
+    @SneakyThrows
+    @PostMapping("/{token}/backup")
+    @Transactional
+    public User.TokenTransfer doBackup(
+            @PathVariable String token,
+            @RequestBody JsonNode data) throws JsonProcessingException {
+        log.info(token + "/backup/" + new ObjectMapper().writeValueAsString(data));
+
+        User u = resolveTokenOrBail(token);
+        ensureRole(u, User.Role.ROOT);
+
+        String path = checkMandatory(data, "path",
+                d->!d.isEmpty(), "cannot be empty", null);
+        try {
+            File f = new File(path.replaceAll("'", "")).getCanonicalFile();
+            entityManager.createNativeQuery("SCRIPT DROP TO '" + f.getCanonicalPath() + "'").getResultList();
+        } catch (IOException e) {
+            throw new ApiException("backup error " + e.getMessage(), e);
+        }
+
+        return u.toTokenTransfer();
+    }
+
+    @PostMapping("/{token}/restore")
+    @Transactional
+    public void doRestore(
+            @PathVariable String token,
+            @RequestBody JsonNode data) throws JsonProcessingException {
+        log.info(token + "/restore/" + new ObjectMapper().writeValueAsString(data));
+        if ( ! token.equals(env.getProperty("es.ucm.fdi.master-key"))) {
+            throw new ApiException("bad credentials: '" + token + "'", null);
+        }
+
+        String path = checkMandatory(data, "path",
+                d->!d.isEmpty(), "cannot be empty", null);
+
+        try {
+            File f = new File(path.replaceAll("'", "")).getCanonicalFile();
+            entityManager.createNativeQuery("RUNSCRIPT FROM '" + f.getCanonicalPath() + "'").executeUpdate();
+        } catch (IOException e) {
+            throw new ApiException("restore error " + e.getMessage(), e);
+        }
     }
 
     @PostMapping("/{token}/addrealm")
