@@ -382,6 +382,28 @@ function update() {
             });
         });
 
+        // PROFILE
+        /*document.querySelector("#profile_button").addEventListener("click", e => {
+            appendTo("#test_profile", "hello world");
+        });*/
+        appendTo('#title_profile', `MY PROFILE`)
+        appendTo('#user_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="user" class="form-control" id="floatingInputGrid" placeholder="User Name" value="g2">
+            <label for="floatingInputGrid">User Name</label>
+          </div>
+        </div>`)
+        appendTo('#password_profile', 
+        `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="password" class="form-control" id="floatingInputGrid" placeholder="Password" value="la que sea">
+            <label for="floatingInputGrid">Password</label>
+          </div>
+        </div>`)
+
         Pmgr.state.movies.forEach(o => appendTo('#home_row', createMovieItem(o)));
 
         Pmgr.state.groups.forEach(o => appendTo('#group_row', createGroupItem(o)));
@@ -392,11 +414,6 @@ function update() {
 
         //Search 
        
-
-        // PROFILE
-        document.querySelector("#profile_button").addEventListener("click", e => {
-            appendTo("#test_profile", "hello world");
-        });
 
         // // vaciamos los contenedores
         // empty("#movies");
