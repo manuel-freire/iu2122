@@ -37,9 +37,57 @@
                         <div class="col-md-6">
                             <fieldset class="estrellitas">
                                 <label title="Atómico - 5 estrellas">
-                                    <input type="radio" name="rating" value="5" />
-                                </label>
+                                        <input type="radio" name="rating" value="5" />
+                                    </label>
 
+                                <label title="Muy buena - 4 estrellas">
+                                        <input type="radio" name="rating" value="4" />
+                                    </label>
+
+                                <label title="Pasable - 3 estrellas">
+                                        <input type="radio" name="rating" value="3" />
+                                    </label>
+
+                                <label title="Más bien mala - 2 estrellas">
+                                        <input type="radio" name="rating" value="2" />
+                                    </label>
+
+                                <label title="Horrible - 1 estrella">
+                                        <input type="radio" name="rating" value="1" />
+                                    </label>
+                            </fieldset>
+                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar películas -->
+    <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movieRateLabel">Evaluando película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="movieRateForm">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="movie">
+                        <input type="hidden" name="user">
+                        <!-- llenar desde JS -->
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="name" placeholder="Título" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="imdb" placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
+                        </div>
                                 <label title="Muy buena - 4 estrellas">
                                     <input type="radio" name="rating" value="4" />
                                 </label>
@@ -67,14 +115,58 @@
             </div>
         </div>
     </div>
+    <!-- barra de navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <!-- nombre del sitio; es un enlace que lleva a la página ppal -->
+            <a class="navbar-brand" href="#">IU 2021-22</a>
+            <!-- menu hamburguesa si no cabe todo -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-    <!-- Modal para editar películas -->
-    <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="movieEditLabel">Editando película</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Dropdown
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- container-fluid expande el contenedor para que ocupe todo el espacio disponible -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- panel lateral, demostrando acordeones (secciones expansibles) -->
+            <div class="col-sm-4 iulist">
+                <div class="row">
+                    <div class="col-auto">
+                        <h2>Peliculas </h2>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <input type="search" class="form-control" id="movieSearch" placeholder="palabras del título" aria-describedby="searchMovieLabel">
+                        <span class="input-group-text" id="searchMovieLabel">🔍</span>
+                    </div>
+                </div>
+                <div class="accordion" id="movies">
                 </div>
                 <div class="modal-body">
                     <form class="row" id="movieEditForm">

@@ -98,6 +98,7 @@ function createMovieItem(movie) {
     return `
     <div class="col-sm-3 d-flex align-items-stretch">
     <div class="card mx-4 my-3" data-id="${movie.id}">
+
     <div class="card-header"">
         <h4 class="mb-0" title="${movie.id}">
             ${movie.name} <small><i>(${movie.year})</i></small>
@@ -364,6 +365,7 @@ function update() {
     }
     try {
 
+
         document.querySelectorAll(".nav_input").forEach(button => {
             button.addEventListener('click', e => {
                 console.log(e.target.dataset.id);
@@ -511,21 +513,12 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
-        .then(d => {
-            console.log("login ok!", d);
-            update(d);
-            userId = Pmgr.state.users.find(u =>
-                u.username == username).id;
-        })
-        .catch(e => {
-            console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
-            console.log(`el servidor dice: "${e.text}"`);
-        });
-}
+Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
 
-login("g2", "eSMDK");
-
+                 // -- IMPORTANTE --
+login("p", "p"); // <-- tu nombre de usuario y password aquí
+                 //   y puedes re-logearte como alguien distinto desde  la consola
+                 //   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
