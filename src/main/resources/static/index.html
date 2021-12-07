@@ -144,7 +144,7 @@
 
 
     <!-- pseudoview of home -->
-    <div id="home_view" class="filmy_view mx-6 container-fluid">
+    <div id="home_view" class="d-none filmy_view mx-6 container-fluid">
         <div id="home_row" class="row">
         </div>
     </div>
@@ -156,9 +156,25 @@
     </div>
 
     <!-- pseudoview of users -->
-    <div id="user_view" class="d-none filmy_view">        
-        <div id="user_list" class="list-group">
+    <div id="user_view" class="filmy_view row justify-content-center mt-3">
+        <div id="user_list" class="list-group col-md-6 align-items-stretch mb-3">
+            <!-- List of users -->
+        </div>
 
+        <nav aria-label="Page navigation example">
+            <ul id="user_pag" class="pagination justify-content-center">
+                <li class="page-item user_page_btn disabled">
+                    <a id="user_prev_pag" class="page-link" href="#">Previous</a>
+                </li>
+                <!-- Pagination -->
+                <li class="page-item user_page_btn">
+                    <a id="user_next_pag" class="page-link" href="#">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="container-md d-flex flex-row-reverse p-5">
+            <button type="button" class="btn btn-outline-success">Create user</button>
         </div>
     </div>
 
@@ -167,10 +183,10 @@
         Hello, im the help_view
     </div>
 
-     <!-- pseudoview of search -->
-     <div id="search_view" class="d-none filmy_view">
+    <!-- pseudoview of search -->
+    <div id="search_view" class="d-none filmy_view">
         <div id="search-container">
-            
+
         </div>
     </div>
 
