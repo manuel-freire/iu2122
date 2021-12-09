@@ -70,18 +70,45 @@
         </div>
     </div>
 
-    <!-- Modal para editar películas -->
+    <!-- Modal para añadir/editar películas -->
     <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="movieEditLabel">Editando película</h5>
+                    <h5 class="modal-title" id="movieEditLabel">Add/Edit movie</h5>
+                    <!--Control file para poder subir archivos-->
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body " id="addMovie">
+                    <!--class="formularioValidado"?-->
                     <form class="row" id="movieEditForm">
                         <input type="hidden" name="id">
+                        <div class="col-md-3">
+                            <!--TODO Meter boton para subir imagen de pelicula-->
+                            <img class="rounded" alt="Movie poster" src="img/default-poster.jpg" id="-">
+                        </div>
                         <!-- llenar desde JS -->
+                        <div class="col-md-4 col-12">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Title" required>
+                            <input type="text" class="form-control" id="f2" name="imdb"
+                                placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
+                            <input type="text" class="form-control" name="director" placeholder="Director" required>
+                            <input type="text" class="form-control" name="actors" placeholder="Actors" required>
+                            <input type="number" class="form-control" name="year" placeholder="Year" min="1800"
+                                max="2022" required>
+                            <input type="number" class="form-control" name="minutes" placeholder="Length in minutes"
+                                min="0" max="600" required>
+                            <input type="text" class="form-control" name="synopsis" placeholder="Synopsis">
+                        </div>
+                        <div class="col-md-4">
+                            <!--TODO ratings-->
+                            <p>⭐⭐⭐⭐⭐</p>
+                            <p>Tags</p>
+                        </div>
+                        <div class="col-12 botones">
+                            <button class="btn btn-primary" type="submit">Añadir</button>
+                            <button class="btn btn-secondary generar" type="button">Generar</button>
+                        </div>
                         <div class="col-md-6">
                             <input type="text" class="form-control" name="name" placeholder="Título" required>
                         </div>
@@ -111,47 +138,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary edit">Guardar cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para añadir/editar pelicula-->
-    <div class="modal fade" id="movieAdd" tabindex="-1" aria-labelledby="movieAddLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title" id="movieAddLabel">Add a movie</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body formularioValidado" id="addMovie">
-                    <form class="row">
-                        <div class="col-md-3">
-                            <!--TODO Meter boton para subir imagen de pelicula-->
-                            <img class="rounded" alt="Movie poster" src="img/default-poster.jpg" id="-">
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <input type="text" class="form-control" id="f1" name="name" placeholder="Title" required>
-                            <input type="text" class="form-control" id="f2" name="imdb"
-                                placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
-                            <input type="text" class="form-control" name="director" placeholder="Director" required>
-                            <input type="text" class="form-control" name="actors" placeholder="Actors" required>
-                            <input type="number" class="form-control" name="year" placeholder="Year" min="1800"
-                                max="2022" required>
-                            <input type="number" class="form-control" name="minutes" placeholder="Length in minutes"
-                                min="0" max="600" required>
-                            <input type="text" class="form-control" name="synopsis" placeholder="Synopsis">
-                        </div>
-                        <div class="col-md-4">
-                            <!--TODO ratings-->
-                            <p>⭐⭐⭐⭐⭐</p>
-                            <p>Tags</p>
-                        </div>
-                        <div class="col-12 botones">
-                            <button class="btn btn-primary" type="submit">Añadir</button>
-                            <button class="btn btn-secondary generar" type="button">Generar</button>
-                        </div>
-                    </form>
                 </div>
             </div>
         </div>

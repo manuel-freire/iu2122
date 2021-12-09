@@ -464,7 +464,6 @@ function update() {
 // modales, para poder abrirlos y cerrarlos desde código JS
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
-const modalAddMovie = new bootstrap.Modal(document.querySelector('#movieAdd'));
 const modalMovieInfo = new bootstrap.Modal(document.querySelector('#movieInfo'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
@@ -561,9 +560,9 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
 })
 
 // cosas que exponemos para poder usarlas desde la consola
+//TODO usar un foreach para ocultar los modales cuando despliegas
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
-window.modalAddMovie = modalAddMovie; //TODO modalRateMovie uses js to share modal with Add
 window.modalMovieInfo = modalMovieInfo;
 window.update = update;
 window.login = login;
