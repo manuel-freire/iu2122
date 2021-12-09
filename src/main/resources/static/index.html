@@ -17,195 +17,6 @@
 
 <body>
 
-    <!-- Modal para dar un rating a una película -->
-    <div class="modal fade" id="movieRate" tabindex="-1" aria-labelledby="movieRateLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="movieRateLabel">Evaluando película</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form class="row" id="movieRateForm">
-                        <input type="hidden" name="id">
-                        <input type="hidden" name="movie">
-                        <input type="hidden" name="user">
-                        <!-- llenar desde JS -->
-                        <div class="col-md-12">
-                            <input type="text" class="form-control" name="labels" placeholder="Etiquetas" required>
-                        </div>
-                        <div class="col-md-6">
-                            <fieldset class="estrellitas">
-                                <label title="Atómico - 5 estrellas">
-                                        <input type="radio" name="rating" value="5" />
-                                    </label>
-
-                                <label title="Muy buena - 4 estrellas">
-                                        <input type="radio" name="rating" value="4" />
-                                    </label>
-
-                                <label title="Pasable - 3 estrellas">
-                                        <input type="radio" name="rating" value="3" />
-                                    </label>
-
-                                <label title="Más bien mala - 2 estrellas">
-                                        <input type="radio" name="rating" value="2" />
-                                    </label>
-
-                                <label title="Horrible - 1 estrella">
-                                        <input type="radio" name="rating" value="1" />
-                                    </label>
-                            </fieldset>
-                        </div>
-                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal para editar películas -->
-    <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="movieRateLabel">Evaluando película</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form class="row" id="movieRateForm">
-                        <input type="hidden" name="id">
-                        <input type="hidden" name="movie">
-                        <input type="hidden" name="user">
-                        <!-- llenar desde JS -->
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="name" placeholder="Título" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="imdb" placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
-                        </div>
-                                <label title="Muy buena - 4 estrellas">
-                                    <input type="radio" name="rating" value="4" />
-                                </label>
-
-                                <label title="Pasable - 3 estrellas">
-                                    <input type="radio" name="rating" value="3" />
-                                </label>
-
-                                <label title="Más bien mala - 2 estrellas">
-                                    <input type="radio" name="rating" value="2" />
-                                </label>
-
-                                <label title="Horrible - 1 estrella">
-                                    <input type="radio" name="rating" value="1" />
-                                </label>
-                            </fieldset>
-                        </div>
-                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- barra de navegación -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <!-- nombre del sitio; es un enlace que lleva a la página ppal -->
-            <a class="navbar-brand" href="#">IU 2021-22</a>
-            <!-- menu hamburguesa si no cabe todo -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="#">Action</a>
-                            <a class="dropdown-item" href="#">Another action</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <!-- container-fluid expande el contenedor para que ocupe todo el espacio disponible -->
-    <div class="container-fluid">
-        <div class="row">
-            <!-- panel lateral, demostrando acordeones (secciones expansibles) -->
-            <div class="col-sm-4 iulist">
-                <div class="row">
-                    <div class="col-auto">
-                        <h2>Peliculas </h2>
-                    </div>
-                    <div class="col input-group mb-3">
-                        <input type="search" class="form-control" id="movieSearch" placeholder="palabras del título" aria-describedby="searchMovieLabel">
-                        <span class="input-group-text" id="searchMovieLabel">🔍</span>
-                    </div>
-                </div>
-                <div class="accordion" id="movies">
-                </div>
-                <div class="modal-body">
-                    <form class="row" id="movieEditForm">
-                        <input type="hidden" name="id">
-                        <!-- llenar desde JS -->
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="name" placeholder="Título" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="imdb"
-                                placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
-                        </div>
-
-                        <div class="col-md-4">
-                            <input type="text" class="form-control" name="director" placeholder="Director" required>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" name="actors" placeholder="Actores" required>
-                        </div>
-
-                        <div class="col-md-4">
-                            <input type="number" class="form-control" name="year" placeholder="Año de estreno"
-                                min="1800" max="2022" required>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="number" class="form-control" name="minutes" placeholder="Duración en minutos"
-                                min="0" max="600" required>
-                        </div>
-                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- barra de navegación -->
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -274,85 +85,93 @@
     <div id="help_view" class="d-none filmy_view">
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Groups</button>
-              <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Users</button>
-              <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
+                <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+                    type="button" role="tab" aria-controls="nav-home" aria-selected="true">Groups</button>
+                <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile"
+                    type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Users</button>
+                <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact"
+                    type="button" role="tab" aria-controls="nav-contact" aria-selected="false">Contact</button>
             </div>
-          </nav>
-          <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">En groups encontraremos los miembros pertenecientes a un grupo y lo podremos editar o eliminar</div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">En
+                groups encontraremos los miembros pertenecientes a un grupo y lo podremos editar o eliminar</div>
             <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">Users</div>
-            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">Contacto : ejemplo@ejemplo.com</div>
-          </div>
+            <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">Contacto :
+                ejemplo@ejemplo.com</div>
+        </div>
     </div>
 
-     <!-- pseudoview of search -->
-     <div id="search_view" class="d-none filmy_view">
+    <!-- pseudoview of search -->
+    <div id="search_view" class="d-none filmy_view">
         <div class="container">
             <div class="row">
-              <div class="col">
-                <div class="search-forms">
-                    <label for="film-id">ID</label>
-                    <input type="number" id="identifier" name="identifier" min="1" max="5000" step="1"/> 
+                <div class="col">
+                    <div class="search-forms">
+                        <label for="film-id">ID</label>
+                        <input type="number" id="identifier" name="identifier" min="1" max="5000" step="1" />
+                    </div>
+                    <div class="search-forms">
+                        <label for="film-name">Name</label>
+                        <input type="text" id="filmname" name="filmname" />
+                    </div>
+                    <div class="search-forms">
+                        <label for="film-director">Director</label>
+                        <input type="text" id="filmdirector" name="filmdirector" />
+                    </div>
                 </div>
-                <div class="search-forms">
-                    <label for="film-name">Name</label>
-                    <input type="text" id="filmname" name="filmname" />
-                </div>
-                <div class="search-forms">
-                    <label for="film-director">Director</label>
-                    <input type="text" id="filmdirector" name="filmdirector" />
-                </div>
-              </div>
 
                 <div class="col">
                     <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Select a group tag
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Select a group tag
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </div>
                     <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Select a tag
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Select a tag
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </div>
                     <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                        Order by
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Order by
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
                         </ul>
                     </div>
                 </div>
-              <div class="col">
-                <div class="search-forms">
-                    <label for="film-year">Year</label>
-                    <input type="number" id="year" name="year" min="1950" max="2021" step="1"/> 
+                <div class="col">
+                    <div class="search-forms">
+                        <label for="film-year">Year</label>
+                        <input type="number" id="year" name="year" min="1950" max="2021" step="1" />
+                    </div>
+                    <div class="search-forms">
+                        <label for="film-minutes">Minutes</label>
+                        <input type="number" id="minutes" name="minutes" min="1950" max="2021" step="1" />
+                    </div>
+                    <div class="search-forms">
+                        <label for="film-rating">Rating</label>
+                        <input type="text" id="rating" name="rating" />
+                    </div>
                 </div>
-                <div class ="search-forms">
-                    <label for="film-minutes">Minutes</label>
-                    <input type="number" id="minutes" name="minutes" min="1950" max="2021" step="1"/> 
-                </div>
-                <div class="search-forms">
-                    <label for="film-rating">Rating</label>
-                    <input type="text" id="rating" name="rating" />
-                </div>
-              </div>
             </div>
-          </div>
+        </div>
         <div id="search-results">
         </div>
     </div>
@@ -361,17 +180,17 @@
     <div id="profile_view" class="d-none filmy_view">
         <div id="title_profile" class="h1"> </div>
         <form class="row g-3 needs-validation" novalidate></form>
-            <div class="col-12"></div>
-            <div id="id_profile" class="col-md-4"> </div>
-            <div id="user_profile" class="col-md-4"> </div>
-            <div id="password_profile" class="col-md-4"></div>
-            <div id="role_profile" class="col-md-4"></div>
-            <div id="groups_profile" class="col-md-4"></div>
-            <!--<button class="btn btn-primary" type="submit">Save Changes</button> -->
+        <div class="col-12"></div>
+        <div id="id_profile" class="col-md-4"> </div>
+        <div id="user_profile" class="col-md-4"> </div>
+        <div id="password_profile" class="col-md-4"></div>
+        <div id="role_profile" class="col-md-4"></div>
+        <div id="groups_profile" class="col-md-4"></div>
+        <!--<button class="btn btn-primary" type="submit">Save Changes</button> -->
         </form>
-        
+
         <div id="test_profile"> </div>
-        
+
     </div>
 
 

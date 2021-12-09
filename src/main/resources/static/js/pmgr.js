@@ -460,7 +460,7 @@ function update() {
             max = users_on_page;
         }
 
-        console.log({min}, {max});
+        console.log({ min }, { max });
         empty('#user_list');
         users.slice(min, max).forEach(o => appendTo('#user_list', createUserItem(o)));
 
@@ -508,8 +508,8 @@ function update() {
 
         appendTo('#title_profile', `MY PROFILE`)
 
-        appendTo('#id_profile', 
-        `<div class="row g-2">
+        appendTo('#id_profile',
+            `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
@@ -517,8 +517,8 @@ function update() {
           </div>
         </div>`)
 
-        appendTo('#user_profile', 
-        `<div class="row g-2">
+        appendTo('#user_profile',
+            `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${user}">
@@ -526,8 +526,8 @@ function update() {
           </div>
         </div>`)
 
-        appendTo('#password_profile', 
-        `<div class="row g-2">
+        appendTo('#password_profile',
+            `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${password}">
@@ -535,8 +535,8 @@ function update() {
           </div>
         </div>`)
 
-        appendTo('#role_profile', 
-        `<div class="row g-2">
+        appendTo('#role_profile',
+            `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
@@ -544,8 +544,8 @@ function update() {
           </div>
         </div>`)
 
-        appendTo('#groups_profile', 
-        `<div class="row g-2">
+        appendTo('#groups_profile',
+            `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
@@ -655,8 +655,8 @@ function update() {
 //
 
 // modales, para poder abrirlos y cerrarlos desde código JS
-const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
-const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
+//const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
+//const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
@@ -666,12 +666,12 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
-
-                 // -- IMPORTANTE --
-login("p", "p"); // <-- tu nombre de usuario y password aquí
-                 //   y puedes re-logearte como alguien distinto desde  la consola
-                 //   llamando a login() con otro usuario y contraseña
+    Pmgr.login(username, password) // <-- tu nombre de usuario y password aquí
+}
+// -- IMPORTANTE --
+login("g2", "eSMDK"); // <-- tu nombre de usuario y password aquí
+//   y puedes re-logearte como alguien distinto desde  la consola
+//   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
@@ -695,34 +695,34 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
      */
     const f = document.querySelector("#movieEditForm");
     // botón de enviar
-    document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            modificaPelicula(f); // modifica la pelicula según los campos previamente validados
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
+    // document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
+    //     console.log("enviando formulario!");
+    //     if (f.checkValidity()) {
+    //         modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+    //     } else {
+    //         e.preventDefault();
+    //         f.querySelector("button[type=submit]").click(); // fuerza validacion local
+    //     }
+    // });
 } {
     /**
      * formulario para evaluar películas; usa el mismo modal para añadir y para editar
      */
     const f = document.querySelector("#movieRateForm");
     // botón de enviar
-    document.querySelector("#movieRate button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            if (f.querySelector("input[name=id]").value == -1) {
-                nuevoRating(f);
-            } else {
-                modificaRating(f); // modifica la evaluación según los campos previamente validados
-            }
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
+    // document.querySelector("#movieRate button.edit").addEventListener('click', e => {
+    //     console.log("enviando formulario!");
+    //     if (f.checkValidity()) {
+    //         if (f.querySelector("input[name=id]").value == -1) {
+    //             nuevoRating(f);
+    //         } else {
+    //             modificaRating(f); // modifica la evaluación según los campos previamente validados
+    //         }
+    //     } else {
+    //         e.preventDefault();
+    //         f.querySelector("button[type=submit]").click(); // fuerza validacion local
+    //     }
+    // });
     // activa rating con estrellitas
     stars("#movieRateForm .estrellitas");
 }
@@ -742,8 +742,8 @@ login("p", "p"); // <-- tu nombre de usuario y password aquí
 // })
 
 // cosas que exponemos para poder usarlas desde la consola
-window.modalEditMovie = modalEditMovie;
-window.modalRateMovie = modalRateMovie;
+//window.modalEditMovie = modalEditMovie;
+//window.modalRateMovie = modalRateMovie;
 window.update = update;
 window.login = login;
 window.userId = userId;
