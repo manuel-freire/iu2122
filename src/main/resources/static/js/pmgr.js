@@ -428,13 +428,13 @@ function update() {
                 var modalImage = document.getElementById('movieInfoImage')
                 var modalDirector = document.getElementById('movieInfoDirector')
                 var modalYear = document.getElementById('movieInfoYear')
-                var modalLength = document.getElementById('movieInfoYear')
+                var modalLength = document.getElementById('movieInfoLength')
 
                 //TODO ratings
 
                 modalTitle.textContent = movie.name + " - " + movie.year
                 modalDirector.textContent = movie.director
-                modalLength.textContent = movie.minutes
+                modalLength.textContent = movie.minutes + " minutes"
                 modalYear.textContent = movie.year
                 modalImage.src = serverUrl + "poster/" + movie.imdb
 
@@ -552,7 +552,7 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
  */
 document.querySelector("#movieSearch").addEventListener("input", e => {
     const v = e.target.value.toLowerCase();
-    document.querySelectorAll("#movies div.card").forEach(c => {
+    document.querySelectorAll("#movies div.col").forEach(c => {
         const m = Pmgr.resolve(c.dataset.id);
         // aquí podrías aplicar muchos más criterios
         const ok = m.name.toLowerCase().indexOf(v) >= 0;
