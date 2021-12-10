@@ -503,6 +503,8 @@ function update() {
             appendTo("#test_profile", "hello world");
         });*/
 
+        //setUser para editarlo -> id, contraseña
+
         let actualUser = Pmgr.state.users.find(e => e.username == user)
 
 
