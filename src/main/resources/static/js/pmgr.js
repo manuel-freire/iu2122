@@ -551,10 +551,31 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
  */
 document.querySelector("#movieSearch").addEventListener("input", e => {
     const v = e.target.value.toLowerCase();
+    let criteria = null;
+    if(document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null){
+        criteria = document.querySelector("#form-advSearch");
+    }
     document.querySelectorAll("#movies div.col").forEach(c => {
         const m = Pmgr.resolve(c.dataset.id);
+        let ok = m.name.toLowerCase().indexOf(v) >= 0;
+        if(criteria != null){
+            //Director
+            const dirCrit = criteria.querySelector("#searchDirector").value
+            if(dirCrit)
+                ok = ok && (m.director.indexOf(dirCrit) >= 0)
+            //Input ranges will always have a valid value
+            //Year
+            const minYear = criteria.querySelector("#yearRangeStart").value;
+            const maxYear = criteria.querySelector("#yearRangeEnd").value;
+            ok = ok && (m.year <= maxYear && m.year >= minYear)
+            //Length
+            const minLength = criteria.querySelector("#lengthRangeStart").value;
+            const maxLength = criteria.querySelector("#lengthRangeEnd").value;
+            ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
+            //TODO ratings
+            //TODO tags
+        }
         // aquí podrías aplicar muchos más criterios
-        const ok = m.name.toLowerCase().indexOf(v) >= 0;
         c.style.display = ok ? '' : 'none';
     });
 })
