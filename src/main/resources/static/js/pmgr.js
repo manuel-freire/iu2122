@@ -424,20 +424,46 @@ function update() {
                 console.log(`Seleccionada película ${movieId}`);
 
                 var movie = Pmgr.resolve(movieId)
-                var modalTitle = document.getElementById('movieInfoLabel')
+                
+                var modalTitle = document.getElementById('movieInfoTitle')
                 var modalImage = document.getElementById('movieInfoImage')
                 var modalDirector = document.getElementById('movieInfoDirector')
                 var modalYear = document.getElementById('movieInfoYear')
                 var modalLength = document.getElementById('movieInfoLength')
+                //TODO los tags
+                var modelTags = document.getElementById('movieInfoLable')
+                var modalRating = document.getElementById('movieInfoRating')
 
-                //TODO ratings
 
                 modalTitle.textContent = movie.name + " - " + movie.year
                 modalDirector.textContent = movie.director
                 modalLength.textContent = movie.minutes + " minutes"
                 modalYear.textContent = movie.year
                 modalImage.src = serverUrl + "poster/" + movie.imdb
+                modelTags.textContent = movie.labels
 
+
+                let ratingFinal = 0;
+                let elementsCounted = 0;
+                //TODO ratings
+                for(let i = 0 ; i < movie.ratings.length; i++)
+                {
+                    var rat = movie.ratings[i];
+                    let mov = Pmgr.state.ratings.find(element => element.id == rat)
+                    if(mov.rating != -1) 
+                    {
+                        ratingFinal += mov.rating
+                        elementsCounted++
+                    }
+                }
+
+                var fullstars = (ratingFinal / elementsCounted)
+                var emptyStars = 5 - fullstars
+
+                console.log(ratingFinal / elementsCounted)
+
+                modalRating.textContent =  '⭐' .repeat(fullstars) + ' - '.repeat(emptyStars)
+                
                 modalMovieInfo.show()
             })
         })
@@ -575,12 +601,14 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
             const maxLength = criteria.querySelector("#lengthRangeEnd").value;
             ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
             //TODO ratings
-            //TODO tags
+
+            //TODO tags (no hay al parecer)
             tagList = criteria.querySelector("#tagList").value.split(', ');
             let movieTags = [];
             m.ratings.forEach(element => {
                 //TODO filtro de contexto para busquedas por grupo
                 //Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
+                console.log(element.labels)
                 movieTags.push(element.labels)
             });
             if(tagList.length > 0)

@@ -144,11 +144,11 @@
     </div>
 
     <!-- Modal info de pelicula-->
-    <div class="modal fade" id="movieInfo" tabindex="-1" aria-labelledby="movieInfoLabel" aria-hidden="true">
+    <div class="modal fade" id="movieInfo" tabindex="-1" aria-labelledby="movieInfoTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="movieInfoLabel">Movie - Year</h3>
+                    <h3 class="modal-title" id="movieInfoTitle">Movie - Year</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -166,9 +166,9 @@
                                 </p>
                             </div>
                             <div class="col-md-4 col-12">
-                                <!--TODO ratings-->
-                                <p>⭐⭐⭐⭐⭐</p>
-                                <p>Tags</p>
+                                <!--TODO ratings-->             
+                                <b>Rating</b><span id="movieInfoRating"></span>  <br>          
+                                <b>Tags</b><span id="movieInfoLable"></span><br><!--TODO aquí van los tags-->
                             </div>
                         </div>
                     </div>
