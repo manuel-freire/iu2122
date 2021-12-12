@@ -429,6 +429,7 @@ function update() {
                 var modalDirector = document.getElementById('movieInfoDirector')
                 var modalYear = document.getElementById('movieInfoYear')
                 var modalLength = document.getElementById('movieInfoLength')
+                var modalActors = document.getElementById('movieInfoActors')
 
                 //TODO ratings
 
@@ -436,6 +437,7 @@ function update() {
                 modalDirector.textContent = movie.director
                 modalLength.textContent = movie.minutes + " minutes"
                 modalYear.textContent = movie.year
+                modalActors.textContent = movie.actors
                 modalImage.src = serverUrl + "poster/" + movie.imdb
 
                 modalMovieInfo.show()
