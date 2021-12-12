@@ -487,10 +487,10 @@ const login = (username, password) => {
         });
 }
 
-                 // -- IMPORTANTE --
+// -- IMPORTANTE --
 login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
-                 //   y puedes re-logearte como alguien distinto desde  la consola
-                 //   llamando a login() con otro usuario y contraseña
+//   y puedes re-logearte como alguien distinto desde  la consola
+//   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
@@ -551,13 +551,54 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
  */
 document.querySelector("#movieSearch").addEventListener("input", e => {
     const v = e.target.value.toLowerCase();
+    searchMovie(v)
+})
+
+document.querySelector("#submitSearch").addEventListener('click',e=>{
+    const v = document.querySelector("#movieSearch").value.toLowerCase()
+    searchMovie(v)
+})
+
+function searchMovie(title) {
+    let criteria = null;
+    //Los criterios solo se aplican si el Collapsable esta activo
+    if (document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null) {
+        criteria = document.querySelector("#form-advSearch");
+    }
     document.querySelectorAll("#movies div.col").forEach(c => {
         const m = Pmgr.resolve(c.dataset.id);
+        let ok = m.name.toLowerCase().indexOf(title) >= 0;
+        //Los criterios solo se aplican si el Collapsable esta activo
+        if (criteria != null) {
+            //Director
+            const dirCrit = criteria.querySelector("#searchDirector").value
+            if (dirCrit)
+                ok = ok && (m.director.indexOf(dirCrit) >= 0)
+            //Estos valores siempre serán válidos
+            //Year
+            const minYear = criteria.querySelector("#yearRangeStart").value;
+            const maxYear = criteria.querySelector("#yearRangeEnd").value;
+            ok = ok && (m.year <= maxYear && m.year >= minYear)
+            //Length
+            const minLength = criteria.querySelector("#lengthRangeStart").value;
+            const maxLength = criteria.querySelector("#lengthRangeEnd").value;
+            ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
+            //TODO ratings
+            //TODO tags
+            tagList = criteria.querySelector("#tagList").value.split(', ');
+            let movieTags = [];
+            m.ratings.forEach(element => {
+                //TODO filtro de contexto para busquedas por grupo
+                //Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
+                movieTags.push(element.labels)
+            });
+            if (tagList.length > 0)
+                ok = ok && movieTags.every(r => tagList.indexOf(r) >= 0)
+        }
         // aquí podrías aplicar muchos más criterios
-        const ok = m.name.toLowerCase().indexOf(v) >= 0;
         c.style.display = ok ? '' : 'none';
     });
-})
+}
 
 // cosas que exponemos para poder usarlas desde la consola
 //TODO usar un foreach para ocultar los modales cuando despliegas

@@ -225,7 +225,7 @@
                 <div class="row text-center m-2">
                     <h1 class="display-3">Graphical Movie Database</h1>
                 </div>
-                <div class="row md-5 gx-1">
+                <div class="row gx-1">
                     <div class="col-1">
                         <input type="button" class="btn btn-light border-secondary" value="➕">
                     </div>
@@ -234,20 +234,93 @@
                             aria-describedby="searchMovieLabel">
                     </div>
                     <div class="col-1">
-                        <input type="button" class="btn btn-light border-secondary" value="🕵️‍♂️">
+                        <input type="button" id="buttonAdvSearch" class="btn btn-light border-secondary" data-bs-toggle="collapse"
+                            data-bs-target="#advSearch" aria-expanded="false" aria-controls="advSearch" value="🕵️‍♂️">
                     </div>
                     <div class="col-1">
-                        <input type="button" class="btn btn-light border-secondary" value="🔍">
+                        <input type="button" id="submitSearch" class="btn btn-light border-secondary" value="🔍">
                     </div>
                 </div>
+                <div class="row mt-4 collapse" id="advSearch">
+                    <form method="post" id="form-advSearch">
+                        <div class="container-fluid">
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" id="searchDirector" placeholder="Director">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="yearRangeStart" class="form-label">After: </label>
+                                    <input type="number" class="form-number" min="1900" max="2022" value="1900"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="1900" max="2022" value="1900"
+                                        step="1" id="yearRangeStart"
+                                        oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                                <div class="col-6">
+                                    <label for="yearRangeEnd" class="form-label">Before: </label>
+                                    <input type="number" class="form-number" min="1900" max="2022" value="2022"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="1900" max="2022" value="2022"
+                                        step="1" id="yearRangeEnd"
+                                        oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="lengthRangeStart" class="form-label">Longer than: </label>
+                                    <input type="number" class="form-number" min="0" max="240" value="0"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="0" max="240" value="0" step="1"
+                                        id="lengthRangeStart" oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                                <div class="col-6">
+                                    <label for="lengthRangeEnd" class="form-label">Shorter than: </label>
+                                    <input type="number" class="form-number" min="0" max="240" value="240"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="0" max="240" value="240"
+                                        step="1" id="lengthRangeEnd"
+                                        oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row px-2">
+                                <label for="tagList">Ratings</label>
+                                <div class="col-2">
+                                    <div class="btn-group" role="group" aria-label="rateContext">
+                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
+                                        <button type="button" class="btn btn-secondary">Group</button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <!-- TODO controlador de estrellitas -->
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row px-2">
+                                <label for="tagList">Tags</label>
+                                <div class="col-2">
+                                    <div class="btn-group" role="group" aria-label="tagContext">
+                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
+                                        <button type="button" class="btn btn-secondary">Group</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 px-2">
+                                    <input id="tagList" type="text " class="col-sm-8 form-control">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Force next columns to break to new line -->
-        <div class="w-100 m-3"></div>
+    <!-- Force next columns to break to new line -->
+    <div class="w-100 m-3"></div>
 
-        <div class="row row-cols-2 row-cols-lg-5 g-2" id="movies">
-        </div>
+    <div class="row row-cols-2 row-cols-lg-5 g-2" id="movies">
+    </div>
     </div>
     <hr>
     <div class="row">
