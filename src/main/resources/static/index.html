@@ -108,23 +108,27 @@
                                 <button class="btn btn-light border-secondary" id="deleteEditingMovie">🗑️</button>
                             </div>
                             <div class="row p-4">
-                                <button class="btn btn-light border-secondary" id="deleteEditingMovie">❌</button>
+                                <button class="btn btn-light border-secondary" id="discardEditingMovie" data-bs-dismiss="modal" aria-label="Close">❌</button>
                             </div>
                             <div class="row p-4">
-                                <button class="btn btn-light border-secondary" type="submit" id="saveEditingMovie">✔</button>
+                                <button class="btn btn-light border-secondary edit" type="submit" id="saveEditingMovie">✔</button>
                             </div>
                         </div>
+                        <!--
                         <div class="col-12 botones">
                             <button class="btn btn-primary" type="submit">Añadir</button>
                             <button class="btn btn-secondary generar" type="button">Generar</button>
                         </div>
+                        -->
                         <button style="display: none" type="submit">Invisible, sólo para validación</button>
                     </form>
                 </div>
+                <!--
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary edit">Guardar cambios</button>
                 </div>
+                -->
             </div>
         </div>
     </div>
@@ -135,6 +139,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="movieInfoLabel">Movie - Year</h3>
+                    <button type="button" id="editMovieButton" data-id="" class="btn-light">📝</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -213,7 +218,7 @@
                 </div>
                 <div class="row gx-1">
                     <div class="col-1">
-                        <button type="button" class="btn btn-light border-secondary" data-bs-toggle="modal" data-bs-target="#movieEdit">➕</button>
+                        <button type="button" class="btn btn-light border-secondary" id="addMovieButton">➕</button>
                     </div>
                     <div class="col-9">
                         <input type="search" class="form-control" id="movieSearch" placeholder="Search movie"

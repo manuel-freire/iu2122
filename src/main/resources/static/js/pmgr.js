@@ -440,6 +440,9 @@ function update() {
                 modalActors.textContent = movie.actors
                 modalImage.src = serverUrl + "poster/" + movie.imdb
 
+                //Set edit button id for later use
+                document.getElementById('editMovieButton').setAttribute("data-id", movieId)
+
                 modalMovieInfo.show()
             })
         })
@@ -507,10 +510,14 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
             nuevaPelicula(f); // añade la pelicula según los campos previamente validados
         }
     });
+
+    /*
     // botón de generar datos (sólo para pruebas)
     f.querySelector("button.generar").addEventListener('click',
         (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
-} {
+    */
+}
+{
     /**
      * formulario para modificar películas
      */
@@ -525,7 +532,8 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
             f.querySelector("button[type=submit]").click(); // fuerza validacion local
         }
     });
-} {
+}
+{
     /**
      * formulario para evaluar películas; usa el mismo modal para añadir y para editar
      */
@@ -556,9 +564,41 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
     searchMovie(v)
 })
 
-document.querySelector("#submitSearch").addEventListener('click',e=>{
+document.querySelector("#submitSearch").addEventListener('click', e => {
     const v = document.querySelector("#movieSearch").value.toLowerCase()
     searchMovie(v)
+})
+
+//Edit movie
+document.querySelector("#editMovieButton").addEventListener('click', e => {
+    //Set editMovie details to existing ones
+    let movieEditForm = document.querySelector("#movieEditForm")
+    const movieId = e.target.getAttribute("data-id")
+    var movie = Pmgr.resolve(movieId)
+
+    movieEditForm.querySelector("input[name='id']").value = movie.id
+    movieEditForm.querySelector("input[name='name']").value = movie.name
+    movieEditForm.querySelector("input[name='imdb']").value = movie.imdb
+    movieEditForm.querySelector("input[name='director']").value = movie.director
+    movieEditForm.querySelector("input[name='actors']").value = movie.actors
+    movieEditForm.querySelector("input[name='year']").value = movie.year
+    movieEditForm.querySelector("input[name='minutes']").value = movie.minutes
+    movieEditForm.querySelector("img").src = serverUrl + "poster/" + movie.imdb
+
+    modalMovieInfo.hide()
+    modalEditMovie.show()
+})
+
+//Add movie
+document.querySelector("#addMovieButton").addEventListener('click', e => {
+    //Clear all existing input
+    var movieEditForm = document.querySelector("#movieEditForm")
+    movieEditForm.querySelector("img").src = "img/default-poster.jpg"
+    movieEditForm.querySelectorAll("input").forEach(inp => {
+        inp.value = ''
+    })
+
+    modalEditMovie.show()
 })
 
 function searchMovie(title) {
