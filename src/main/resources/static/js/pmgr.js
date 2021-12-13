@@ -26,32 +26,32 @@
 import * as Pmgr from './pmgrapi.js';
 
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
-let userId = -1;
 
-const empty = (sel) => {
+function empty(sel) {
     const destino = document.querySelector(sel);
     while (destino.firstChild) {
         destino.removeChild(destino.firstChild);
     }
 }
 
-const hide = (sel) => {
+function  hide (sel) {
     const destino = document.querySelector(sel);
     destino.classList.add("d-none");
 }
 
-const appendTo = (sel, html) => {
+function appendTo (sel, html) {
     document.querySelector(sel).insertAdjacentHTML("beforeend", html);
 }
 
+
+let userId = -1;
 const login = (username, password) => {
     Pmgr.login(username, password)
         .then(msg => {
             console.info("Pmgr.login says: ", msg);
-            update(msg);
-
+            userId = Pmgr.state.users.find(u => u.username == username).id;
+            update();
             console.info("Logged in as ", username);
-            let userId = Pmgr.state.users.find(user => user.username == username).id;
         })
         .catch(e => {
             console.error('Error ', e.status, ': ', e.text);
@@ -275,7 +275,7 @@ function generaPelicula(formulario) {
 
 const update_profile = (actualUser) => {
 
-    console.log({actualUser});
+    console.log({ actualUser });
 
     appendTo('#title_profile', `MY PROFILE`)
 
@@ -382,30 +382,11 @@ const update = () => {
         state.groups.forEach(group => appendTo('#group_row', createGroupItem(group)));
         state.users.forEach(user => appendTo('#user_list', createUserItem(user)));
         let currentUser = state.users.find(e => e.id == userId);
-        console.log(state.users);
-        console.log({currentUser});
         update_profile(currentUser);
 
     } catch (e) {
         console.error("Error updating: ", e);
     }
-}
-
-const init_filmy = () => {
-    const url = serverUrl + 'api/';
-    Pmgr.connect(url);
-    login('g2', 'eSMDK');
-
-
-    while (userId == -1) {
-
-        userId = document.cookie
-            .split('; ')
-            .find(row => row.startsWith('user_id='))
-            .split('=')[1];
-
-    }
-
 }
 
 window.update = update;
@@ -414,4 +395,9 @@ window.user_id = userId;
 window.Pmgr = Pmgr;
 
 
-init_filmy();
+
+const username = 'g2';
+const password = 'eSMDK';
+const url = serverUrl + 'api/';
+Pmgr.connect(url);
+login(username, password);
