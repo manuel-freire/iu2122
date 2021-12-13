@@ -470,6 +470,7 @@ function update() {
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
 const modalMovieInfo = new bootstrap.Modal(document.querySelector('#movieInfo'));
+const modalConfirmDelete = new bootstrap.Modal(document.querySelector('#confirmDelete'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
@@ -601,6 +602,26 @@ document.querySelector("#addMovieButton").addEventListener('click', e => {
     modalEditMovie.show()
 })
 
+//delete movie prompt
+document.querySelector("#deleteEditingMovie").addEventListener('click',e=>{
+    modalConfirmDelete.show()
+})
+
+//confirm movie deletion
+document.querySelector("#confirmMovieDeletion").addEventListener('click',e=>{
+    //Borrar la peli
+    let movieEditForm = document.querySelector("#movieEditForm")
+    let movieId = movieEditForm.querySelector("input[name='id']").value
+    if(movieId != ''){
+        Pmgr.rmMovie(movieId)
+    }
+    //Toast de borrado exitoso
+
+    //hide modals
+    modalConfirmDelete.hide()
+    modalEditMovie.hide()
+})
+
 function searchMovie(title) {
     let criteria = null;
     //Los criterios solo se aplican si el Collapsable esta activo
@@ -647,6 +668,7 @@ function searchMovie(title) {
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
 window.modalMovieInfo = modalMovieInfo;
+window.modalConfirmDelete = modalConfirmDelete;
 window.update = update;
 window.login = login;
 window.userId = userId;
