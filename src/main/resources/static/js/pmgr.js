@@ -440,27 +440,26 @@ function update() {
                 modalLength.textContent = movie.minutes + " minutes"
                 modalYear.textContent = movie.year
                 modalImage.src = serverUrl + "poster/" + movie.imdb
-                modelTags.textContent = movie.labels
-
 
                 let ratingFinal = 0;
                 let elementsCounted = 0;
-                //TODO ratings
+                
                 for(let i = 0 ; i < movie.ratings.length; i++)
                 {
                     var rat = movie.ratings[i];
                     let mov = Pmgr.state.ratings.find(element => element.id == rat)
+                  
                     if(mov.rating != -1) 
                     {
                         ratingFinal += mov.rating
                         elementsCounted++
                     }
+
+                    modelTags.textContent = (" " + mov.labels)
                 }
 
                 var fullstars = (ratingFinal / elementsCounted)
                 var emptyStars = 5 - fullstars
-
-                console.log(ratingFinal / elementsCounted)
 
                 modalRating.textContent =  '⭐' .repeat(fullstars) + ' - '.repeat(emptyStars)
                 
