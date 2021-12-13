@@ -36,171 +36,171 @@ import * as Pmgr from './pmgrapi.js'
  * @param {string} sel CSS usado para indicar qué fieldset quieres convertir
  * en estrellitas. Se espera que el fieldset tenga este aspecto:
  *      <label title="Atómico - 5 estrellas">
-            <input type="radio" name="rating" value="5" />
-        </label>
+			<input type="radio" name="rating" value="5" />
+		</label>
 
-        <label title="Muy buena - 4 estrellas">
-            <input type="radio" name="rating" value="4" />
-        </label>
+		<label title="Muy buena - 4 estrellas">
+			<input type="radio" name="rating" value="4" />
+		</label>
 
-        <label title="Pasable - 3 estrellas">
-            <input type="radio" name="rating" value="3" />
-        </label>
+		<label title="Pasable - 3 estrellas">
+			<input type="radio" name="rating" value="3" />
+		</label>
 
-        <label title="Más bien mala - 2 estrellas">
-            <input type="radio" name="rating" value="2" />
-        </label>
+		<label title="Más bien mala - 2 estrellas">
+			<input type="radio" name="rating" value="2" />
+		</label>
 
-        <label title="Horrible - 1 estrella">
-            <input type="radio" name="rating" value="1" />
-        </label>
+		<label title="Horrible - 1 estrella">
+			<input type="radio" name="rating" value="1" />
+		</label>
  */
 function stars(sel) {
-    const changeClassOnEvents = (ss, s) => {
-        s.addEventListener("change", e => {
-            // find current index
-            const idx = e.target.value;
-            // set selected for previous & self, remove for next
-            ss.querySelectorAll("label").forEach(label => {
-                if (label.children[0].value <= idx) {
-                    label.classList.add("selected");
-                } else {
-                    label.classList.remove("selected");
-                }
-            });
-        });
-    };
-    const activateStars = (ss) => {
-        ss.classList.add("rating");
-        ss.querySelectorAll("input").forEach(s =>
-            changeClassOnEvents(ss, s));
-        let parent = ss;
-        while (!parent.matches("form")) {
-            parent = parent.parentNode;
-        }
-        parent.addEventListener("reset", () => {
-            ss.querySelectorAll("input").forEach(e => e.checked = false);
-            ss.querySelectorAll("label").forEach(e => e.classList.remove("selected"));
-        });
-    }
-    document.querySelectorAll(sel).forEach(activateStars);
+	const changeClassOnEvents = (ss, s) => {
+		s.addEventListener("change", e => {
+			// find current index
+			const idx = e.target.value;
+			// set selected for previous & self, remove for next
+			ss.querySelectorAll("label").forEach(label => {
+				if (label.children[0].value <= idx) {
+					label.classList.add("selected");
+				} else {
+					label.classList.remove("selected");
+				}
+			});
+		});
+	};
+	const activateStars = (ss) => {
+		ss.classList.add("rating");
+		ss.querySelectorAll("input").forEach(s =>
+			changeClassOnEvents(ss, s));
+		let parent = ss;
+		while (!parent.matches("form")) {
+			parent = parent.parentNode;
+		}
+		parent.addEventListener("reset", () => {
+			ss.querySelectorAll("input").forEach(e => e.checked = false);
+			ss.querySelectorAll("label").forEach(e => e.classList.remove("selected"));
+		});
+	}
+	document.querySelectorAll(sel).forEach(activateStars);
 }
 
 function createMovieItem(movie) {
-    const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
-    const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${r.user == userId ? "primary" : "secondary"}">
-        ${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
-        </span>
-        `
-    ).join("");
+	const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
+	const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
+		`<span class="badge bg-${r.user == userId ? "primary" : "secondary"}">
+		${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
+		</span>
+		`
+	).join("");
 
-    return `
-    <div class="col" data-id="${movie.id}">
-        <div class="card">
-            <img class="card-img-top rounded" alt="${movie.id}" src="${serverUrl}poster/${movie.imdb}">
+	return `
+	<div class="col" data-id="${movie.id}">
+		<div class="card">
+			<img class="card-img-top rounded" alt="${movie.id}" src="${serverUrl}poster/${movie.imdb}">
 
-    <!-- Codigo de ejemplo
-    
-    <div class="card-header"">
-        <h4 class="mb-0" title="${movie.id}">
-            ${movie.name} <small><i>(${movie.year})</i></small>
-        </h4>
-        </div>
-    </div>
+	<!-- Codigo de ejemplo
+	
+	<div class="card-header"">
+		<h4 class="mb-0" title="${movie.id}">
+			${movie.name} <small><i>(${movie.year})</i></small>
+		</h4>
+		</div>
+	</div>
 
-    <div>
-        <div class="card-body pcard">
-            <div class="row">
-                <div class="col-auto">
-                    <img class="iuthumb" src="${serverUrl}poster/${movie.imdb}"/>
-                </div>
-                <div class="col">
-                    <div class="row-12">
-                        ${movie.director} / ${movie.actors} (${movie.minutes} min.)
-                    </div>        
-                    <div class="row-12">
-                        ${ratings}
-                    </div>        
-                    <div class="iucontrol movie">
-                        <button class="rm" data-id="${movie.id}">🗑️</button>
-                        <button class="edit" data-id="${movie.id}">✏️</button>
-                        <button class="rate" data-id="${movie.id}">⭐</button>
-                    </div>  
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    -->
-    </div>
+	<div>
+		<div class="card-body pcard">
+			<div class="row">
+				<div class="col-auto">
+					<img class="iuthumb" src="${serverUrl}poster/${movie.imdb}"/>
+				</div>
+				<div class="col">
+					<div class="row-12">
+						${movie.director} / ${movie.actors} (${movie.minutes} min.)
+					</div>        
+					<div class="row-12">
+						${ratings}
+					</div>        
+					<div class="iucontrol movie">
+						<button class="rm" data-id="${movie.id}">🗑️</button>
+						<button class="edit" data-id="${movie.id}">✏️</button>
+						<button class="rate" data-id="${movie.id}">⭐</button>
+					</div>  
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	-->
+	</div>
  `;
 }
 
 function createGroupItem(group) {
-    let allMembers = group.members.map((id) =>
-        `<span class="badge bg-secondary">${Pmgr.resolve(id).username}</span>`
-    ).join(" ");
-    const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
-    let allPending = group.requests.map((id) => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
-            title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
-            ${Pmgr.resolve(r.user).username}</span>`
+	let allMembers = group.members.map((id) =>
+		`<span class="badge bg-secondary">${Pmgr.resolve(id).username}</span>`
+	).join(" ");
+	const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
+	let allPending = group.requests.map((id) => Pmgr.resolve(id)).map(r =>
+		`<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
+			title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
+			${Pmgr.resolve(r.user).username}</span>`
 
-    ).join(" ");
+	).join(" ");
 
-    return `
-    <div class="card">
-    <div class="card-header">
-        <h4 class="mb-0" title="${group.id}">
-            <b class="pcard">${group.name}</b>
-        </h4>
-    </div>
-    <div class="card-body pcard">
-        <div class="row-sm-11">
-            <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
-            ${allMembers}
-            ${allPending}
-        </div>
-        <div class="row-sm-1 iucontrol group">
-            <button class="rm" data-id="${group.id}">🗑️</button>
-            <button class="edit" data-id="${group.id}">✏️</button>
-        </div>
-    </div>              
-    </div>
-    </div>
+	return `
+	<div class="card">
+	<div class="card-header">
+		<h4 class="mb-0" title="${group.id}">
+			<b class="pcard">${group.name}</b>
+		</h4>
+	</div>
+	<div class="card-body pcard">
+		<div class="row-sm-11">
+			<span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+			${allMembers}
+			${allPending}
+		</div>
+		<div class="row-sm-1 iucontrol group">
+			<button class="rm" data-id="${group.id}">🗑️</button>
+			<button class="edit" data-id="${group.id}">✏️</button>
+		</div>
+	</div>              
+	</div>
+	</div>
 `;
 }
 
 function createUserItem(user) {
-    let allGroups = user.groups.map((id) =>
-        `<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
-    ).join(" ");
-    const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
-    let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
-            title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
-            ${Pmgr.resolve(r.group).name}</span>`
-    ).join(" ");
+	let allGroups = user.groups.map((id) =>
+		`<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
+	).join(" ");
+	const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
+	let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
+		`<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
+			title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
+			${Pmgr.resolve(r.group).name}</span>`
+	).join(" ");
 
-    return `
-    <div class="card">
-    <div class="card-header">
-        <h4 class="mb-0" title="${user.id}">
-            <b class="pcard">${user.username}</b>
-        </h4>
-    </div>
-    <div class="card-body pcard">
-        <div class="row-sm-11">
-            ${allGroups}
-            ${allPending}
-        <div>
-        <div class="row-sm-1 iucontrol user">
-            <button class="rm" data-id="${user.id}">🗑️</button>
-            <button class="edit" data-id="${user.id}">✏️</button>
-        </div>        
-    </div>
-    </div>
+	return `
+	<div class="card">
+	<div class="card-header">
+		<h4 class="mb-0" title="${user.id}">
+			<b class="pcard">${user.username}</b>
+		</h4>
+	</div>
+	<div class="card-body pcard">
+		<div class="row-sm-11">
+			${allGroups}
+			${allPending}
+		<div>
+		<div class="row-sm-1 iucontrol user">
+			<button class="rm" data-id="${user.id}">🗑️</button>
+			<button class="edit" data-id="${user.id}">✏️</button>
+		</div>        
+	</div>
+	</div>
 `;
 }
 
@@ -209,17 +209,17 @@ function createUserItem(user) {
  * @param {Element} formulario para con los valores a subir
  */
 function nuevaPelicula(formulario) {
-    const movie = new Pmgr.Movie(-1,
-        formulario.querySelector('input[name="imdb"]').value,
-        formulario.querySelector('input[name="name"]').value,
-        formulario.querySelector('input[name="director"]').value,
-        formulario.querySelector('input[name="actors"]').value,
-        formulario.querySelector('input[name="year"]').value,
-        formulario.querySelector('input[name="minutes"]').value);
-    Pmgr.addMovie(movie).then(() => {
-        formulario.reset() // limpia el formulario si todo OK
-        update();
-    });
+	const movie = new Pmgr.Movie(-1,
+		formulario.querySelector('input[name="imdb"]').value,
+		formulario.querySelector('input[name="name"]').value,
+		formulario.querySelector('input[name="director"]').value,
+		formulario.querySelector('input[name="actors"]').value,
+		formulario.querySelector('input[name="year"]').value,
+		formulario.querySelector('input[name="minutes"]').value);
+	Pmgr.addMovie(movie).then(() => {
+		formulario.reset() // limpia el formulario si todo OK
+		update();
+	});
 }
 
 /**
@@ -227,19 +227,19 @@ function nuevaPelicula(formulario) {
  * @param {Element} formulario para con los valores a subir
  */
 function modificaPelicula(formulario) {
-    const movie = new Pmgr.Movie(
-        formulario.querySelector('input[name="id"]').value,
-        formulario.querySelector('input[name="imdb"]').value,
-        formulario.querySelector('input[name="name"]').value,
-        formulario.querySelector('input[name="director"]').value,
-        formulario.querySelector('input[name="actors"]').value,
-        formulario.querySelector('input[name="year"]').value,
-        formulario.querySelector('input[name="minutes"]').value)
-    Pmgr.setMovie(movie).then(() => {
-        formulario.reset() // limpia el formulario si todo OK
-        modalEditMovie.hide(); // oculta el formulario
-        update();
-    }).catch(e => console.log(e));
+	const movie = new Pmgr.Movie(
+		formulario.querySelector('input[name="id"]').value,
+		formulario.querySelector('input[name="imdb"]').value,
+		formulario.querySelector('input[name="name"]').value,
+		formulario.querySelector('input[name="director"]').value,
+		formulario.querySelector('input[name="actors"]').value,
+		formulario.querySelector('input[name="year"]').value,
+		formulario.querySelector('input[name="minutes"]').value)
+	Pmgr.setMovie(movie).then(() => {
+		formulario.reset() // limpia el formulario si todo OK
+		modalEditMovie.hide(); // oculta el formulario
+		update();
+	}).catch(e => console.log(e));
 }
 
 /**
@@ -247,16 +247,16 @@ function modificaPelicula(formulario) {
  * @param {Element} formulario para con los valores a subir
  */
 function nuevoRating(formulario) {
-    const rating = new Pmgr.Rating(-1,
-        formulario.querySelector('input[name="user"]').value,
-        formulario.querySelector('input[name="movie"]').value,
-        formulario.querySelector('input[name="rating"]:checked').value,
-        formulario.querySelector('input[name="labels"]').value);
-    Pmgr.addRating(rating).then(() => {
-        formulario.reset() // limpia el formulario si todo OK
-        modalRateMovie.hide(); // oculta el formulario
-        update();
-    }).catch(e => console.log(e));
+	const rating = new Pmgr.Rating(-1,
+		formulario.querySelector('input[name="user"]').value,
+		formulario.querySelector('input[name="movie"]').value,
+		formulario.querySelector('input[name="rating"]:checked').value,
+		formulario.querySelector('input[name="labels"]').value);
+	Pmgr.addRating(rating).then(() => {
+		formulario.reset() // limpia el formulario si todo OK
+		modalRateMovie.hide(); // oculta el formulario
+		update();
+	}).catch(e => console.log(e));
 }
 
 /**
@@ -264,17 +264,17 @@ function nuevoRating(formulario) {
  * @param {Element} formulario para con los valores a subir
  */
 function modificaRating(formulario) {
-    const rating = new Pmgr.Rating(
-        formulario.querySelector('input[name="id"]').value,
-        formulario.querySelector('input[name="user"]').value,
-        formulario.querySelector('input[name="movie"]').value,
-        formulario.querySelector('input[name="rating"]:checked').value,
-        formulario.querySelector('input[name="labels"]').value);
-    Pmgr.setRating(rating).then(() => {
-        formulario.reset() // limpia el formulario si todo OK
-        modalRateMovie.hide(); // oculta el formulario
-        update();
-    }).catch(e => console.log(e));
+	const rating = new Pmgr.Rating(
+		formulario.querySelector('input[name="id"]').value,
+		formulario.querySelector('input[name="user"]').value,
+		formulario.querySelector('input[name="movie"]').value,
+		formulario.querySelector('input[name="rating"]:checked').value,
+		formulario.querySelector('input[name="labels"]').value);
+	Pmgr.setRating(rating).then(() => {
+		formulario.reset() // limpia el formulario si todo OK
+		modalRateMovie.hide(); // oculta el formulario
+		update();
+	}).catch(e => console.log(e));
 }
 
 /**
@@ -282,11 +282,11 @@ function modificaRating(formulario) {
  * @param {Element} formulario para con los valores a subir
  */
 function generaPelicula(formulario) {
-    const movie = Pmgr.Util.randomMovie();
-    for (let [k, v] of Object.entries(movie)) {
-        const input = formulario.querySelector(`input[name="${k}"]`);
-        if (input) input.value = v;
-    }
+	const movie = Pmgr.Util.randomMovie();
+	for (let [k, v] of Object.entries(movie)) {
+		const input = formulario.querySelector(`input[name="${k}"]`);
+		if (input) input.value = v;
+	}
 }
 
 /**
@@ -306,30 +306,30 @@ let oldHandler = false;
  * @param {Function} actualiza el contenido del select correspondiente
  */
 function activaBusquedaDropdown(div, actualiza) {
-    let search = document.querySelector(`${div} input[type=search]`);
-    let select = document.querySelector(`${div} select`);
+	let search = document.querySelector(`${div} input[type=search]`);
+	let select = document.querySelector(`${div} select`);
 
-    // vacia el select, lo llena con elementos validos
-    actualiza(`${div} select`);
+	// vacia el select, lo llena con elementos validos
+	actualiza(`${div} select`);
 
-    // manejador
-    const handler = () => {
-        let w = search.value.trim().toLowerCase();
-        let items = document.querySelectorAll(`${div} select>option`);
+	// manejador
+	const handler = () => {
+		let w = search.value.trim().toLowerCase();
+		let items = document.querySelectorAll(`${div} select>option`);
 
-        // filtrado; poner o.style.display = '' muestra, = 'none' oculta
-        items.forEach(o =>
-            o.style.display = (o.innerText.toLowerCase().indexOf(w) > -1) ? '' : 'none');
+		// filtrado; poner o.style.display = '' muestra, = 'none' oculta
+		items.forEach(o =>
+			o.style.display = (o.innerText.toLowerCase().indexOf(w) > -1) ? '' : 'none');
 
-        // muestra un array JS con los seleccionados
-        console.log("Seleccionados:", select.value);
-    };
+		// muestra un array JS con los seleccionados
+		console.log("Seleccionados:", select.value);
+	};
 
-    // filtrado dinámico
-    if (oldHandler) {
-        search.removeEventListener('input', handler);
-    }
-    oldHandler = search.addEventListener('input', handler);
+	// filtrado dinámico
+	if (oldHandler) {
+		search.removeEventListener('input', handler);
+	}
+	oldHandler = search.addEventListener('input', handler);
 }
 
 //
@@ -337,148 +337,155 @@ function activaBusquedaDropdown(div, actualiza) {
 // por ejemplo, Pmgr.addGroup({"name": "nuevoGrupo"}).then(update); // <--
 //
 function update() {
-    const appendTo = (sel, html) =>
-        document.querySelector(sel).insertAdjacentHTML("beforeend", html);
-    const empty = (sel) => {
-        const destino = document.querySelector(sel);
-        while (destino.firstChild) {
-            destino.removeChild(destino.firstChild);
-        }
-    }
-    try {
-        // vaciamos los contenedores
-        empty("#movies");
-        empty("#groups");
-        empty("#users");
+	const appendTo = (sel, html) =>
+		document.querySelector(sel).insertAdjacentHTML("beforeend", html);
+	const empty = (sel) => {
+		const destino = document.querySelector(sel);
+		while (destino.firstChild) {
+			destino.removeChild(destino.firstChild);
+		}
+	}
+	try {
+		// vaciamos los contenedores
+		empty("#movies");
+		empty("#groups");
+		empty("#users");
 
-        // y los volvemos a rellenar con su nuevo contenido
-        Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
-        Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
-        Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
+		// y los volvemos a rellenar con su nuevo contenido
+		Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
+		Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
+		Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
 
-        // y añadimos manejadores para los eventos de los elementos recién creados
-        // botones de borrar películas
-        document.querySelectorAll(".iucontrol.movie button.rm").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                Pmgr.rmMovie(id).then(update);
-            }));
-        // botones de editar películas
-        document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                const movie = Pmgr.resolve(id);
-                const formulario = document.querySelector("#movieEditForm");
-                for (let [k, v] of Object.entries(movie)) {
-                    // rellenamos el formulario con los valores actuales
-                    const input = formulario.querySelector(`input[name="${k}"]`);
-                    if (input) input.value = v;
-                }
+		// y añadimos manejadores para los eventos de los elementos recién creados
+		// botones de borrar películas
+		document.querySelectorAll(".iucontrol.movie button.rm").forEach(b =>
+			b.addEventListener('click', e => {
+				const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+				Pmgr.rmMovie(id).then(update);
+			}));
+		// botones de editar películas
+		document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
+			b.addEventListener('click', e => {
+				const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+				const movie = Pmgr.resolve(id);
+				const formulario = document.querySelector("#movieEditForm");
+				for (let [k, v] of Object.entries(movie)) {
+					// rellenamos el formulario con los valores actuales
+					const input = formulario.querySelector(`input[name="${k}"]`);
+					if (input) input.value = v;
+				}
 
-                modalEditMovie.show(); // ya podemos mostrar el formulario
-            }));
-        // botones de evaluar películas
-        document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
-            b.addEventListener('click', e => {
-                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
-                const formulario = document.querySelector("#movieRateForm");
-                const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
-                if (prev) {
-                    // viejo: copia valores
-                    formulario.querySelector("input[name=id]").value = prev.id;
-                    const input = formulario.querySelector(`input[value="${prev.rating}"]`);
-                    if (input) {
-                        input.checked;
-                    }
-                    // lanza un envento para que se pinten las estrellitas correctas
-                    // see https://stackoverflow.com/a/2856602/15472
-                    if ("createEvent" in document) {
-                        const evt = document.createEvent("HTMLEvents");
-                        evt.initEvent("change", false, true);
-                        input.dispatchEvent(evt);
-                    } else {
-                        input.fireEvent("onchange");
-                    }
-                    formulario.querySelector("input[name=labels]").value = prev.labels;
-                } else {
-                    // nuevo
-                    formulario.reset();
-                    formulario.querySelector("input[name=id]").value = -1;
-                }
-                formulario.querySelector("input[name=movie]").value = id;
-                formulario.querySelector("input[name=user]").value = userId;
-                modalRateMovie.show(); // ya podemos mostrar el formulario
-            }));
-        // botones de borrar grupos
-        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
-            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
-        // botones de borrar usuarios
-        document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
-            b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
-        // botones de informacion de cada pelicula
-        document.querySelectorAll("#movies .card").forEach(m => {
-            m.addEventListener('click', e => {
-                const movieId = e.target.getAttribute("alt")
-                // console.log(id);
-                // console.log(e.target)
-                console.log(`Seleccionada película ${movieId}`);
+				modalEditMovie.show(); // ya podemos mostrar el formulario
+			}));
+		// botones de evaluar películas
+		document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
+			b.addEventListener('click', e => {
+				const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+				const formulario = document.querySelector("#movieRateForm");
+				const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
+				if (prev) {
+					// viejo: copia valores
+					formulario.querySelector("input[name=id]").value = prev.id;
+					const input = formulario.querySelector(`input[value="${prev.rating}"]`);
+					if (input) {
+						input.checked;
+					}
+					// lanza un envento para que se pinten las estrellitas correctas
+					// see https://stackoverflow.com/a/2856602/15472
+					if ("createEvent" in document) {
+						const evt = document.createEvent("HTMLEvents");
+						evt.initEvent("change", false, true);
+						input.dispatchEvent(evt);
+					} else {
+						input.fireEvent("onchange");
+					}
+					formulario.querySelector("input[name=labels]").value = prev.labels;
+				} else {
+					// nuevo
+					formulario.reset();
+					formulario.querySelector("input[name=id]").value = -1;
+				}
+				formulario.querySelector("input[name=movie]").value = id;
+				formulario.querySelector("input[name=user]").value = userId;
+				modalRateMovie.show(); // ya podemos mostrar el formulario
+			}));
+		// botones de borrar grupos
+		document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+			b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+		// botones de borrar usuarios
+		document.querySelectorAll(".iucontrol.user button.rm").forEach(b =>
+			b.addEventListener('click', e => Pmgr.rmUser(e.target.dataset.id).then(update)));
+		// botones de informacion de cada pelicula
+		document.querySelectorAll("#movies .card").forEach(m => {
+			m.addEventListener('click', e => {
+				const movieId = e.target.getAttribute("alt")
+				// console.log(id);
+				// console.log(e.target)
+				console.log(`Seleccionada película ${movieId}`);
 
-                var movie = Pmgr.resolve(movieId)
-                
-                var modalTitle = document.getElementById('movieInfoTitle')
-                var modalImage = document.getElementById('movieInfoImage')
-                var modalDirector = document.getElementById('movieInfoDirector')
-                var modalYear = document.getElementById('movieInfoYear')
-                var modalLength = document.getElementById('movieInfoLength')
-                //TODO los tags
-                var modelTags = document.getElementById('movieInfoLable')
-                var modalRating = document.getElementById('movieInfoRating')
+				var movie = Pmgr.resolve(movieId)
+				
+				var modalTitle = document.getElementById('movieInfoTitle')
+				var modalImage = document.getElementById('movieInfoImage')
+				var modalDirector = document.getElementById('movieInfoDirector')
+				var modalYear = document.getElementById('movieInfoYear')
+				var modalLength = document.getElementById('movieInfoLength')
+				//TODO los tags
+				var modelTags = document.getElementById('movieInfoLable')
+				var modalRating = document.getElementById('movieInfoRating')
 
 
-                modalTitle.textContent = movie.name + " - " + movie.year
-                modalDirector.textContent = movie.director
-                modalLength.textContent = movie.minutes + " minutes"
-                modalYear.textContent = movie.year
-                modalImage.src = serverUrl + "poster/" + movie.imdb
+				modalTitle.textContent = movie.name + " - " + movie.year
+				modalDirector.textContent = movie.director
+				modalLength.textContent = movie.minutes + " minutes"
+				modalYear.textContent = movie.year
+				modalImage.src = serverUrl + "poster/" + movie.imdb
 
-                let ratingFinal = 0;
-                let elementsCounted = 0;
-                
-                for(let i = 0 ; i < movie.ratings.length; i++)
-                {
-                    var rat = movie.ratings[i];
-                    let mov = Pmgr.state.ratings.find(element => element.id == rat)
-                  
-                    if(mov.rating != -1) 
-                    {
-                        ratingFinal += mov.rating
-                        elementsCounted++
-                    }
+				let ratingFinal = 0;
+				let elementsCounted = 0;
+				
+				for(let i = 0 ; i < movie.ratings.length; i++)
+				{
+					var rat = movie.ratings[i];
+					let mov = Pmgr.state.ratings.find(element => element.id == rat)
+				  
+					if(mov.rating != -1) 
+					{
+						ratingFinal += mov.rating
+						elementsCounted++
+					}
+					
+					if(mov.labels == "")
+						modelTags.textContent = ("No tags")
+					else
+						modelTags.textContent = (" " + mov.labels)
+				}
 
-                    modelTags.textContent = (" " + mov.labels)
-                }
+				var fullstars = Math.round(ratingFinal / elementsCounted)				
+				var emptyStars = 5 - fullstars
 
-                var fullstars = (ratingFinal / elementsCounted)
-                var emptyStars = 5 - fullstars
+				
+				if(!fullstars)
+				modalRating.textContent = "No rating"
+				else
+					modalRating.textContent =  '⭐' .repeat(fullstars) + ' - '.repeat(emptyStars)
+				
+				modalMovieInfo.show()
+			})
+		})
 
-                modalRating.textContent =  '⭐' .repeat(fullstars) + ' - '.repeat(emptyStars)
-                
-                modalMovieInfo.show()
-            })
-        })
+	} catch (e) {
+		console.log('Error actualizando', e);
+	}
 
-    } catch (e) {
-        console.log('Error actualizando', e);
-    }
-
-    /* para que siempre muestre los últimos elementos disponibles */
-    activaBusquedaDropdown('#dropdownBuscablePelis',
-        (select) => {
-            empty(select);
-            Pmgr.state.movies.forEach(m =>
-                appendTo(select, `<option value="${m.id}">${m.name}</option>`));
-        }
-    );
+	/* para que siempre muestre los últimos elementos disponibles */
+	activaBusquedaDropdown('#dropdownBuscablePelis',
+		(select) => {
+			empty(select);
+			Pmgr.state.movies.forEach(m =>
+				appendTo(select, `<option value="${m.id}">${m.name}</option>`));
+		}
+	);
 }
 
 //
@@ -499,123 +506,123 @@ Pmgr.connect(serverUrl + "api/");
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
 const login = (username, password) => {
-    Pmgr.login(username, password)
-        .then(d => {
-            console.log("login ok!", d);
-            update(d);
-            userId = Pmgr.state.users.find(u =>
-                u.username == username).id;
-        })
-        .catch(e => {
-            console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
-            console.log(`el servidor dice: "${e.text}"`);
-        });
+	Pmgr.login(username, password)
+		.then(d => {
+			console.log("login ok!", d);
+			update(d);
+			userId = Pmgr.state.users.find(u =>
+				u.username == username).id;
+		})
+		.catch(e => {
+			console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
+			console.log(`el servidor dice: "${e.text}"`);
+		});
 }
 
-                 // -- IMPORTANTE --
+				 // -- IMPORTANTE --
 login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
-                 //   y puedes re-logearte como alguien distinto desde  la consola
-                 //   llamando a login() con otro usuario y contraseña
+				 //   y puedes re-logearte como alguien distinto desde  la consola
+				 //   llamando a login() con otro usuario y contraseña
 {
-    /** 
-     * Asocia comportamientos al formulario de añadir películas 
-     * en un bloque separado para que las constantes y variables no salgan de aquí, 
-     * manteniendo limpio el espacio de nombres del fichero
-     */
-    const f = document.querySelector("#addMovie form");
-    // botón de enviar
-    f.querySelector("button[type='submit']").addEventListener('click', (e) => {
-        if (f.checkValidity()) {
-            e.preventDefault(); // evita que se haga lo normal cuando no hay errores
-            nuevaPelicula(f); // añade la pelicula según los campos previamente validados
-        }
-    });
-    // botón de generar datos (sólo para pruebas)
-    f.querySelector("button.generar").addEventListener('click',
-        (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
+	/** 
+	 * Asocia comportamientos al formulario de añadir películas 
+	 * en un bloque separado para que las constantes y variables no salgan de aquí, 
+	 * manteniendo limpio el espacio de nombres del fichero
+	 */
+	const f = document.querySelector("#addMovie form");
+	// botón de enviar
+	f.querySelector("button[type='submit']").addEventListener('click', (e) => {
+		if (f.checkValidity()) {
+			e.preventDefault(); // evita que se haga lo normal cuando no hay errores
+			nuevaPelicula(f); // añade la pelicula según los campos previamente validados
+		}
+	});
+	// botón de generar datos (sólo para pruebas)
+	f.querySelector("button.generar").addEventListener('click',
+		(e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
 } {
-    /**
-     * formulario para modificar películas
-     */
-    const f = document.querySelector("#movieEditForm");
-    // botón de enviar
-    document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            modificaPelicula(f); // modifica la pelicula según los campos previamente validados
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
+	/**
+	 * formulario para modificar películas
+	 */
+	const f = document.querySelector("#movieEditForm");
+	// botón de enviar
+	document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
+		console.log("enviando formulario!");
+		if (f.checkValidity()) {
+			modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+		} else {
+			e.preventDefault();
+			f.querySelector("button[type=submit]").click(); // fuerza validacion local
+		}
+	});
 } {
-    /**
-     * formulario para evaluar películas; usa el mismo modal para añadir y para editar
-     */
-    const f = document.querySelector("#movieRateForm");
-    // botón de enviar
-    document.querySelector("#movieRate button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            if (f.querySelector("input[name=id]").value == -1) {
-                nuevoRating(f);
-            } else {
-                modificaRating(f); // modifica la evaluación según los campos previamente validados
-            }
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
-    // activa rating con estrellitas
-    stars("#movieRateForm .estrellitas");
+	/**
+	 * formulario para evaluar películas; usa el mismo modal para añadir y para editar
+	 */
+	const f = document.querySelector("#movieRateForm");
+	// botón de enviar
+	document.querySelector("#movieRate button.edit").addEventListener('click', e => {
+		console.log("enviando formulario!");
+		if (f.checkValidity()) {
+			if (f.querySelector("input[name=id]").value == -1) {
+				nuevoRating(f);
+			} else {
+				modificaRating(f); // modifica la evaluación según los campos previamente validados
+			}
+		} else {
+			e.preventDefault();
+			f.querySelector("button[type=submit]").click(); // fuerza validacion local
+		}
+	});
+	// activa rating con estrellitas
+	stars("#movieRateForm .estrellitas");
 }
 
 /**
  * búsqueda básica de películas, por título
  */
 document.querySelector("#movieSearch").addEventListener("input", e => {
-    const v = e.target.value.toLowerCase();
-    let criteria = null;
-        //Los criterios solo se aplican si el Collapsable esta activo
-    if(document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null){
-        criteria = document.querySelector("#form-advSearch");
-    }
-    document.querySelectorAll("#movies div.col").forEach(c => {
-        const m = Pmgr.resolve(c.dataset.id);
-        let ok = m.name.toLowerCase().indexOf(v) >= 0;
-        //Los criterios solo se aplican si el Collapsable esta activo
-        if(criteria != null){
-            //Director
-            const dirCrit = criteria.querySelector("#searchDirector").value
-            if(dirCrit)
-                ok = ok && (m.director.indexOf(dirCrit) >= 0)
-            //Estos valores siempre serán válidos
-            //Year
-            const minYear = criteria.querySelector("#yearRangeStart").value;
-            const maxYear = criteria.querySelector("#yearRangeEnd").value;
-            ok = ok && (m.year <= maxYear && m.year >= minYear)
-            //Length
-            const minLength = criteria.querySelector("#lengthRangeStart").value;
-            const maxLength = criteria.querySelector("#lengthRangeEnd").value;
-            ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
-            //TODO ratings
+	const v = e.target.value.toLowerCase();
+	let criteria = null;
+		//Los criterios solo se aplican si el Collapsable esta activo
+	if(document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null){
+		criteria = document.querySelector("#form-advSearch");
+	}
+	document.querySelectorAll("#movies div.col").forEach(c => {
+		const m = Pmgr.resolve(c.dataset.id);
+		let ok = m.name.toLowerCase().indexOf(v) >= 0;
+		//Los criterios solo se aplican si el Collapsable esta activo
+		if(criteria != null){
+			//Director
+			const dirCrit = criteria.querySelector("#searchDirector").value
+			if(dirCrit)
+				ok = ok && (m.director.indexOf(dirCrit) >= 0)
+			//Estos valores siempre serán válidos
+			//Year
+			const minYear = criteria.querySelector("#yearRangeStart").value;
+			const maxYear = criteria.querySelector("#yearRangeEnd").value;
+			ok = ok && (m.year <= maxYear && m.year >= minYear)
+			//Length
+			const minLength = criteria.querySelector("#lengthRangeStart").value;
+			const maxLength = criteria.querySelector("#lengthRangeEnd").value;
+			ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
+			//TODO ratings
 
-            //TODO tags (no hay al parecer)
-            tagList = criteria.querySelector("#tagList").value.split(', ');
-            let movieTags = [];
-            m.ratings.forEach(element => {
-                //TODO filtro de contexto para busquedas por grupo
-                //Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
-                console.log(element.labels)
-                movieTags.push(element.labels)
-            });
-            if(tagList.length > 0)
-                ok = ok && movieTags.every( r => tagList.indexOf(r) >= 0)
-        }
-        // aquí podrías aplicar muchos más criterios
-        c.style.display = ok ? '' : 'none';
-    });
+			//TODO tags (no hay al parecer)
+			tagList = criteria.querySelector("#tagList").value.split(', ');
+			let movieTags = [];
+			m.ratings.forEach(element => {
+				//TODO filtro de contexto para busquedas por grupo
+				//Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
+				console.log(element.labels)
+				movieTags.push(element.labels)
+			});
+			if(tagList.length > 0)
+				ok = ok && movieTags.every( r => tagList.indexOf(r) >= 0)
+		}
+		// aquí podrías aplicar muchos más criterios
+		c.style.display = ok ? '' : 'none';
+	});
 })
 
 // cosas que exponemos para poder usarlas desde la consola
