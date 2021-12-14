@@ -318,8 +318,7 @@ const update_profile = (actualUser) => {
         document.getElementById("edit_saveb").disabled = true;
         document.getElementById("profile_saveb").disabled = false;
         
-        
-        
+        document.getElementById("password_profile").disabled = false;
     });
 
         
