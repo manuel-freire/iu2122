@@ -428,15 +428,20 @@ function update() {
                 var modalImage = document.getElementById('movieInfoImage')
                 var modalDirector = document.getElementById('movieInfoDirector')
                 var modalYear = document.getElementById('movieInfoYear')
-                var modalLength = document.getElementById('movieInfoYear')
+                var modalLength = document.getElementById('movieInfoLength')
+                var modalActors = document.getElementById('movieInfoActors')
 
                 //TODO ratings
 
                 modalTitle.textContent = movie.name + " - " + movie.year
                 modalDirector.textContent = movie.director
-                modalLength.textContent = movie.minutes
+                modalLength.textContent = movie.minutes + " minutes"
                 modalYear.textContent = movie.year
+                modalActors.textContent = movie.actors
                 modalImage.src = serverUrl + "poster/" + movie.imdb
+
+                //Set edit button id for later use
+                document.getElementById('editMovieButton').setAttribute("data-id", movieId)
 
                 modalMovieInfo.show()
             })
@@ -464,8 +469,8 @@ function update() {
 // modales, para poder abrirlos y cerrarlos desde código JS
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
-const modalAddMovie = new bootstrap.Modal(document.querySelector('#movieAdd'));
 const modalMovieInfo = new bootstrap.Modal(document.querySelector('#movieInfo'));
+const modalConfirmDelete = new bootstrap.Modal(document.querySelector('#confirmDelete'));
 
 // si lanzas un servidor en local, usa http://localhost:8080/
 const serverUrl = "http://gin.fdi.ucm.es/iu/";
@@ -488,10 +493,10 @@ const login = (username, password) => {
         });
 }
 
-                 // -- IMPORTANTE --
+// -- IMPORTANTE --
 login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
-                 //   y puedes re-logearte como alguien distinto desde  la consola
-                 //   llamando a login() con otro usuario y contraseña
+//   y puedes re-logearte como alguien distinto desde  la consola
+//   llamando a login() con otro usuario y contraseña
 {
     /** 
      * Asocia comportamientos al formulario de añadir películas 
@@ -506,10 +511,14 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
             nuevaPelicula(f); // añade la pelicula según los campos previamente validados
         }
     });
+
+    /*
     // botón de generar datos (sólo para pruebas)
     f.querySelector("button.generar").addEventListener('click',
         (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
-} {
+    */
+}
+{
     /**
      * formulario para modificar películas
      */
@@ -524,7 +533,8 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
             f.querySelector("button[type=submit]").click(); // fuerza validacion local
         }
     });
-} {
+}
+{
     /**
      * formulario para evaluar películas; usa el mismo modal para añadir y para editar
      */
@@ -552,19 +562,113 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
  */
 document.querySelector("#movieSearch").addEventListener("input", e => {
     const v = e.target.value.toLowerCase();
-    document.querySelectorAll("#movies div.card").forEach(c => {
-        const m = Pmgr.resolve(c.dataset.id);
-        // aquí podrías aplicar muchos más criterios
-        const ok = m.name.toLowerCase().indexOf(v) >= 0;
-        c.style.display = ok ? '' : 'none';
-    });
+    searchMovie(v)
 })
 
+document.querySelector("#submitSearch").addEventListener('click', e => {
+    const v = document.querySelector("#movieSearch").value.toLowerCase()
+    searchMovie(v)
+})
+
+//Edit movie
+document.querySelector("#editMovieButton").addEventListener('click', e => {
+    //Set editMovie details to existing ones
+    let movieEditForm = document.querySelector("#movieEditForm")
+    const movieId = e.target.getAttribute("data-id")
+    var movie = Pmgr.resolve(movieId)
+
+    movieEditForm.querySelector("input[name='id']").value = movie.id
+    movieEditForm.querySelector("input[name='name']").value = movie.name
+    movieEditForm.querySelector("input[name='imdb']").value = movie.imdb
+    movieEditForm.querySelector("input[name='director']").value = movie.director
+    movieEditForm.querySelector("input[name='actors']").value = movie.actors
+    movieEditForm.querySelector("input[name='year']").value = movie.year
+    movieEditForm.querySelector("input[name='minutes']").value = movie.minutes
+    movieEditForm.querySelector("img").src = serverUrl + "poster/" + movie.imdb
+
+    modalMovieInfo.hide()
+    modalEditMovie.show()
+})
+
+//Add movie
+document.querySelector("#addMovieButton").addEventListener('click', e => {
+    //Clear all existing input
+    var movieEditForm = document.querySelector("#movieEditForm")
+    movieEditForm.querySelector("img").src = "img/default-poster.jpg"
+    movieEditForm.querySelectorAll("input").forEach(inp => {
+        inp.value = ''
+    })
+
+    modalEditMovie.show()
+})
+
+//delete movie prompt
+document.querySelector("#deleteEditingMovie").addEventListener('click',e=>{
+    modalConfirmDelete.show()
+})
+
+//confirm movie deletion
+document.querySelector("#confirmMovieDeletion").addEventListener('click',e=>{
+    //Borrar la peli
+    let movieEditForm = document.querySelector("#movieEditForm")
+    let movieId = movieEditForm.querySelector("input[name='id']").value
+    if(movieId != ''){
+        Pmgr.rmMovie(movieId)
+    }
+    //Toast de borrado exitoso
+
+    //hide modals
+    modalConfirmDelete.hide()
+    modalEditMovie.hide()
+})
+
+function searchMovie(title) {
+    let criteria = null;
+    //Los criterios solo se aplican si el Collapsable esta activo
+    if (document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null) {
+        criteria = document.querySelector("#form-advSearch");
+    }
+    document.querySelectorAll("#movies div.col").forEach(c => {
+        const m = Pmgr.resolve(c.dataset.id);
+        let ok = m.name.toLowerCase().indexOf(title) >= 0;
+        //Los criterios solo se aplican si el Collapsable esta activo
+        if (criteria != null) {
+            //Director
+            const dirCrit = criteria.querySelector("#searchDirector").value
+            if (dirCrit)
+                ok = ok && (m.director.indexOf(dirCrit) >= 0)
+            //Estos valores siempre serán válidos
+            //Year
+            const minYear = criteria.querySelector("#yearRangeStart").value;
+            const maxYear = criteria.querySelector("#yearRangeEnd").value;
+            ok = ok && (m.year <= maxYear && m.year >= minYear)
+            //Length
+            const minLength = criteria.querySelector("#lengthRangeStart").value;
+            const maxLength = criteria.querySelector("#lengthRangeEnd").value;
+            ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
+            //TODO ratings
+            //TODO tags
+            tagList = criteria.querySelector("#tagList").value.split(', ');
+            let movieTags = [];
+            m.ratings.forEach(element => {
+                //TODO filtro de contexto para busquedas por grupo
+                //Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
+                movieTags.push(element.labels)
+            });
+            if (tagList.length > 0)
+                ok = ok && movieTags.every(r => tagList.indexOf(r) >= 0)
+        }
+        // aquí podrías aplicar muchos más criterios
+        c.style.display = ok ? '' : 'none';
+    });
+}
+
 // cosas que exponemos para poder usarlas desde la consola
+//TODO usar un foreach para ocultar los modales cuando despliegas
 window.modalEditMovie = modalEditMovie;
 window.modalRateMovie = modalRateMovie;
-window.modalAddMovie = modalAddMovie; //TODO modalRateMovie uses js to share modal with Add
 window.modalMovieInfo = modalMovieInfo;
+window.modalConfirmDelete = modalConfirmDelete;
 window.update = update;
 window.login = login;
 window.userId = userId;

@@ -70,92 +70,84 @@
         </div>
     </div>
 
-    <!-- Modal para editar películas -->
+    <!-- Modal para añadir/editar películas -->
     <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="movieEditLabel">Editando película</h5>
+                    <h5 class="modal-title" id="movieEditLabel">Add/Edit movie</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body " id="addMovie">
+                    <!--class="formularioValidado"?-->
                     <form class="row" id="movieEditForm">
                         <input type="hidden" name="id">
+                        <div class="col-md-3">
+                            <img class="rounded img-fluid" alt="Movie poster" src="img/default-poster.jpg" id="-">
+                        </div>
                         <!-- llenar desde JS -->
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="name" placeholder="Título" required>
-                        </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control" name="imdb"
+                        <div class="col-md-4 col-12">
+                            <input type="text" class="form-control" id="f1" name="name" placeholder="Title" required>
+                            <input type="text" class="form-control" id="f2" name="imdb"
                                 placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
-                        </div>
-
-                        <div class="col-md-4">
                             <input type="text" class="form-control" name="director" placeholder="Director" required>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="text" class="form-control" name="actors" placeholder="Actores" required>
-                        </div>
-
-                        <div class="col-md-4">
-                            <input type="number" class="form-control" name="year" placeholder="Año de estreno"
-                                min="1800" max="2022" required>
-                        </div>
-                        <div class="col-md-8">
-                            <input type="number" class="form-control" name="minutes" placeholder="Duración en minutos"
+                            <input type="text" class="form-control" name="actors" placeholder="Actors" required>
+                            <input type="number" class="form-control" name="year" placeholder="Year" min="1800"
+                                max="2022" required>
+                            <input type="number" class="form-control" name="minutes" placeholder="Length in minutes"
                                 min="0" max="600" required>
+                            <input type="text" class="form-control" name="synopsis" placeholder="Synopsis">
                         </div>
+                        <div class="col-md-4">
+                            <!--TODO ratings-->
+                            <p>⭐⭐⭐⭐⭐</p>
+                            <p>Tags</p>
+                        </div>
+                        <div class="col-md-1 col-12 d-flex align-content-center flex-wrap ">
+                            <div class="row p-4">
+                                <button type="button" class="btn btn-light border-secondary" id="deleteEditingMovie">🗑️</button>
+                            </div>
+                            <div class="row p-4">
+                                <button type="button" class="btn btn-light border-secondary" id="discardEditingMovie"
+                                    data-bs-dismiss="modal" aria-label="Close">❌</button>
+                            </div>
+                            <div class="row p-4">
+                                <button class="btn btn-light border-secondary edit" type="submit"
+                                    id="saveEditingMovie">✔</button>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="col-12 botones">
+                            <button class="btn btn-primary" type="submit">Añadir</button>
+                            <button class="btn btn-secondary generar" type="button">Generar</button>
+                        </div>
+                        -->
                         <button style="display: none" type="submit">Invisible, sólo para validación</button>
                     </form>
                 </div>
+                <!--
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-primary edit">Guardar cambios</button>
                 </div>
+                -->
             </div>
         </div>
     </div>
 
-    <!-- Modal para añadir pelicula-->
-    <div class="modal fade" id="movieAdd" tabindex="-1" aria-labelledby="movieAddLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
+    <!-- Modal para confirmar borrado de pelicula -->
+    <div class="modal fade" id="confirmDelete" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title" id="movieAddLabel">Add a movie</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h5 class="modal-title">Confirm movie deleteion</h5>
                 </div>
                 <div class="modal-body">
-                    <div id="addMovie" class="formularioValidado">
-                        <form class="row">
-                            <div class="col-md-2">
-                                <!--TODO Meter imagen de pelicula-->
-                                <p>a</p>
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="f1" name="name" placeholder="Title"
-                                    required>
-                                <input type="text" class="form-control" id="f2" name="imdb"
-                                    placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
-                                <input type="text" class="form-control" name="director" placeholder="Director" required>
-                                <input type="text" class="form-control" name="actors" placeholder="Actors" required>
-                                <input type="number" class="form-control" name="year" placeholder="Year" min="1800"
-                                    max="2022" required>
-                                <input type="number" class="form-control" name="minutes" placeholder="Length in minutes"
-                                    min="0" max="600" required>
-                                <input type="text" class="form-control" name="synopsis" placeholder="Synopsis">
-                            </div>
-                            <div class="col-md-4">
-                                <!--TODO ratings-->
-                                <p>⭐⭐⭐⭐⭐</p>
-                                <p>Tags</p>
-                            </div>
-                            <div class="col-12 botones">
-                                <button class="btn btn-primary" type="submit">Añadir</button>
-                                <button class="btn btn-secondary generar" type="button">Generar</button>
-                            </div>
-                        </form>
-
-                    </div>
+                    <p>Are you sure you want to delete this movie?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="confirmMovieDeletion">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
         </div>
@@ -163,28 +155,29 @@
 
     <!-- Modal info de pelicula-->
     <div class="modal fade" id="movieInfo" tabindex="-1" aria-labelledby="movieInfoLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title" id="movieInfoLabel">Movie - Year</h3>
+                    <button type="button" id="editMovieButton" data-id="" class="btn-light">📝</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-2 col-12">
-                                <!--TODO Meter imagen de pelicula-->
-                                <img class="rounded" alt="Movie poster" src="" id="movieInfoImage">
+                            <div class="col-md-3 col-12">
+                                <img class="rounded img-fluid" alt="Movie poster" src="" id="movieInfoImage">
                             </div>
-                            <div class="col-md-5 col-12">
+                            <div class="col-md-4 col-12">
                                 <p>
                                     <b>Directed by</b> <span id="movieInfoDirector"></span><br>
                                     <b>Year</b> <span id="movieInfoYear"></span><br>
                                     <b>Length</b> <span id="movieInfoLength"></span><br>
+                                    <b>Actors</b> <span id="movieInfoActors"></span><br>
                                     <b>Synopsis</b><br><span id="movieInfoYear"></span>
                                 </p>
                             </div>
-                            <div class="col-md-5 col-12">
+                            <div class="col-md-4 col-12">
                                 <!--TODO ratings-->
                                 <p>⭐⭐⭐⭐⭐</p>
                                 <p>Tags</p>
@@ -239,36 +232,107 @@
     <!-- container-fluid expande el contenedor para que ocupe todo el espacio disponible -->
     <div class="container-fluid">
         <div class="row justify-content-center">
-            <!-- panel lateral, demostrando acordeones (secciones expansibles) -->
             <div class="col-md-5 col-12 align-self-center">
                 <div class="row text-center m-2">
                     <h1 class="display-3">Graphical Movie Database</h1>
                 </div>
-                <div class="row md-5 gx-1">
+                <div class="row gx-1">
                     <div class="col-1">
-                        <input type="button" class="btn btn-light border-secondary" value="➕">
+                        <button type="button" class="btn btn-light border-secondary" id="addMovieButton">➕</button>
                     </div>
                     <div class="col-9">
                         <input type="search" class="form-control" id="movieSearch" placeholder="Search movie"
                             aria-describedby="searchMovieLabel">
                     </div>
                     <div class="col-1">
-                        <input type="button" class="btn btn-light border-secondary" value="🕵️‍♂️">
+                        <input type="button" id="buttonAdvSearch" class="btn btn-light border-secondary"
+                            data-bs-toggle="collapse" data-bs-target="#advSearch" aria-expanded="false"
+                            aria-controls="advSearch" value="🕵️‍♂️">
                     </div>
                     <div class="col-1">
-                        <input type="button" class="btn btn-light border-secondary" value="🔍">
+                        <input type="button" id="submitSearch" class="btn btn-light border-secondary" value="🔍">
                     </div>
                 </div>
+                <div class="row mt-4 collapse" id="advSearch">
+                    <form method="post" id="form-advSearch">
+                        <div class="container-fluid">
+                            <div class="row mb-3">
+                                <input type="text" class="form-control" id="searchDirector" placeholder="Director">
+                            </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="yearRangeStart" class="form-label">After: </label>
+                                    <input type="number" class="form-number" min="1900" max="2022" value="1900"
+                                        oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="1900" max="2022" value="1900" step="1"
+                                        id="yearRangeStart" oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                                <div class="col-6">
+                                    <label for="yearRangeEnd" class="form-label">Before: </label>
+                                    <input type="number" class="form-number" min="1900" max="2022" value="2022"
+                                        oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="1900" max="2022" value="2022" step="1"
+                                        id="yearRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="lengthRangeStart" class="form-label">Longer than: </label>
+                                    <input type="number" class="form-number" min="0" max="240" value="0"
+                                        oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="0" max="240" value="0" step="1"
+                                        id="lengthRangeStart" oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                                <div class="col-6">
+                                    <label for="lengthRangeEnd" class="form-label">Shorter than: </label>
+                                    <input type="number" class="form-number" min="0" max="240" value="240"
+                                        oninput="this.nextElementSibling.value = this.value">
+                                    <input type="range" class="form-range" min="0" max="240" value="240" step="1"
+                                        id="lengthRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row px-2">
+                                <label for="tagList">Ratings</label>
+                                <div class="col-2">
+                                    <div class="btn-group" role="group" aria-label="rateContext">
+                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
+                                        <button type="button" class="btn btn-secondary">Group</button>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <!-- TODO controlador de estrellitas -->
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="row px-2">
+                                <label for="tagList">Tags</label>
+                                <div class="col-2">
+                                    <div class="btn-group" role="group" aria-label="tagContext">
+                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
+                                        <button type="button" class="btn btn-secondary">Group</button>
+                                    </div>
+                                </div>
+                                <div class="col-6 px-2">
+                                    <input id="tagList" type="text " class="col-sm-8 form-control">
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Force next columns to break to new line -->
-        <div class="w-100 m-3"></div>
+    <!-- Force next columns to break to new line -->
+    <div class="w-100 m-3"></div>
 
-        <div class="row row-cols-2 row-cols-lg-5 g-2" id="movies">
-        </div>
+    <div class="row row-cols-2 row-cols-lg-5 g-2" id="movies">
+    </div>
     </div>
     <hr>
+    <!--
     <div class="row">
         <div class="col-sm-8 anuncio">
             <h2>Ejemplo de formulario con validación y menú emergente</h2>
@@ -301,7 +365,10 @@ Hello, World!
                 </textarea>
                     </div>
                 </div>
-                <!-- botón para enviar el formulario; justify-content-end lo justifica a la derecha -->
+
+                -->
+    <!-- botón para enviar el formulario; justify-content-end lo justifica a la derecha -->
+    <!--
                 <div class="form-row justify-content-end">
                     <button type="submit" id="boton-publicar" class="btn btn-primary">Publicar anuncio
                     </button>
@@ -321,8 +388,9 @@ Hello, World!
                 </select>
             </div>
         </div>
-
+        
     </div>
+    -->
     </div>
 
     <!-- Modal de selección de categorías (lanzado por un botón) -->
