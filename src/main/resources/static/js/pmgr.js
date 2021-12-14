@@ -353,8 +353,21 @@ function update() {
 
         // y los volvemos a rellenar con su nuevo contenido
         Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
-        Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
         Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
+        var userGroups = Pmgr.resolve(userId)
+        if(userGroups != undefined && userGroups.groups.length > 0){
+            console.log(userGroups.groups)
+            Pmgr.state.groups.forEach(o => {
+                if(userGroups.groups.indexOf(o.id) >= 0){
+                    console.log("Adding group",o)
+                    appendTo("#groups", createGroupItem(o))
+                }
+            });
+        }else{
+            appendTo("#groups","<p>You aren't in any groups!</h1>")
+        }
+        
+        
 
         // y añadimos manejadores para los eventos de los elementos recién creados
         // botones de borrar películas
