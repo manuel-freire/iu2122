@@ -311,19 +311,23 @@ const update_profile = (actualUser) => {
 
     let currentUser = Pmgr.state.users.find(e => e.id == userId);
 
-    if (currentUser.role !== "User") {
+    console.log(currentUser.role);
+
+    if (currentUser.role.split(',').includes("ADMIN") ||  currentUser.role.split(',').includes("ROOT")) {
         html +=
             `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
-            <button type="button" class="change_user_btn btn btn-outline-success m-1">Change user</button>
-            <button type="button" class="rm_user_btn btn btn-outline-success m-1">Remove user</button>
-            <button type="button" class="overtake_btn btn btn-danger m-1">Overtake</button>
-        </div>`;
+                <button type="button" class="change_user_btn btn btn-outline-success m-1">Change user</button>
+                <button type="button" class="rm_user_btn btn btn-outline-success m-1">Remove user</button>
+                <button type="button" class="overtake_btn btn btn-danger m-1">Overtake</button>
+             </div>`;
     } else if (actualUser.id === currentUser.id) {
         html +=
             `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
-            <button type="button" class="change_password_btn change_pwd_btn btn btn-outline-success m-1">Change password</button>
-            <button type="button" class="rm_user_btn btn btn-outline-danger m-1">Delete account</button>
-        </div>`;
+                <button type="button" class="change_password_btn change_pwd_btn btn btn-outline-success m-1">Change password</button>
+                <button type="button" class="rm_user_btn btn btn-outline-danger m-1">Delete account</button>
+             </div>`;
+    } else{
+
     }
 
     html += "</div>";
