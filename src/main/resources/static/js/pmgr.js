@@ -532,7 +532,7 @@ function update() {
             `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${password}">
+            <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${password}">
             <label for="floatingInputGrid">Password</label>
           </div>
         </div>`)
@@ -558,13 +558,22 @@ function update() {
         document.querySelector("#edit_profileb").addEventListener("click", e => {
             document.querySelector("#save_profileb").disabled = false;
             document.querySelector("#edit_profileb").disabled = true;
+
+            appendTo('#password_profile',
+            `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" id="floatingInputGrid" placeholder="Password" value="${password}">
+            <label for="floatingInputGrid">Password</label>
+          </div>
+        </div>`)
         });
 
-        document.querySelector("#edit_profileb").addEventListener("click", e => {
+        /*document.querySelector("#edit_profileb").addEventListener("click", e => {
             // aquí coger los datos de los inputs que se puedan cambiar y hacer setuser id, contraseña
             document.querySelector("#edit_profileb").disabled = false;
             document.querySelector("#save_profileb").disabled = true;
-        });
+        });*/
 
 
         console.log(actualUser)
