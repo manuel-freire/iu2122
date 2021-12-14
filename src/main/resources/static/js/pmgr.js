@@ -49,9 +49,11 @@ const login = (username, password) => {
     Pmgr.login(username, password)
         .then(msg => {
             console.info("Pmgr.login says: ", msg);
-            userId = Pmgr.state.users.find(u => u.username == username).id;
+            let user = Pmgr.state.users.find(u => u.username == username);
+            userId = user.id;
             update();
             console.info("Logged in as ", username);
+            document.querySelector("#profile_nav").innerHTML = user.username;
         })
         .catch(e => {
             console.error('Error ', e.status, ': ', e.text);
@@ -265,10 +267,17 @@ function generaPelicula(formulario) {
 
 const update_profile = (actualUser) => {
 
+    let role = "User";
 
-    empty('#profile_view');
-    appendTo('#profile_view',
-    `
+    if (actualUser.role.split(',').includes("ADMIN"))
+        role = "Admin";
+
+    if (actualUser.role.split(',').includes("ROOT"))
+        role = "Root";
+
+
+    let html =
+        `
     <div id="profile_form" class="col-md-6 align-items-stretch">
         <h2 id="title_profile"> ${actualUser.username} </h2>
 
@@ -284,7 +293,7 @@ const update_profile = (actualUser) => {
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
-                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.role}">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${role}">
                     <label for="floatingInputGrid">Role</label>
                 </div>
             </div>
@@ -298,17 +307,28 @@ const update_profile = (actualUser) => {
                 </div>
             </div>
         </div>
+    `;
 
-        <div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5">
-            <button type="button" class="btn btn-outline-success m-1">Change password</button>
-            <button type="button" class="btn btn-outline-success m-1">Remove user</button>
-        </div>
-        
-    </div>
-    `
-    );
+    let currentUser = Pmgr.state.users.find(e => e.id == userId);
 
-    console.log(actualUser);
+    if (currentUser.role !== "User") {
+        html +=
+            `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
+            <button type="button" class="change_user_btn btn btn-outline-success m-1">Change user</button>
+            <button type="button" class="rm_user_btn btn btn-outline-success m-1">Remove user</button>
+            <button type="button" class="overtake_btn btn btn-danger m-1">Overtake</button>
+        </div>`;
+    } else if (actualUser.id === currentUser.id) {
+        html +=
+            `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
+            <button type="button" class="change_password_btn change_pwd_btn btn btn-outline-success m-1">Change password</button>
+            <button type="button" class="rm_user_btn btn btn-outline-danger m-1">Delete account</button>
+        </div>`;
+    }
+
+    html += "</div>";
+
+    appendTo('#profile_view', html);
 }
 
 const update = () => {
@@ -353,6 +373,10 @@ const update = () => {
                         break;
                     case "profile":
                         document.querySelector("#profile_view").classList.remove("d-none");
+                        let currentUser = state.users.find(e => e.id == userId);
+                        empty('#profile_view');
+                        update_profile(currentUser);
+                        update();
                         break;
                     case "home":
                     default:
@@ -365,8 +389,7 @@ const update = () => {
         state.movies.forEach(movie => appendTo('#home_row', createMovieItem(movie)));
         state.groups.forEach(group => appendTo('#group_row', createGroupItem(group)));
         state.users.forEach(user => appendTo('#user_list', createUserItem(user)));
-        let currentUser = state.users.find(e => e.id == userId);
-        update_profile(currentUser);
+
 
         // botones de borrar grupos AQUI SI
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
@@ -378,39 +401,41 @@ const update = () => {
                 let user = state.users.find(e => e.id == user_id);
                 views.forEach(e => hide('#' + e));
                 document.querySelector("#profile_view").classList.remove("d-none");
+                empty('#profile_view');
                 update_profile(user);
+                update();
             });
         });
 
-
-        document.querySelector("#edit_saveb").addEventListener("click", e => {
-            document.getElementById("edit_saveb").disabled = true;
-            document.getElementById("profile_saveb").disabled = false;
-            empty("password_profile")
-            appendTo('#password_profile',
-                `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
-            <label for="floatingInputGrid">Password</label>
-          </div>
-        </div>`)
+        document.querySelectorAll(".overtake_btn").forEach(e => {
+            e.addEventListener('click', e => {
+                let uid = e.target.parentElement.dataset.id;
+                let user = state.users.find(u => u.id == uid);
+                if(!user.role.split(',').includes('ADMIN') && !user.role.split(',').includes('ROOT') ){
+                    let new_user = new Pmgr.User(
+                        user.id,
+                        user.username,
+                        '12345',
+                        user.role,
+                        user.groups,
+                        user.requests,
+                        user.ratings
+                    );
+                    Pmgr.setUser(new_user).then(
+                        () => {
+                            login(user.username, '12345');
+                        }
+                    );
+                }
+                else if(user.username === 'g2'){
+                    login('g2', 'eSMDK');
+                }
+               
+            })
         });
-
-        document.querySelector("#profile_saveb").addEventListener("click", e => {
-            document.getElementById("edit_saveb").disabled = false;
-            document.getElementById("profile_saveb").disabled = true;
-
-            empty("password_profile")
-            appendTo('#password_profile',
-                `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
-            <label for="floatingInputGrid">Password</label>
-          </div>
-        </div>`)
-        });
+        document.querySelector(".change_user_btn");
+        document.querySelector(".rm_user_btn");
+        document.querySelector(".change_password_btn");
 
     } catch (e) {
         console.error("Error updating: ", e);
