@@ -496,9 +496,9 @@ const login = (username, password) => {
     Pmgr.login(username, password)
         .then(d => {
             console.log("login ok!", d);
-            update(d);
             userId = Pmgr.state.users.find(u =>
                 u.username == username).id;
+            update(d);
         })
         .catch(e => {
             console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
