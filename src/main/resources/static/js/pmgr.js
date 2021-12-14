@@ -152,15 +152,6 @@ const createGroupItem = (group) => {
 }
 
 const createUserItem = (user) => {
-    // let allGroups = user.groups.map((id) =>
-    //     `<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
-    // ).join(" ");
-    // const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
-    // let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
-    //     `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
-    //         title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
-    //         ${Pmgr.resolve(r.group).name}</span>`
-    // ).join(" ");
 
     let role = "User";
     let color = "";
@@ -176,7 +167,7 @@ const createUserItem = (user) => {
         button = "btn-dark";
     }
 
-    return `<li title="${user.id}" data-role="${role}" class="list-group-item d-flex justify-content-between align-items-start ${color}">
+    return `<li id="user_item" title="${user.id}" data-role="${role}" class="list-group-item d-flex justify-content-between align-items-start ${color}">
                 <div class="ms-2 me-auto">
                 <div class="fw-bold">${user.username}</div>
                         ${role}
@@ -185,7 +176,6 @@ const createUserItem = (user) => {
             </li>
             `;
 
-    //<button class="rm" data-id="${user.id}">🗑️</button>
 }
 
 /**
@@ -301,7 +291,7 @@ const update_profile = (actualUser) => {
         `<div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
+            <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
             <label for="floatingInputGrid">Password</label>
           </div>
         </div>`)
@@ -323,6 +313,16 @@ const update_profile = (actualUser) => {
             <label for="floatingInputGrid">Groups</label>
           </div>
         </div>`)
+    
+    document.querySelector("#edit_saveb").addEventListener("click", e => {
+        document.getElementById("edit_saveb").disabled = true;
+        document.getElementById("profile_saveb").disabled = false;
+        
+        
+        
+    });
+
+        
 
     console.log(actualUser);
 }
@@ -387,6 +387,10 @@ const update = () => {
         // botones de borrar grupos AQUI SI
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+
+        document.querySelectorAll("#user_item>button").forEach(button => {
+            button.addEventListener('cilck', )
+        });
 
     } catch (e) {
         console.error("Error updating: ", e);
