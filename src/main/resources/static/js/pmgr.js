@@ -141,8 +141,8 @@ const createGroupItem = (group) => {
         </div>
         </details>
         <br>
-        <div class="card-subtitle iucontrol group">
-            <button class="rm" data-id="${group.id}">🗑️</button>
+        <div class="row-sm-1 iucontrol group">
+        <button class="rm" data-id="${group.id}">🗑️</button>
             <button class="edit" data-id="${group.id}">✏️</button>
         </div>
     </div>              
@@ -384,10 +384,16 @@ const update = () => {
         let currentUser = state.users.find(e => e.id == userId);
         update_profile(currentUser);
 
+        // botones de borrar grupos AQUI SI
+        document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
+            b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+
     } catch (e) {
         console.error("Error updating: ", e);
     }
 }
+
+
 
 window.update = update;
 window.login = login;
