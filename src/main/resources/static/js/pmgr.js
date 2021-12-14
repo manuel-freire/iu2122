@@ -265,69 +265,48 @@ function generaPelicula(formulario) {
 
 const update_profile = (actualUser) => {
 
-    let titulo = "my profile";
 
     empty('#profile_view');
     appendTo('#profile_view',
-        `
-    <div id="title_profile" class="h1"> ${titulo} </div>
-    <form class="row g-3 needs-validation" novalidate>
-    <div class="col-12"></div>
-    <div id="id_profile" class="col-md-4">
+    `
+    <div id="profile_form" class="col-md-6 align-items-stretch">
+        <h2 id="title_profile"> ${actualUser.username} </h2>
+
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
-                    <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.id}">
                     <label for="floatingInputGrid">Id</label>
                 </div>
             </div>
         </div>
-    <div id="user_profile" class="col-md-4">
+
         <div class="row g-2">
             <div class="col-md">
                 <div class="form-floating">
-                    <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${actualUser.username}">
-                    <label for="floatingInputGrid">User Name</label>
-                </div>
-            </div>
-        </div>
-    <div id="password_profile" class="col-md-4">
-    <div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
-            <label for="floatingInputGrid">Password</label>
-          </div>
-        </div>
-    </div>
-    <div id="role_profile" class="col-md-4">
-        <div class="row g-2">
-            <div class="col-md">
-                <div class="form-floating">
-                    <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.role}">
                     <label for="floatingInputGrid">Role</label>
                 </div>
             </div>
         </div>
-    </div>
-    <div id="groups_profile" class="col-md-4">
-    <div class="row g-2">
-        <div class="col-md">
-            <div class="form-floating">
-                <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
-                <label for="floatingInputGrid">Groups</label>
+
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.groups[0]}">
+                    <label for="floatingInputGrid">Groups</label>
+                </div>
             </div>
         </div>
+
+        <div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5">
+            <button type="button" class="btn btn-outline-success m-1">Change password</button>
+            <button type="button" class="btn btn-outline-success m-1">Remove user</button>
+        </div>
+        
     </div>
-    </form>
-    <button id="edit_saveb" class="btn btn-primary" type="submit">Edit</button>
-    <button id="profile_saveb" class="btn btn-primary" disabled type="submit">Save Changes</button>
-
-    `);
-
-
-
-
+    `
+    );
 
     console.log(actualUser);
 }
