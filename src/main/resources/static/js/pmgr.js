@@ -581,8 +581,8 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
 /**
  * búsqueda básica de películas, por título
  */
-document.querySelector("#movieSearch").addEventListener("input", e => {
-	const v = e.target.value.toLowerCase();
+document.querySelector("#buttonSearch").addEventListener('click', e => {
+	const v = document.querySelector("#movieSearch").value.toLowerCase();
 	let criteria = null;
 		//Los criterios solo se aplican si el Collapsable esta activo
 	if(document.querySelector("#buttonAdvSearch[aria-expanded=true]") != null){
@@ -611,14 +611,19 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
 			//TODO tags (no hay al parecer)
 			tagList = criteria.querySelector("#tagList").value.split(', ');
 			let movieTags = [];
-			m.ratings.forEach(element => {
-				//TODO filtro de contexto para busquedas por grupo
+			m.ratings.forEach(ratingID => {
 				//Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
-				console.log(element.labels)
-				movieTags.push(element.labels)
+				let rating = Pmgr.state.ratings.find(element => element.id == ratingID)
+				//TODO filtro de contexto para busquedas por grupo
+				if(rating.labels){
+				    rating.labels.split(',').forEach(label => {
+                        movieTags.push(label)
+					});
+				}
 			});
+			console.log(movieTags)
 			if(tagList.length > 0)
-				ok = ok && movieTags.every( r => tagList.indexOf(r) >= 0)
+				ok = ok && movieTags.every( r => {tagList.indexOf(r) >= 0})
 		}
 		// aquí podrías aplicar muchos más criterios
 		c.style.display = ok ? '' : 'none';
