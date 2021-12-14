@@ -555,6 +555,18 @@ function update() {
           </div>
         </div>`)
 
+        document.querySelector("#edit_profileb").addEventListener("click", e => {
+            document.querySelector("#save_profileb").disabled = false;
+            document.querySelector("#edit_profileb").disabled = true;
+        });
+
+        document.querySelector("#edit_profileb").addEventListener("click", e => {
+            // aquí coger los datos de los inputs que se puedan cambiar y hacer setuser id, contraseña
+            document.querySelector("#edit_profileb").disabled = false;
+            document.querySelector("#save_profileb").disabled = true;
+        });
+
+
         console.log(actualUser)
 
         Pmgr.state.movies.forEach(o => appendTo('#home_row', createMovieItem(o)));
