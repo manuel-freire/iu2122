@@ -451,14 +451,14 @@ function update() {
         console.log('Error actualizando', e);
     }
 
-    /* para que siempre muestre los últimos elementos disponibles */
-    activaBusquedaDropdown('#dropdownBuscablePelis',
-        (select) => {
-            empty(select);
-            Pmgr.state.movies.forEach(m =>
-                appendTo(select, `<option value="${m.id}">${m.name}</option>`));
-        }
-    );
+    // /* para que siempre muestre los últimos elementos disponibles */
+    // activaBusquedaDropdown('#dropdownBuscablePelis',
+    //     (select) => {
+    //         empty(select);
+    //         Pmgr.state.movies.forEach(m =>
+    //             appendTo(select, `<option value="${m.id}">${m.name}</option>`));
+    //     }
+    // );
 }
 
 //
@@ -671,7 +671,7 @@ window.modalMovieInfo = modalMovieInfo;
 window.modalConfirmDelete = modalConfirmDelete;
 window.update = update;
 window.login = login;
-window.userId = userId;
+window.userId = ()=>userId;
 window.Pmgr = Pmgr;
 
 // ejecuta Pmgr.populate() en una consola para generar datos de prueba en servidor
