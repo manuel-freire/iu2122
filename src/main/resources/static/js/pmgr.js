@@ -34,12 +34,12 @@ function empty(sel) {
     }
 }
 
-function  hide (sel) {
+function hide(sel) {
     const destino = document.querySelector(sel);
     destino.classList.add("d-none");
 }
 
-function appendTo (sel, html) {
+function appendTo(sel, html) {
     document.querySelector(sel).insertAdjacentHTML("beforeend", html);
 }
 
@@ -167,7 +167,7 @@ const createUserItem = (user) => {
         button = "btn-dark";
     }
 
-    return `<li id="user_item" title="${user.id}" data-role="${role}" class="list-group-item d-flex justify-content-between align-items-start ${color}">
+    return `<li title="${user.id}" data-role="${role}" class="user_item list-group-item d-flex justify-content-between align-items-start ${color}">
                 <div class="ms-2 me-auto">
                 <div class="fw-bold">${user.username}</div>
                         ${role}
@@ -265,63 +265,69 @@ function generaPelicula(formulario) {
 
 const update_profile = (actualUser) => {
 
-    console.log({ actualUser });
+    let titulo = "my profile";
 
-    appendTo('#title_profile', `MY PROFILE`)
-
-    appendTo('#id_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
-            <label for="floatingInputGrid">Id</label>
-          </div>
-        </div>`)
-
-    appendTo('#user_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${actualUser.username}">
-            <label for="floatingInputGrid">User Name</label>
-          </div>
-        </div>`)
-
-    appendTo('#password_profile',
-        `<div class="row g-2">
+    empty('#profile_view');
+    appendTo('#profile_view',
+        `
+    <div id="title_profile" class="h1"> ${titulo} </div>
+    <form class="row g-3 needs-validation" novalidate>
+    <div class="col-12"></div>
+    <div id="id_profile" class="col-md-4">
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
+                    <label for="floatingInputGrid">Id</label>
+                </div>
+            </div>
+        </div>
+    <div id="user_profile" class="col-md-4">
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${actualUser.username}">
+                    <label for="floatingInputGrid">User Name</label>
+                </div>
+            </div>
+        </div>
+    <div id="password_profile" class="col-md-4">
+    <div class="row g-2">
         <div class="col-md">
           <div class="form-floating">
             <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
             <label for="floatingInputGrid">Password</label>
           </div>
-        </div>`)
-
-    appendTo('#role_profile',
-        `<div class="row g-2">
+        </div>
+    </div>
+    <div id="role_profile" class="col-md-4">
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
+                    <label for="floatingInputGrid">Role</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="groups_profile" class="col-md-4">
+    <div class="row g-2">
         <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
-            <label for="floatingInputGrid">Role</label>
-          </div>
-        </div>`)
+            <div class="form-floating">
+                <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
+                <label for="floatingInputGrid">Groups</label>
+            </div>
+        </div>
+    </div>
+    </form>
+    <button id="edit_saveb" class="btn btn-primary" type="submit">Edit</button>
+    <button id="profile_saveb" class="btn btn-primary" disabled type="submit">Save Changes</button>
 
-    appendTo('#groups_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
-            <label for="floatingInputGrid">Groups</label>
-          </div>
-        </div>`)
-    
-    document.querySelector("#edit_saveb").addEventListener("click", e => {
-        document.getElementById("edit_saveb").disabled = true;
-        document.getElementById("profile_saveb").disabled = false;
-        
-        document.getElementById("password_profile").disabled = false;
-    });
+    `);
 
-        
+
+
+
 
     console.log(actualUser);
 }
@@ -387,8 +393,44 @@ const update = () => {
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
 
-        document.querySelectorAll("#user_item>button").forEach(button => {
-            button.addEventListener('cilck', )
+        document.querySelectorAll(".user_item>button").forEach(button => {
+            button.addEventListener('click', e => {
+                let user_id = e.target.dataset.id;
+                let user = state.users.find(e => e.id == user_id);
+                views.forEach(e => hide('#' + e));
+                document.querySelector("#profile_view").classList.remove("d-none");
+                update_profile(user);
+            });
+        });
+
+
+        document.querySelector("#edit_saveb").addEventListener("click", e => {
+            document.getElementById("edit_saveb").disabled = true;
+            document.getElementById("profile_saveb").disabled = false;
+            empty("password_profile")
+            appendTo('#password_profile',
+                `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="word" class="form-control" id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
+            <label for="floatingInputGrid">Password</label>
+          </div>
+        </div>`)
+        });
+
+        document.querySelector("#profile_saveb").addEventListener("click", e => {
+            document.getElementById("edit_saveb").disabled = false;
+            document.getElementById("profile_saveb").disabled = true;
+
+            empty("password_profile")
+            appendTo('#password_profile',
+                `<div class="row g-2">
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="password" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
+            <label for="floatingInputGrid">Password</label>
+          </div>
+        </div>`)
         });
 
     } catch (e) {
