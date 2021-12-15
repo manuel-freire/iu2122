@@ -160,7 +160,7 @@ const createUserItem = (user) => {
     let button = "btn-primary"
     if (user.role.split(",").includes("ADMIN")) {
         role = "Admin";
-        color = "bg-success text-light";
+        color = "bg-info";
         button = "btn-warning"
     }
     if (user.role.split(",").includes("ROOT")) {
@@ -264,6 +264,8 @@ function generaPelicula(formulario) {
         if (input) input.value = v;
     }
 }
+
+
 
 const update_profile = (actualUser) => {
 
