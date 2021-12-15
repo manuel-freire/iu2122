@@ -61,7 +61,7 @@ const login = (username, password) => {
 const createMovieItem = (movie) => {
     const r2s = r => r > 0 ? Pmgr.Util.fill(r, () => "⭐").join("") : "";
     const ratings = movie.ratings.map(id => Pmgr.resolve(id)).map(r =>
-        `<span class="badge bg-${r.user == userId ? "primary" : "secondary"}">
+        `<span class="badge bg-${r.user == userId ? "primary" : "warning"}">
         ${Pmgr.resolve(r.user).username}: ${r.labels} ${r2s(r.rating)}
         </span>
         `
@@ -69,32 +69,48 @@ const createMovieItem = (movie) => {
 
     return `
     <div class="col-sm-3 d-flex align-items-stretch">
-    <div class="card mx-4 my-3" data-id="${movie.id}">
+    <div class="card mx-3 my-3" data-id="${movie.id}">
     <div class="card-header"">
-        <h4 class="mb-0" title="${movie.id}">
-            ${movie.name} <small><i>(${movie.year})</i></small>
-        </h4>
+        <h5 class="mb-0" title="${movie.id}">
+            ${movie.name} 
+            <br>
+        </h5>
     </div>
     <div>
         <div class="card-body pcard">
             <div class="row">
-                <div class="col-auto">
-                    <img class="iuthumb" src="${serverUrl}poster/${movie.imdb}"/>
-                </div>
-                <div class="col">
+                <img class="card-img-top"  src="${serverUrl}poster/${movie.imdb}" alt="Card image cap">
+                <br>
+                <details>
+                    <summary> <span class="badge bg-info"> Detalles </span> </summary>
                     <div class="row-12">
-                        ${movie.director} / ${movie.actors} (${movie.minutes} min.)
-                    </div>        
-                    <div class="row-12">
-                        ${ratings}
-                    </div>        
-                    <div class="iucontrol movie">
-                        <button class="rm" data-id="${movie.id}">🗑️</button>
-                        <button class="edit" data-id="${movie.id}">✏️</button>
-                        <button class="rate" data-id="${movie.id}">⭐</button>
-                    </div>  
-                </div>
+                        Director
+                        <br> 
+                        <span class="badge bg-primary">${movie.director} </span>
+                        <br>
+                        Actores 
+                        <br>
+                        <span class="badge bg-primary">${movie.actors}</span>
+                        <br>
+                        Año de estreno 
+                        <br>
+                        <span align="right" class="badge badge-pill bg-info">${movie.year}</span>
+                        <br>
+                        Duración (${movie.minutes} min.)
+                        <br>
+                        Comentarios
+                        <br>        
+                        <div class="row-12">
+                            ${ratings}
+                        </div>   
+                    </div>     
+                </details> 
             </div>
+        </div>
+        <div class="card-footer bg-transparent iucontrol group">
+                <button class="rm" data-id="${movie.id}">🗑️</button>
+                <button class="edit" data-id="${movie.id}">✏️</button>
+                <button class="rate" data-id="${movie.id}">⭐</button>
         </div>
     </div>
     </div>
@@ -116,38 +132,38 @@ const createGroupItem = (group) => {
 
     return `
     <div class="col-sm-3 ">
-    <div class="card mx-4 my-3" data-id="${group.id}">
-    <div class="card-body pcard">
-    <div class="card-header">
-        <h4 class="mb-0" title="${group.id}">
-            ${group.name} 
-            <br>
-            <span class="badge badge-pill bg-success"><small>${group.members.length} 🙍</small></span>
-        </h4>
-    </div>
-    <div class="card-body pcard">
-        <h7 class="mb-0">Administrador: </h7>
-        <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
-        <details>
-            <summary>Detalles</summary>
-            <div class="row-sm-11">
-            <h7 class="mb-0"">Usuarios: </h7>
-            <br>
-            ${allMembers}
-            <br>
-            <h7 class="mb-0"">Solicitudes de Unión: </h7>
-            <br>
-            ${allPending}
+        <div class="card mx-4 my-3" data-id="${group.id}">
+            <div class="card-body pcard">
+                <div class="card-header">
+                    <h4 class="mb-0" title="${group.id}">
+                        ${group.name} 
+                        <br>
+                        <span class="badge badge-pill bg-success"><small>${group.members.length} 🙍</small></span>
+                    </h4>
+                </div>
+                <div class="card-body pcard">
+                    <h7 class="mb-0">Administrador </h7>
+                    <span class="badge bg-primary">${Pmgr.resolve(group.owner).username}</span>
+                    <details>
+                        <summary>Detalles</summary>
+                        <div class="row-sm-11">
+                        <h7 class="mb-0"">Usuarios: </h7>
+                        <br>
+                        ${allMembers}
+                        <br>
+                        <h7 class="mb-0"">Solicitudes de Unión: </h7>
+                        <br>
+                        ${allPending}
+                    </div>
+                    </details>
+                    <br>
+                    <div class="row-sm-1 iucontrol group">
+                        <button class="rm" data-id="${group.id}">🗑️</button>
+                        <button class="edit" data-id="${group.id}">✏️</button>
+                    </div>
+                </div>              
+            </div>
         </div>
-        </details>
-        <br>
-        <div class="row-sm-1 iucontrol group">
-        <button class="rm" data-id="${group.id}">🗑️</button>
-            <button class="edit" data-id="${group.id}">✏️</button>
-        </div>
-    </div>              
-    </div>
-    </div>
     `;
 }
 
@@ -397,7 +413,7 @@ const update = () => {
 
 window.update = update;
 window.login = login;
-window.user_id = userId;
+window.user_id = () => userId;
 window.Pmgr = Pmgr;
 
 
