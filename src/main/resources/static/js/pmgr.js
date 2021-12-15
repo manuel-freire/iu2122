@@ -505,6 +505,7 @@ const update = () => {
         //botones de editar películas
         document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
             b.addEventListener('click', e => {
+                console.log("Modal abierto!");
                 const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
                 const movie = Pmgr.resolve(id);
                 const formulario = document.querySelector("#movieEditForm");
@@ -549,6 +550,67 @@ const update = () => {
                 formulario.querySelector("input[name=user]").value = userId;
                 modalRateMovie.show(); // ya podemos mostrar el formulario
             }));
+          
+
+            //Codigo de pegamento
+            {
+                /**
+                 * formulario para modificar películas
+                 */
+                const f = document.querySelector("#movieEditForm");
+                // botón de enviar
+                document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
+                    console.log("enviando formulario!");
+                    if (f.checkValidity()) {
+                        modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+                    } else {
+                        e.preventDefault();
+                        f.querySelector("button[type=submit]").click(); // fuerza validacion local
+                    }
+                });
+            }
+
+            {
+                /**
+                 * formulario para evaluar películas; usa el mismo modal para añadir y para editar
+                 */
+                const f = document.querySelector("#movieRateForm");
+                // botón de enviar
+                document.querySelector("#movieRate button.edit").addEventListener('click', e => {
+                    console.log("enviando formulario!");
+                    if (f.checkValidity()) {
+                        if (f.querySelector("input[name=id]").value == -1) {
+                            nuevoRating(f);
+                        } else {
+                            modificaRating(f); // modifica la evaluación según los campos previamente validados
+                        }
+                    } else {
+                        e.preventDefault();
+                        f.querySelector("button[type=submit]").click(); // fuerza validacion local
+                    }
+                });
+                // activa rating con estrellitas
+                stars("#movieRateForm .estrellitas");
+            }
+
+            {
+                /** 
+                 * Asocia comportamientos al formulario de añadir películas 
+                 * en un bloque separado para que las constantes y variables no salgan de aquí, 
+                 * manteniendo limpio el espacio de nombres del fichero
+                 */
+                const f = document.querySelector("#addMovie form");
+                // botón de enviar
+                f.querySelector("button[type='submit']").addEventListener('click', (e) => {
+                    if (f.checkValidity()) {
+                        e.preventDefault(); // evita que se haga lo normal cuando no hay errores
+                        nuevaPelicula(f); // añade la pelicula según los campos previamente validados
+                    }
+                });
+                // botón de generar datos (sólo para pruebas)
+                f.querySelector("button.generar").addEventListener('click',
+                    (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
+            }
 
     } catch (e) {
         console.error("Error updating: ", e);
@@ -570,60 +632,26 @@ login(username, password);
 const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
 const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
 
-{
-    /** 
-     * Asocia comportamientos al formulario de añadir películas 
-     * en un bloque separado para que las constantes y variables no salgan de aquí, 
-     * manteniendo limpio el espacio de nombres del fichero
-     */
-    const f = document.querySelector("#addMovie form");
-    // botón de enviar
-    f.querySelector("button[type='submit']").addEventListener('click', (e) => {
-        if (f.checkValidity()) {
-            e.preventDefault(); // evita que se haga lo normal cuando no hay errores
-            nuevaPelicula(f); // añade la pelicula según los campos previamente validados
-        }
-    });
-    // botón de generar datos (sólo para pruebas)
-    f.querySelector("button.generar").addEventListener('click',
-        (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
-} {
-    /**
-     * formulario para modificar películas
-     */
-    const f = document.querySelector("#movieEditForm");
-    // botón de enviar
-    document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            modificaPelicula(f); // modifica la pelicula según los campos previamente validados
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
-} {
-    /**
-     * formulario para evaluar películas; usa el mismo modal para añadir y para editar
-     */
-    const f = document.querySelector("#movieRateForm");
-    // botón de enviar
-    document.querySelector("#movieRate button.edit").addEventListener('click', e => {
-        console.log("enviando formulario!");
-        if (f.checkValidity()) {
-            if (f.querySelector("input[name=id]").value == -1) {
-                nuevoRating(f);
-            } else {
-                modificaRating(f); // modifica la evaluación según los campos previamente validados
-            }
-        } else {
-            e.preventDefault();
-            f.querySelector("button[type=submit]").click(); // fuerza validacion local
-        }
-    });
-    // activa rating con estrellitas
-    stars("#movieRateForm .estrellitas");
-}
+
+
+window.modalEditMovie = modalEditMovie;
+window.modalRateMovie = modalRateMovie;
+window.update = update;
+window.login = login;
+window.user_id = () => userId;
+window.Pmgr = Pmgr;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * TODO:
+ * AÑADIR PELICULAS?
+ * EVALUAR PELICULAS OKAY MAS O MENOS
+ * 
+ * BORRAR Y EDITAR PELICULAS SOLO SI ERES ADMIN
+ */
+
+
+
 
 /**
  * búsqueda básica de películas, por título
@@ -637,20 +665,3 @@ document.querySelector("#movieSearch").addEventListener("input", e => {
         c.style.display = ok ? '' : 'none';
     });
 })
-
-window.modalEditMovie = modalEditMovie;
-window.modalRateMovie = modalRateMovie;
-window.update = update;
-window.login = login;
-window.user_id = () => userId;
-window.Pmgr = Pmgr;
-
-/**
- * TODO
- * BUSCAR PELICULAS +
- * EDITAR PELICULAS +
- * AÑADIR PELICULAS?
- * EVALUAR PELICULAS +
- * BUG AL VOLVER A HOME...
- * BORRAR Y EDITAR PELICULAS SOLO SI ERES ADMIN
- */
