@@ -13,6 +13,7 @@
 
     <!-- Esto aparece como título de la ventana o pestaña en el navegador: cámbialo -->
     <title>Filmy</title>
+    <link rel="icon" href="./img/filmy_icon.ico">
 </head>
 
 <body>
@@ -100,76 +101,83 @@
     </div>
 
     <!-- pseudoview of search -->
-    <div id="search_view" class="d-none filmy_view">
-        <div class="container">
-            <div class="row">
-                <div class="col">
-                    <div class="search-forms">
-                        <label for="film-id">ID</label>
-                        <input type="number" id="identifier" name="identifier" min="1" max="5000" step="1" />
-                    </div>
-                    <div class="search-forms">
-                        <label for="film-name">Name</label>
-                        <input type="text" id="filmname" name="filmname" />
-                    </div>
-                    <div class="search-forms">
-                        <label for="film-director">Director</label>
-                        <input type="text" id="filmdirector" name="filmdirector" />
+    <div id="search_view" class="filmy_view">
+        <div class="search-container ">
+            <div class="searcheador bg-dark">
+                <div class="row">
+                    <div class="col-12">
+                        <input type="text" id="search-input" placeholder="Search film...">
+                        <button type="button" class="btn btn-primary" id="searchbut">🔎</button>
+                        <button type="button" class="btn btn-primary" id="advsearch">Advanced Search</button>
                     </div>
                 </div>
+                <div class="advanced-search-container">
 
-                <div class="col">
-                    <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Select a group tag
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <label for="range-1a">Rangeslider:</label>
+                                <input id="ex2" type="range" class="col-sm-2" value="" data-min="10" data-max="1000" data-step="5" data-value="[250,450]"/>    
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Name</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Director</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
                     </div>
-                    <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Select a tag
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
                     </div>
-                    <div class="search-forms">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Order by
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="search-forms">
-                        <label for="film-year">Year</label>
-                        <input type="number" id="year" name="year" min="1950" max="2021" step="1" />
-                    </div>
-                    <div class="search-forms">
-                        <label for="film-minutes">Minutes</label>
-                        <input type="number" id="minutes" name="minutes" min="1950" max="2021" step="1" />
-                    </div>
-                    <div class="search-forms">
-                        <label for="film-rating">Rating</label>
-                        <input type="text" id="rating" name="rating" />
+                    <div class="row">
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <label for="search_group" class="col-6">Group</label>
+                                <input type="text" class="col-6">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="search-results">
+            <!--Resultado de las búsquedas-->
         </div>
     </div>
 

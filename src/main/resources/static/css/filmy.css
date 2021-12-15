@@ -3,9 +3,42 @@
 }
 
 
-/** Search page  css *//
+/** Search page  css */
 
-.container{
-    margin-top: 20rem;
-    padding: 5rem 4rem;
+.search-container{
+    margin-top: 2rem;
+    /* padding: 2rem 4rem; */
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    
 }
+  
+.searcheador{
+    padding: 0.5rem;
+    padding-left: 1.6rem;
+    padding-right: 1.6rem;
+    border-radius: 2px;
+}
+
+#search-input{
+    width: 50rem;
+}
+
+#searchbut{
+    border-radius: 10%;
+}
+
+ #advserch{
+    /* border-radius: 10%; */
+ }
+
+ /*Modal que aparece cuando se hace click en advanced search*/
+
+ .advanced-search-container{
+    background-color: ;
+    display: grid;
+    width: 62.5rem;
+    margin-top: .5rem;
+    
+ }
