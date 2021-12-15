@@ -109,7 +109,7 @@ const createMovieItem = (movie) => {
                 </details> 
             </div>
         </div>
-        <div class="card-footer bg-transparent iucontrol group">
+        <div class="card-footer bg-transparent iucontrol movie">
                 <button class="rm" data-id="${movie.id}">🗑️</button>
                 <button class="edit" data-id="${movie.id}">✏️</button>
                 <button class="rate" data-id="${movie.id}">⭐</button>
@@ -378,7 +378,7 @@ const update = () => {
 
         document.querySelectorAll(".nav_input").forEach(button => {
             button.addEventListener('click', e => {
-
+                let currentUser = state.users.find(e => e.id == userId);
                 views.forEach(e => hide('#' + e));
                 switch (e.target.dataset.id) {
                     case "groups":
@@ -395,14 +395,21 @@ const update = () => {
                         break;
                     case "profile":
                         document.querySelector("#profile_view").classList.remove("d-none");
-                        let currentUser = state.users.find(e => e.id == userId);
                         empty('#profile_view');
                         update_profile(currentUser);
                         update();
                         break;
                     case "home":
+                        document.querySelector("#home_view").classList.remove("d-none");
+                        empty('#home_view');
+                        update_profile(currentUser);
+                        update();
+                        break;
                     default:
                         document.querySelector("#home_view").classList.remove("d-none");
+                        empty('#home_view');
+                        update_profile(currentUser);
+                        update();
                         break;
                 }
             });
@@ -412,11 +419,11 @@ const update = () => {
         state.groups.forEach(group => appendTo('#group_row', createGroupItem(group)));
         state.users.forEach(user => appendTo('#user_list', createUserItem(user)));
 
-
-        // botones de borrar grupos AQUI SI
+        //BOTONES GRUPOS
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
 
+        //BOTONES USUARIOS
         document.querySelectorAll(".user_item>button").forEach(button => {
             button.addEventListener('click', e => {
                 let user_id = e.target.dataset.id;
@@ -459,6 +466,61 @@ const update = () => {
         document.querySelector(".rm_user_btn");
         document.querySelector(".change_password_btn");
 
+        //BOTONES PELICULAS
+        document.querySelectorAll(".iucontrol.movie button.rm").forEach(b =>
+            b.addEventListener('click', e => {
+                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+                Pmgr.rmMovie(id).then(update);
+            }));
+
+        //botones de editar películas
+        document.querySelectorAll(".iucontrol.movie button.edit").forEach(b =>
+            b.addEventListener('click', e => {
+                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+                const movie = Pmgr.resolve(id);
+                const formulario = document.querySelector("#movieEditForm");
+                for (let [k, v] of Object.entries(movie)) {
+                    // rellenamos el formulario con los valores actuales
+                    const input = formulario.querySelector(`input[name="${k}"]`);
+                    if (input) input.value = v;
+                }
+
+                modalEditMovie.show(); // ya podemos mostrar el formulario
+            }));
+
+        //botones de evaluar películas
+        document.querySelectorAll(".iucontrol.movie button.rate").forEach(b =>
+            b.addEventListener('click', e => {
+                const id = e.target.dataset.id; // lee el valor del atributo data-id del boton
+                const formulario = document.querySelector("#movieRateForm");
+                const prev = Pmgr.state.ratings.find(r => r.movie == id && r.user == userId);
+                if (prev) {
+                    // viejo: copia valores
+                    formulario.querySelector("input[name=id]").value = prev.id;
+                    const input = formulario.querySelector(`input[value="${prev.rating}"]`);
+                    if (input) {
+                        input.checked;
+                    }
+                    // lanza un envento para que se pinten las estrellitas correctas
+                    // see https://stackoverflow.com/a/2856602/15472
+                    if ("createEvent" in document) {
+                        const evt = document.createEvent("HTMLEvents");
+                        evt.initEvent("change", false, true);
+                        input.dispatchEvent(evt);
+                    } else {
+                        input.fireEvent("onchange");
+                    }
+                    formulario.querySelector("input[name=labels]").value = prev.labels;
+                } else {
+                    // nuevo
+                    formulario.reset();
+                    formulario.querySelector("input[name=id]").value = -1;
+                }
+                formulario.querySelector("input[name=movie]").value = id;
+                formulario.querySelector("input[name=user]").value = userId;
+                modalRateMovie.show(); // ya podemos mostrar el formulario
+            }));
+
     } catch (e) {
         console.error("Error updating: ", e);
     }
@@ -466,10 +528,6 @@ const update = () => {
 
 
 
-window.update = update;
-window.login = login;
-window.user_id = () => userId;
-window.Pmgr = Pmgr;
 
 
 
@@ -478,3 +536,92 @@ const password = 'eSMDK';
 const url = serverUrl + 'api/';
 Pmgr.connect(url);
 login(username, password);
+
+// modales, para poder abrirlos y cerrarlos desde código JS
+const modalEditMovie = new bootstrap.Modal(document.querySelector('#movieEdit'));
+const modalRateMovie = new bootstrap.Modal(document.querySelector('#movieRate'));
+
+{
+    /** 
+     * Asocia comportamientos al formulario de añadir películas 
+     * en un bloque separado para que las constantes y variables no salgan de aquí, 
+     * manteniendo limpio el espacio de nombres del fichero
+     */
+    const f = document.querySelector("#addMovie form");
+    // botón de enviar
+    f.querySelector("button[type='submit']").addEventListener('click', (e) => {
+        if (f.checkValidity()) {
+            e.preventDefault(); // evita que se haga lo normal cuando no hay errores
+            nuevaPelicula(f); // añade la pelicula según los campos previamente validados
+        }
+    });
+    // botón de generar datos (sólo para pruebas)
+    f.querySelector("button.generar").addEventListener('click',
+        (e) => generaPelicula(f)); // aquí no hace falta hacer nada raro con el evento
+} {
+    /**
+     * formulario para modificar películas
+     */
+    const f = document.querySelector("#movieEditForm");
+    // botón de enviar
+    document.querySelector("#movieEdit button.edit").addEventListener('click', e => {
+        console.log("enviando formulario!");
+        if (f.checkValidity()) {
+            modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+        } else {
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click(); // fuerza validacion local
+        }
+    });
+} {
+    /**
+     * formulario para evaluar películas; usa el mismo modal para añadir y para editar
+     */
+    const f = document.querySelector("#movieRateForm");
+    // botón de enviar
+    document.querySelector("#movieRate button.edit").addEventListener('click', e => {
+        console.log("enviando formulario!");
+        if (f.checkValidity()) {
+            if (f.querySelector("input[name=id]").value == -1) {
+                nuevoRating(f);
+            } else {
+                modificaRating(f); // modifica la evaluación según los campos previamente validados
+            }
+        } else {
+            e.preventDefault();
+            f.querySelector("button[type=submit]").click(); // fuerza validacion local
+        }
+    });
+    // activa rating con estrellitas
+    stars("#movieRateForm .estrellitas");
+}
+
+/**
+ * búsqueda básica de películas, por título
+ */
+document.querySelector("#movieSearch").addEventListener("input", e => {
+    const v = e.target.value.toLowerCase();
+    document.querySelectorAll("#movies div.card").forEach(c => {
+        const m = Pmgr.resolve(c.dataset.id);
+        // aquí podrías aplicar muchos más criterios
+        const ok = m.name.toLowerCase().indexOf(v) >= 0;
+        c.style.display = ok ? '' : 'none';
+    });
+})
+
+window.modalEditMovie = modalEditMovie;
+window.modalRateMovie = modalRateMovie;
+window.update = update;
+window.login = login;
+window.user_id = () => userId;
+window.Pmgr = Pmgr;
+
+/**
+ * TODO
+ * BUSCAR PELICULAS +
+ * EDITAR PELICULAS +
+ * AÑADIR PELICULAS?
+ * EVALUAR PELICULAS +
+ * BUG AL VOLVER A HOME...
+ * BORRAR Y EDITAR PELICULAS SOLO SI ERES ADMIN
+ */

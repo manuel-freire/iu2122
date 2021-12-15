@@ -17,8 +17,101 @@
 
 <body>
 
-    <!-- barra de navegación -->
+    <!-- Modal para dar un rating a una película -->
+    <div class="modal fade" id="movieRate" tabindex="-1" aria-labelledby="movieRateLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movieRateLabel">Evaluando película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="movieRateForm">
+                        <input type="hidden" name="id">
+                        <input type="hidden" name="movie">
+                        <input type="hidden" name="user">
+                        <!-- llenar desde JS -->
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" name="labels" placeholder="Etiquetas" required>
+                        </div>
+                        <div class="col-md-6">
+                            <fieldset class="estrellitas">
+                                <label title="Atómico - 5 estrellas">
+                                        <input type="radio" name="rating" value="5" />
+                                    </label>
 
+                                <label title="Muy buena - 4 estrellas">
+                                        <input type="radio" name="rating" value="4" />
+                                    </label>
+
+                                <label title="Pasable - 3 estrellas">
+                                        <input type="radio" name="rating" value="3" />
+                                    </label>
+
+                                <label title="Más bien mala - 2 estrellas">
+                                        <input type="radio" name="rating" value="2" />
+                                    </label>
+
+                                <label title="Horrible - 1 estrella">
+                                        <input type="radio" name="rating" value="1" />
+                                    </label>
+                            </fieldset>
+                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar películas -->
+    <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="movieEditLabel">Editando película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row" id="movieEditForm">
+                        <input type="hidden" name="id">
+                        <!-- llenar desde JS -->
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="name" placeholder="Título" required>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control" name="imdb" placeholder="ID en IMDB (ej.: tt1234567)" required pattern="tt[0-9]+">
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="text" class="form-control" name="director" placeholder="Director" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="text" class="form-control" name="actors" placeholder="Actores" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <input type="number" class="form-control" name="year" placeholder="Año de estreno" min="1800" max="2022" required>
+                        </div>
+                        <div class="col-md-8">
+                            <input type="number" class="form-control" name="minutes" placeholder="Duración en minutos" min="0" max="600" required>
+                        </div>
+                        <button style="display: none" type="submit">Invisible, sólo para validación</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- barra de navegación -->
     <nav id="main_nav" class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a id="nav_home" class="navbar-brand nav_input" href="#" data-id="home">Filmy</a>
@@ -36,7 +129,7 @@
                 <form class="d-flex">
                     <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button> -->
-                    <a class="nav-link nav_input" href="#" data-id="search">Search🔎</a>
+                    <span class="badge bg-primary"><a class="nav-link nav_input" href="#" data-id="search">Search 🔎</a></span>
                 </form>
                 <div class="navbar-nav mb-2 mb-lg-0">
                     <a id="profile_nav" class="nav-link nav_input" href="#" data-id="profile">Profile</a>
@@ -48,7 +141,15 @@
 
     <!-- pseudoview of home -->
     <div id="home_view" class=" filmy_view mx-6 container-fluid">
-
+        <div class="row md-5 gx-1 mx-3 my-3">
+            <div class="col-5">
+                <input type="search" class="form-control" id="movieSearch" placeholder="Busca una pelicula!"
+                    aria-describedby="searchMovieLabel">
+            </div>
+            <div class="col-1">
+                <input type="button" id="buttonSearch" class="btn btn-light" value="🔍">
+            </div>
+        </div>
         <div id="home_row" class="row">
         </div>
     </div>
