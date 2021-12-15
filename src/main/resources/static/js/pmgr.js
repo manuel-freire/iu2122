@@ -319,7 +319,7 @@ const update_profile = (actualUser) => {
         html +=
             `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
                 <button type="button" class="change_user_btn btn btn-outline-success m-1">Change user</button>
-                <button type="button" class="rm_user_btn btn btn-outline-success m-1">Remove user</button>
+                <button type="button" class="rm_user_btn btn btn-outline-success m-1" data-bs-toggle="modal" data-bs-target="#rmusermdl">Remove user</button>
                 <button type="button" class="overtake_btn btn btn-danger m-1">Overtake</button>
              </div>`;
     } else if (actualUser.id === currentUser.id) {
@@ -439,6 +439,35 @@ const update = () => {
                
             })
         });
+
+        document.querySelectorAll(".rm_user_btn").forEach(e => {
+            e.addEventListener('click', e => {
+                let uid = e.target.parentElement.dataset.id;
+                let user = state.users.find(u => u.id == uid);
+
+                document.querySelectorAll(".rmvuserb").forEach(e => {
+                    e.addEventListener('click', e => {
+                        console.log("Llega1")
+                        console.log(user.id)
+                        Pmgr.rmUser(user.id)
+                        console.log("llega2")
+                        $('#rmusermdl').modal('hide');
+                    })
+                });
+                
+            })
+        });
+
+        document.querySelectorAll(".rmvuserb").forEach(e => {
+            e.addEventListener('click', e => {
+                console.log("Llega1")
+                console.log(user.id)
+                Pmgr.rmUser(user.id)
+                console.log("llega2")
+                $('#rmusermdl').modal('hide');
+            })
+        });
+
         document.querySelector(".change_user_btn");
         document.querySelector(".rm_user_btn");
         document.querySelector(".change_password_btn");
