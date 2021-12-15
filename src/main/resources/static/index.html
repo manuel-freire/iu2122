@@ -39,7 +39,7 @@
                     <a class="nav-link nav_input" href="#" data-id="search">Search🔎</a>
                 </form>
                 <div class="navbar-nav mb-2 mb-lg-0">
-                    <a class="nav-link nav_input" href="#" data-id="profile">Profile</a>
+                    <a id="profile_nav" class="nav-link nav_input" href="#" data-id="profile">Profile</a>
                 </div>
             </div>
         </div>
@@ -48,6 +48,7 @@
 
     <!-- pseudoview of home -->
     <div id="home_view" class=" filmy_view mx-6 container-fluid">
+
         <div id="home_row" class="row">
         </div>
     </div>
@@ -73,7 +74,7 @@
 
         </div>
 
-        <div class="container-md d-flex flex-row-reverse p-5">
+        <div class=" d-flex flex-row-reverse p-5 fixed-bottom">
             <button type="button" class="btn btn-outline-success">Create user</button>
         </div>
     </div>
@@ -173,20 +174,7 @@
         </div>
     </div>
 
-    <!-- pseudoview of profile -->
-    <div id="profile_view" class="d-none filmy_view">
-        <div id="title_profile" class="h1"> </div>
-        <form class="row g-3 needs-validation" novalidate></form>
-        <div class="col-12"></div>
-        <div id="id_profile" class="col-md-4"> </div>
-        <div id="user_profile" class="col-md-4"> </div>
-        <div id="password_profile" class="col-md-4"></div>
-        <div id="role_profile" class="col-md-4"></div>
-        <div id="groups_profile" class="col-md-4"></div>
-        <!--<button class="btn btn-primary" type="submit">Save Changes</button> -->
-        </form>
-
-        <div id="test_profile"> </div>
+    <div id="profile_view" class="d-none filmy_view row justify-content-center mt-3">
 
     </div>
 
