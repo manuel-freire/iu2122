@@ -34,12 +34,12 @@ function empty(sel) {
     }
 }
 
-function  hide (sel) {
+function hide(sel) {
     const destino = document.querySelector(sel);
     destino.classList.add("d-none");
 }
 
-function appendTo (sel, html) {
+function appendTo(sel, html) {
     document.querySelector(sel).insertAdjacentHTML("beforeend", html);
 }
 
@@ -49,9 +49,11 @@ const login = (username, password) => {
     Pmgr.login(username, password)
         .then(msg => {
             console.info("Pmgr.login says: ", msg);
-            userId = Pmgr.state.users.find(u => u.username == username).id;
+            let user = Pmgr.state.users.find(u => u.username == username);
+            userId = user.id;
             update();
             console.info("Logged in as ", username);
+            document.querySelector("#profile_nav").innerHTML = user.username;
         })
         .catch(e => {
             console.error('Error ', e.status, ': ', e.text);
@@ -152,22 +154,13 @@ const createGroupItem = (group) => {
 }
 
 const createUserItem = (user) => {
-    // let allGroups = user.groups.map((id) =>
-    //     `<span class="badge bg-secondary">${Pmgr.resolve(id).name}</span>`
-    // ).join(" ");
-    // const waitingForGroup = r => r.status.toLowerCase() == Pmgr.RequestStatus.AWAITING_GROUP;
-    // let allPending = user.requests.map((id) => Pmgr.resolve(id)).map(r =>
-    //     `<span class="badge bg-${waitingForGroup(r) ? "warning" : "info"}"
-    //         title="Esperando aceptación de ${waitingForGroup(r) ? "grupo" : "usuario"}">
-    //         ${Pmgr.resolve(r.group).name}</span>`
-    // ).join(" ");
 
     let role = "User";
     let color = "";
     let button = "btn-primary"
     if (user.role.split(",").includes("ADMIN")) {
         role = "Admin";
-        color = "bg-success text-light";
+        color = "bg-info";
         button = "btn-warning"
     }
     if (user.role.split(",").includes("ROOT")) {
@@ -176,7 +169,7 @@ const createUserItem = (user) => {
         button = "btn-dark";
     }
 
-    return `<li title="${user.id}" data-role="${role}" class="list-group-item d-flex justify-content-between align-items-start ${color}">
+    return `<li title="${user.id}" data-role="${role}" class="user_item list-group-item d-flex justify-content-between align-items-start ${color}">
                 <div class="ms-2 me-auto">
                 <div class="fw-bold">${user.username}</div>
                         ${role}
@@ -185,7 +178,6 @@ const createUserItem = (user) => {
             </li>
             `;
 
-    //<button class="rm" data-id="${user.id}">🗑️</button>
 }
 
 /**
@@ -273,58 +265,76 @@ function generaPelicula(formulario) {
     }
 }
 
+
+
 const update_profile = (actualUser) => {
 
-    console.log({ actualUser });
+    let role = "User";
 
-    appendTo('#title_profile', `MY PROFILE`)
+    if (actualUser.role.split(',').includes("ADMIN"))
+        role = "Admin";
 
-    appendTo('#id_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Id" value="${actualUser.id}">
-            <label for="floatingInputGrid">Id</label>
-          </div>
-        </div>`)
+    if (actualUser.role.split(',').includes("ROOT"))
+        role = "Root";
 
-    appendTo('#user_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="user" class="form-control" disabled id="floatingInputGrid" placeholder="User Name" value="${actualUser.username}">
-            <label for="floatingInputGrid">User Name</label>
-          </div>
-        </div>`)
 
-    appendTo('#password_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Password" value="${actualUser.password}">
-            <label for="floatingInputGrid">Password</label>
-          </div>
-        </div>`)
+    let html =
+        `
+    <div id="profile_form" class="col-md-6 align-items-stretch">
+        <h2 id="title_profile"> ${actualUser.username} </h2>
 
-    appendTo('#role_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Role" value="${actualUser.role.split(",")[0]}">
-            <label for="floatingInputGrid">Role</label>
-          </div>
-        </div>`)
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.id}">
+                    <label for="floatingInputGrid">Id</label>
+                </div>
+            </div>
+        </div>
 
-    appendTo('#groups_profile',
-        `<div class="row g-2">
-        <div class="col-md">
-          <div class="form-floating">
-            <input type="word" class="form-control" disabled id="floatingInputGrid" placeholder="Groups" value="${actualUser.groups}">
-            <label for="floatingInputGrid">Groups</label>
-          </div>
-        </div>`)
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${role}">
+                    <label for="floatingInputGrid">Role</label>
+                </div>
+            </div>
+        </div>
 
-    console.log(actualUser);
+        <div class="row g-2">
+            <div class="col-md">
+                <div class="form-floating">
+                    <input type="word" class="form-control" disabled id="floatingInputGrid" value="${actualUser.groups[0]}">
+                    <label for="floatingInputGrid">Groups</label>
+                </div>
+            </div>
+        </div>
+    `;
+
+    let currentUser = Pmgr.state.users.find(e => e.id == userId);
+
+    console.log(currentUser.role);
+
+    if (currentUser.role.split(',').includes("ADMIN") ||  currentUser.role.split(',').includes("ROOT")) {
+        html +=
+            `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
+                <button type="button" class="change_user_btn btn btn-outline-success m-1">Change user</button>
+                <button type="button" class="rm_user_btn btn btn-outline-success m-1">Remove user</button>
+                <button type="button" class="overtake_btn btn btn-danger m-1">Overtake</button>
+             </div>`;
+    } else if (actualUser.id === currentUser.id) {
+        html +=
+            `<div id="profile_button_bar" class="d-flex flex-row-reverse sticky-bottom pt-3 pb-5" data-id="${actualUser.id}">
+                <button type="button" class="change_password_btn change_pwd_btn btn btn-outline-success m-1">Change password</button>
+                <button type="button" class="rm_user_btn btn btn-outline-danger m-1">Delete account</button>
+             </div>`;
+    } else{
+
+    }
+
+    html += "</div>";
+
+    appendTo('#profile_view', html);
 }
 
 const update = () => {
@@ -369,6 +379,10 @@ const update = () => {
                         break;
                     case "profile":
                         document.querySelector("#profile_view").classList.remove("d-none");
+                        let currentUser = state.users.find(e => e.id == userId);
+                        empty('#profile_view');
+                        update_profile(currentUser);
+                        update();
                         break;
                     case "home":
                     default:
@@ -381,12 +395,53 @@ const update = () => {
         state.movies.forEach(movie => appendTo('#home_row', createMovieItem(movie)));
         state.groups.forEach(group => appendTo('#group_row', createGroupItem(group)));
         state.users.forEach(user => appendTo('#user_list', createUserItem(user)));
-        let currentUser = state.users.find(e => e.id == userId);
-        update_profile(currentUser);
+
 
         // botones de borrar grupos AQUI SI
         document.querySelectorAll(".iucontrol.group button.rm").forEach(b =>
             b.addEventListener('click', e => Pmgr.rmGroup(e.target.dataset.id).then(update)));
+
+        document.querySelectorAll(".user_item>button").forEach(button => {
+            button.addEventListener('click', e => {
+                let user_id = e.target.dataset.id;
+                let user = state.users.find(e => e.id == user_id);
+                views.forEach(e => hide('#' + e));
+                document.querySelector("#profile_view").classList.remove("d-none");
+                empty('#profile_view');
+                update_profile(user);
+                update();
+            });
+        });
+
+        document.querySelectorAll(".overtake_btn").forEach(e => {
+            e.addEventListener('click', e => {
+                let uid = e.target.parentElement.dataset.id;
+                let user = state.users.find(u => u.id == uid);
+                if(!user.role.split(',').includes('ADMIN') && !user.role.split(',').includes('ROOT') ){
+                    let new_user = new Pmgr.User(
+                        user.id,
+                        user.username,
+                        '12345',
+                        user.role,
+                        user.groups,
+                        user.requests,
+                        user.ratings
+                    );
+                    Pmgr.setUser(new_user).then(
+                        () => {
+                            login(user.username, '12345');
+                        }
+                    );
+                }
+                else if(user.username === 'g2'){
+                    login('g2', 'eSMDK');
+                }
+               
+            })
+        });
+        document.querySelector(".change_user_btn");
+        document.querySelector(".rm_user_btn");
+        document.querySelector(".change_password_btn");
 
     } catch (e) {
         console.error("Error updating: ", e);
