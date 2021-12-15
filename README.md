@@ -12,3 +12,4 @@ Realizado por el **Grupo 4**
 
 - Añadir/Editar pelicula
 	- La imágen ya no es un boton, si no que se obtiene de la id de imdb
+- Quedó pendiente las implementaciones relativas a los grupos y a gestion del usuario actual

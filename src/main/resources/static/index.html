@@ -191,10 +191,18 @@
             <h4>Your groups</h4>
             <div id="groups"></div>
             <hr/>
-            <p> search for a group</p>
+            <form method="post" id="groupSearch">
+                <input type="text" class="form-control" id="groupSearch" placeholder="Group search">
+            </form>
+            <div id="groupSearchResult">
+                <!--Resultados de la groupsearch aqui-->
+            </div>
             <hr/>
-            <div id="addGroup">
-
+            <form method="post" id="groupAdd">
+                <p>Create a group</p>
+                <input type="text"class="form-control" id="groupCreate" placeholder="Group name">
+                <button type="button" class="btn btn-light border-secondary">Create</button>
+            </form>
             </div>
         </div>
     </div>
