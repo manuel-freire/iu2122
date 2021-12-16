@@ -16,3 +16,4 @@ Realizado por el **Grupo 4**
 ## Pendiente
 	- Quedó pendiente las implementaciones relativas a los grupos y a gestion del usuario actual
 	- Después de enviar una review, hace falta recargar la página (F5) para que esta sea activa
+	- Toasts para errores o cambios aceptados
