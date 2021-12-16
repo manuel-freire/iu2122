@@ -247,11 +247,12 @@ function modificaPelicula(formulario) {
  * @param {Element} formulario para con los valores a subir
  */
 function nuevoRating(formulario) {
+    console.log(formulario)
     const rating = new Pmgr.Rating(-1,
-        formulario.querySelector('input[name="user"]').value,
-        formulario.querySelector('input[name="movie"]').value,
-        formulario.querySelector('input[name="rating"]:checked').value,
-        formulario.querySelector('input[name="labels"]').value);
+        userId,
+        formulario.querySelector('input[name="id"]').value,
+        formulario.querySelector('input[name="myRating"]:checked').value,
+        formulario.querySelector('textArea[name="myLabels"]').value);
     Pmgr.addRating(rating).then(() => {
         formulario.reset() // limpia el formulario si todo OK
         modalRateMovie.hide(); // oculta el formulario
@@ -263,13 +264,14 @@ function nuevoRating(formulario) {
  * Usa valores de un formulario para modificar un rating
  * @param {Element} formulario para con los valores a subir
  */
-function modificaRating(formulario) {
+function modificaRating(formulario, ratingID) {
+    console.log(formulario.querySelector('input[name="myRating"]:checked').value)
     const rating = new Pmgr.Rating(
+        ratingID,
+        userId,
         formulario.querySelector('input[name="id"]').value,
-        formulario.querySelector('input[name="user"]').value,
-        formulario.querySelector('input[name="movie"]').value,
-        formulario.querySelector('input[name="rating"]:checked').value,
-        formulario.querySelector('input[name="labels"]').value);
+        formulario.querySelector('input[name="myRating"]:checked').value,
+        formulario.querySelector('textArea[name="myLabels"]').value);
     Pmgr.setRating(rating).then(() => {
         formulario.reset() // limpia el formulario si todo OK
         modalRateMovie.hide(); // oculta el formulario
@@ -353,8 +355,21 @@ function update() {
 
         // y los volvemos a rellenar con su nuevo contenido
         Pmgr.state.movies.forEach(o => appendTo("#movies", createMovieItem(o)));
-        Pmgr.state.groups.forEach(o => appendTo("#groups", createGroupItem(o)));
         Pmgr.state.users.forEach(o => appendTo("#users", createUserItem(o)));
+        var userGroups = Pmgr.resolve(userId)
+        if(userGroups != undefined && userGroups.groups.length > 0){
+            console.log(userGroups.groups)
+            Pmgr.state.groups.forEach(o => {
+                if(userGroups.groups.indexOf(o.id) >= 0){
+                    console.log("Adding group",o)
+                    appendTo("#groups", createGroupItem(o))
+                }
+            });
+        }else{
+            appendTo("#groups","<p>You aren't in any groups!</h1>")
+        }
+        
+        
 
         // y añadimos manejadores para los eventos de los elementos recién creados
         // botones de borrar películas
@@ -430,8 +445,9 @@ function update() {
                 var modalYear = document.getElementById('movieInfoYear')
                 var modalLength = document.getElementById('movieInfoLength')
                 var modalActors = document.getElementById('movieInfoActors')
+                var modelTags = document.getElementById('movieInfoLable')
+				var modalRating = document.getElementById('movieInfoRating')
 
-                //TODO ratings
 
                 modalTitle.textContent = movie.name + " - " + movie.year
                 modalDirector.textContent = movie.director
@@ -439,9 +455,41 @@ function update() {
                 modalYear.textContent = movie.year
                 modalActors.textContent = movie.actors
                 modalImage.src = serverUrl + "poster/" + movie.imdb
+                modelTags.textContent = ""
 
                 //Set edit button id for later use
                 document.getElementById('editMovieButton').setAttribute("data-id", movieId)
+
+                let ratingFinal = 0;
+				let elementsCounted = 0;
+
+				for (let i = 0; i < movie.ratings.length; i++) {
+					var rat = movie.ratings[i];
+					let mov = Pmgr.state.ratings.find(element => element.id == rat)
+                
+
+					if (mov.rating != -1) {
+						ratingFinal += mov.rating
+						elementsCounted++
+					}
+
+
+					if (mov.labels.length > 0)
+						modelTags.textContent = (modelTags.textContent + mov.labels + ",");
+				}
+				if (modelTags.textContent == "")
+					modelTags.textContent = ("No tags");
+				else
+					modelTags.textContent = modelTags.textContent.substring(0, modelTags.textContent.length - 1);
+
+
+				var fullstars = Math.round(ratingFinal / elementsCounted)
+
+
+				if (!fullstars)
+					modalRating.textContent = "No rating"
+				else
+					modalRating.textContent = '⭐'.repeat(fullstars)
 
                 modalMovieInfo.show()
             })
@@ -451,14 +499,14 @@ function update() {
         console.log('Error actualizando', e);
     }
 
-    /* para que siempre muestre los últimos elementos disponibles */
-    activaBusquedaDropdown('#dropdownBuscablePelis',
-        (select) => {
-            empty(select);
-            Pmgr.state.movies.forEach(m =>
-                appendTo(select, `<option value="${m.id}">${m.name}</option>`));
-        }
-    );
+    // /* para que siempre muestre los últimos elementos disponibles */
+    // activaBusquedaDropdown('#dropdownBuscablePelis',
+    //     (select) => {
+    //         empty(select);
+    //         Pmgr.state.movies.forEach(m =>
+    //             appendTo(select, `<option value="${m.id}">${m.name}</option>`));
+    //     }
+    // );
 }
 
 //
@@ -483,9 +531,10 @@ const login = (username, password) => {
     Pmgr.login(username, password)
         .then(d => {
             console.log("login ok!", d);
-            update(d);
+            beforeLoginCleanup.forEach(lb => lb())
             userId = Pmgr.state.users.find(u =>
                 u.username == username).id;
+            update(d);
         })
         .catch(e => {
             console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
@@ -528,6 +577,14 @@ login("g4", "aGPrD"); // <-- tu nombre de usuario y password aquí
         console.log("enviando formulario!");
         if (f.checkValidity()) {
             modificaPelicula(f); // modifica la pelicula según los campos previamente validados
+            let ratings = Pmgr.resolve(f.querySelector('input[name="id"]').value).ratings
+            let ratingID = ratings.find(ratingID => Pmgr.resolve(ratingID).user == userId );
+            if(!ratingID){
+                nuevoRating(f)
+            }
+            else{
+                modificaRating(f, ratingID);
+            }
         } else {
             e.preventDefault();
             f.querySelector("button[type=submit]").click(); // fuerza validacion local
@@ -585,6 +642,23 @@ document.querySelector("#editMovieButton").addEventListener('click', e => {
     movieEditForm.querySelector("input[name='year']").value = movie.year
     movieEditForm.querySelector("input[name='minutes']").value = movie.minutes
     movieEditForm.querySelector("img").src = serverUrl + "poster/" + movie.imdb
+    
+    let userRatingID = movie.ratings.find(ratingID => Pmgr.resolve(ratingID).user == userId)
+    if(userRatingID){
+        let userRating = Pmgr.resolve(userRatingID)
+        console.log("ratiaste")
+        if(userRating.rating != -1){
+            var modalUserRating = document.querySelectorAll('fieldset.estrellitas label input[name=myRating]')
+            modalUserRating.forEach(element => {
+                element.checked  = (element.value == userRating.rating)
+            });
+        }
+        else{
+
+        }
+        var modalUserTags = document.querySelector('textArea[name=myLabels')
+        modalUserTags.value = (userRating.labels.length > 0) ? userRating.labels : ""
+    }
 
     modalMovieInfo.hide()
     modalEditMovie.show()
@@ -622,6 +696,11 @@ document.querySelector("#confirmMovieDeletion").addEventListener('click',e=>{
     modalEditMovie.hide()
 })
 
+function rateBelongsAnyGroup(rating, groups){
+	let raterGroups = Pmgr.state.users.find(usr => usr.id == rating.user).groups;
+	return raterGroups.some(grp => groups.map(gr => gr.id).indexOf(grp) >= 0)
+}
+
 function searchMovie(title) {
     let criteria = null;
     //Los criterios solo se aplican si el Collapsable esta activo
@@ -629,38 +708,95 @@ function searchMovie(title) {
         criteria = document.querySelector("#form-advSearch");
     }
     document.querySelectorAll("#movies div.col").forEach(c => {
-        const m = Pmgr.resolve(c.dataset.id);
-        let ok = m.name.toLowerCase().indexOf(title) >= 0;
-        //Los criterios solo se aplican si el Collapsable esta activo
-        if (criteria != null) {
-            //Director
-            const dirCrit = criteria.querySelector("#searchDirector").value
-            if (dirCrit)
-                ok = ok && (m.director.indexOf(dirCrit) >= 0)
-            //Estos valores siempre serán válidos
-            //Year
-            const minYear = criteria.querySelector("#yearRangeStart").value;
-            const maxYear = criteria.querySelector("#yearRangeEnd").value;
-            ok = ok && (m.year <= maxYear && m.year >= minYear)
-            //Length
-            const minLength = criteria.querySelector("#lengthRangeStart").value;
-            const maxLength = criteria.querySelector("#lengthRangeEnd").value;
-            ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
-            //TODO ratings
-            //TODO tags
-            tagList = criteria.querySelector("#tagList").value.split(', ');
-            let movieTags = [];
-            m.ratings.forEach(element => {
-                //TODO filtro de contexto para busquedas por grupo
-                //Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
-                movieTags.push(element.labels)
-            });
-            if (tagList.length > 0)
-                ok = ok && movieTags.every(r => tagList.indexOf(r) >= 0)
-        }
-        // aquí podrías aplicar muchos más criterios
-        c.style.display = ok ? '' : 'none';
-    });
+		const m = Pmgr.resolve(c.dataset.id);
+		let ok = m.name.toLowerCase().indexOf(title) >= 0;
+		//Los criterios solo se aplican si el Collapsable esta activo
+		if (criteria != null) {
+			//Director
+			const dirCrit = criteria.querySelector("#searchDirector").value
+			if (dirCrit)
+				ok = ok && (m.director.indexOf(dirCrit) >= 0)
+			//Estos valores siempre serán válidos
+			//Year
+			const minYear = criteria.querySelector("#yearRangeStart").value;
+			const maxYear = criteria.querySelector("#yearRangeEnd").value;
+			ok = ok && (m.year <= maxYear && m.year >= minYear)
+			//Length
+			const minLength = criteria.querySelector("#lengthRangeStart").value;
+			const maxLength = criteria.querySelector("#lengthRangeEnd").value;
+			ok = ok && (m.minutes <= maxLength && m.minutes >= minLength)
+			
+			//Ratings
+			let minRating = criteria.querySelector("#rateMin").value;
+			let groupRateCtx = criteria.querySelector("#groupRateCtx").value.split(',');
+			let groupFiltered = criteria.querySelector("#rateGroupSwitch").getAttribute("aria-expanded") == "true" &&
+				groupRateCtx[0] != "";
+
+			let groups = Pmgr.state.groups.filter(element => groupRateCtx.indexOf(element.name) >= 0)
+
+			let totalValidRates = 0
+			let calculatedRate = 0
+
+			m.ratings.forEach(ratingID => {
+				let rating = Pmgr.state.ratings.find(element => element.id == ratingID);
+				let validRate = true;
+				if (groupFiltered) {
+					validRate = rateBelongsAnyGroup(rating,groups)
+
+				}
+
+				if (validRate) {
+					if (rating.rating >= 0){
+						totalValidRates++;
+						calculatedRate += rating.rating
+					}
+				}
+			})
+
+			let finalRate = -1
+			if (totalValidRates > 0)
+				finalRate = Math.round(calculatedRate / totalValidRates)
+			ok = ok && (finalRate) >= minRating
+
+
+			//Tags
+			let searchTags = criteria.querySelector("#tagList").value.split(',');
+
+			let movieTags = [];
+			let groupTagCtx = criteria.querySelector("#groupTagCtx").value.split(',');
+
+			groupFiltered = criteria.querySelector("#tagGroupSwitch").getAttribute("aria-expanded") == "true" &&
+				groupTagCtx[0] != "";
+
+			groups = Pmgr.state.groups.filter(element => groupTagCtx.indexOf(element.name) >= 0)
+
+
+			m.ratings.forEach(ratingID => {
+				//Comprobar que el rating pertenece a un miembro del uno de los grupos indicados
+				let rating = Pmgr.state.ratings.find(element => element.id == ratingID)
+				let validCtx = true;
+				if (groupFiltered) {
+					validCtx = rateBelongsAnyGroup(rating,groups)
+				}
+
+				if (validCtx && rating.labels) {
+					rating.labels.split(',').forEach(label => {
+						movieTags.push(label)
+					});
+				}
+			});
+			if (searchTags[0] != "") {
+				let i = 0;
+				while (i < searchTags.length && (movieTags.indexOf(searchTags[i].trim()) >= 0)) {
+					i++;
+				}
+				let fitsTags = (i >= searchTags.length);
+				ok = ok && fitsTags;
+			}
+		}
+		// aquí podrías aplicar muchos más criterios
+		c.style.display = ok ? '' : 'none';
+	});
 }
 
 // cosas que exponemos para poder usarlas desde la consola
@@ -671,8 +807,16 @@ window.modalMovieInfo = modalMovieInfo;
 window.modalConfirmDelete = modalConfirmDelete;
 window.update = update;
 window.login = login;
-window.userId = userId;
+window.userId = ()=>userId;
 window.Pmgr = Pmgr;
+
+
+const beforeLoginCleanup = [
+	() => {
+		document.querySelector("#tagGroupSwitch").checked = false;
+		document.querySelector("#rateGroupSwitch").checked = false;
+	},
+]
 
 // ejecuta Pmgr.populate() en una consola para generar datos de prueba en servidor
 // ojo - hace *muchas* llamadas a la API (mira su cabecera para más detalles)

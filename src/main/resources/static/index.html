@@ -70,7 +70,7 @@
         </div>
     </div>
 
-    <!-- Modal para añadir/editar películas -->
+    <!-- Modal para añadir/editar películas y sus ratings-->
     <div class="modal fade" id="movieEdit" tabindex="-1" aria-labelledby="movieEditLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-md-down">
             <div class="modal-content">
@@ -99,38 +99,44 @@
                             <input type="text" class="form-control" name="synopsis" placeholder="Synopsis">
                         </div>
                         <div class="col-md-4">
-                            <!--TODO ratings-->
-                            <p>⭐⭐⭐⭐⭐</p>
-                            <p>Tags</p>
+                            <fieldset class="estrellitas">
+                                <label title="Horrible - 1 estrella">
+                                    <input type="radio" name="myRating" value="1" checked/>
+                                </label>
+
+                                <label title="Más bien mala - 2 estrellas">
+                                    <input type="radio" name="myRating" value="2" checked/>
+                                </label>
+
+                                <label title="Pasable - 3 estrellas">
+                                    <input type="radio" name="myRating" value="3" checked/>
+                                </label>
+                                
+                                <label title="Muy buena - 4 estrellas">
+                                    <input type="radio" name="myRating" value="4" checked/>
+                                </label>
+
+                                <label title="Atómico - 5 estrellas">
+                                    <input type="radio" name="myRating" value="5" checked/>
+                                </label>
+                            </fieldset>
+                            <hr/>
+                            <textarea name="myLabels" rows="2" cols="10">
+                            Labels   
+                            </textarea>
                         </div>
                         <div class="col-md-1 col-12 d-flex align-content-center flex-wrap ">
                             <div class="row p-4">
                                 <button type="button" class="btn btn-light border-secondary" id="deleteEditingMovie">🗑️</button>
                             </div>
                             <div class="row p-4">
-                                <button type="button" class="btn btn-light border-secondary" id="discardEditingMovie"
-                                    data-bs-dismiss="modal" aria-label="Close">❌</button>
-                            </div>
-                            <div class="row p-4">
                                 <button class="btn btn-light border-secondary edit" type="submit"
                                     id="saveEditingMovie">✔</button>
                             </div>
                         </div>
-                        <!--
-                        <div class="col-12 botones">
-                            <button class="btn btn-primary" type="submit">Añadir</button>
-                            <button class="btn btn-secondary generar" type="button">Generar</button>
-                        </div>
-                        -->
                         <button style="display: none" type="submit">Invisible, sólo para validación</button>
                     </form>
                 </div>
-                <!--
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary edit">Guardar cambios</button>
-                </div>
-                -->
             </div>
         </div>
     </div>
@@ -178,9 +184,8 @@
                                 </p>
                             </div>
                             <div class="col-md-4 col-12">
-                                <!--TODO ratings-->
-                                <p>⭐⭐⭐⭐⭐</p>
-                                <p>Tags</p>
+                                <b>Rating </b><span id="movieInfoRating"></span> <br>
+                                <b>Tags </b><span id="movieInfoLable"></span> <br>
                             </div>
                         </div>
                     </div>
@@ -188,6 +193,8 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal para opinar sobre película -->
 
     <!-- barra de navegación -->
     <nav class="navbar sticky-top">
@@ -200,16 +207,26 @@
     </nav>
 
     <!--Offcanvas para grupos-->
-    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasGroup" aria-labelledby="offcanvasRightGroupLabel">
+    <div class="offcanvas offcanvas-end text-center" tabindex="-1" id="offcanvasGroup" aria-labelledby="offcanvasRightGroupLabel">
         <div class="offcanvas-header">
             <h2 id="offcanvasRightGroupLabel">Groups</h2>
         </div>
         <div class="offcanvas-body">
-            <div id="groups">
-
+            <h4>Your groups</h4>
+            <div id="groups"></div>
+            <hr/>
+            <form method="post" id="groupSearch">
+                <input type="text" class="form-control" id="groupSearch" placeholder="Group search">
+            </form>
+            <div id="groupSearchResult">
+                <!--Resultados de la groupsearch aqui-->
             </div>
-            <div id="addGroup">
-
+            <hr/>
+            <form method="post" id="groupAdd">
+                <p>Create a group</p>
+                <input type="text"class="form-control" id="groupCreate" placeholder="Group name">
+                <button type="button" class="btn btn-light border-secondary">Create</button>
+            </form>
             </div>
         </div>
     </div>
@@ -234,7 +251,7 @@
         <div class="row justify-content-center">
             <div class="col-md-5 col-12 align-self-center">
                 <div class="row text-center m-2">
-                    <h1 class="display-3">Graphical Movie Database</h1>
+                    <h1 class="display-5">Graphical Movie Database</h1>
                 </div>
                 <div class="row gx-1">
                     <div class="col-1">
@@ -253,70 +270,91 @@
                         <input type="button" id="submitSearch" class="btn btn-light border-secondary" value="🔍">
                     </div>
                 </div>
-                <div class="row mt-4 collapse" id="advSearch">
+                <div class="container-fluid collapse" id="advSearch">
                     <form method="post" id="form-advSearch">
-                        <div class="container-fluid">
-                            <div class="row mb-3">
-                                <input type="text" class="form-control" id="searchDirector" placeholder="Director">
+                        <div class="row">
+                            <input type="text" class="form-control" id="searchDirector" placeholder="Director">
+
+                        </div>
+                        <div class="row gy-2">
+                            <div class="col-6">
+                                <label for="yearRangeStart" class="form-label">After: </label>
+                                <input type="number" class="form-number" min="1900" max="2022" value="1900"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                <input type="range" class="form-range" min="1900" max="2022" value="1900"
+                                    step="1" id="yearRangeStart"
+                                    oninput="this.previousElementSibling.value = this.value">
                             </div>
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="yearRangeStart" class="form-label">After: </label>
-                                    <input type="number" class="form-number" min="1900" max="2022" value="1900"
-                                        oninput="this.nextElementSibling.value = this.value">
-                                    <input type="range" class="form-range" min="1900" max="2022" value="1900" step="1"
-                                        id="yearRangeStart" oninput="this.previousElementSibling.value = this.value">
-                                </div>
-                                <div class="col-6">
-                                    <label for="yearRangeEnd" class="form-label">Before: </label>
-                                    <input type="number" class="form-number" min="1900" max="2022" value="2022"
-                                        oninput="this.nextElementSibling.value = this.value">
-                                    <input type="range" class="form-range" min="1900" max="2022" value="2022" step="1"
-                                        id="yearRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                            <div class="col-6">
+                                <label for="yearRangeEnd" class="form-label">Before: </label>
+                                <input type="number" class="form-number" min="1900" max="2022" value="2022"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                <input type="range" class="form-range" min="1900" max="2022" value="2022"
+                                    step="1" id="yearRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="lengthRangeStart" class="form-label">Longer than: </label>
+                                <input type="number" class="form-number" min="0" max="240" defaultValue="0"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                <input type="range" class="form-range" min="0" max="240" aria-valuemax="0" step="0.5"
+                                    id="lengthRangeStart" oninput="this.previousElementSibling.value = this.value">
+                            </div>
+                            <div class="col-6">
+                                <label for="lengthRangeEnd" class="form-label">Shorter than: </label>
+                                <input type="number" class="form-number" min="0" max="240" value="240"
+                                    oninput="this.nextElementSibling.value = this.value">
+                                <input type="range" class="form-range" min="0" max="240" value="240" step="1"
+                                    id="lengthRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row center-block">
+                            <div class="col-1">Rating</div>
+                            <div class="col-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" role="button" id="rateGroupSwitch" type="checkbox"
+                                        data-bs-toggle="collapse" data-bs-target="#collapsableRateCtx"
+                                        aria-expanded="false" aria-controls="collapsableRateCtx">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Group Filter</label>
                                 </div>
                             </div>
-                            <hr />
-                            <div class="row">
-                                <div class="col-6">
-                                    <label for="lengthRangeStart" class="form-label">Longer than: </label>
-                                    <input type="number" class="form-number" min="0" max="240" value="0"
-                                        oninput="this.nextElementSibling.value = this.value">
-                                    <input type="range" class="form-range" min="0" max="240" value="0" step="1"
-                                        id="lengthRangeStart" oninput="this.previousElementSibling.value = this.value">
-                                </div>
-                                <div class="col-6">
-                                    <label for="lengthRangeEnd" class="form-label">Shorter than: </label>
-                                    <input type="number" class="form-number" min="0" max="240" value="240"
-                                        oninput="this.nextElementSibling.value = this.value">
-                                    <input type="range" class="form-range" min="0" max="240" value="240" step="1"
-                                        id="lengthRangeEnd" oninput="this.previousElementSibling.value = this.value">
+                            <div class="collapse col-4" id="collapsableRateCtx">
+                                <input id="groupRateCtx" type="text" class="form-control pull-right">
+                            </div>
+                            <script>
+                                function updateRateSlider(val) {
+                                    document.querySelector("#rateSliderValue").value = val
+                                    document.querySelector("#rateMin").value = val
+                                }
+                            </script>
+                            <div class="col-4 center-block pull-right">
+                                <input id="rateMin" type="range" class="form-range pull-right" min="0" max="5" step="1"
+                                    oninput=updateRateSlider(this.value)>
+                            </div>
+                            <div class="col-2">
+                                <input id="rateSliderValue" type="number" class="form-number" min="0" max="5"
+                                    defaultValue="0" oninput=updateRateSlider(this.value)>
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="row center-block">
+                            <div class="col-1">Tags</div>
+                            <div class="col-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" role="button" id="tagGroupSwitch" type="checkbox"
+                                        data-bs-toggle="collapse" data-bs-target="#collapsableTagCtx"
+                                        aria-expanded="false" aria-controls="collapsableTagCtx">
+                                    <label class="form-check-label" for="flexSwitchCheckDefault">Group Filter</label>
                                 </div>
                             </div>
-                            <hr />
-                            <div class="row px-2">
-                                <label for="tagList">Ratings</label>
-                                <div class="col-2">
-                                    <div class="btn-group" role="group" aria-label="rateContext">
-                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
-                                        <button type="button" class="btn btn-secondary">Group</button>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <!-- TODO controlador de estrellitas -->
-                                </div>
+                            <div class="collapse col-4" id="collapsableTagCtx">
+                                <input id="groupTagCtx" type="text" class="form-control pull-right">
                             </div>
-                            <hr />
-                            <div class="row px-2">
-                                <label for="tagList">Tags</label>
-                                <div class="col-2">
-                                    <div class="btn-group" role="group" aria-label="tagContext">
-                                        <button type="button" class="btn btn-secondary" autofocus="true">Global</button>
-                                        <button type="button" class="btn btn-secondary">Group</button>
-                                    </div>
-                                </div>
-                                <div class="col-6 px-2">
-                                    <input id="tagList" type="text " class="col-sm-8 form-control">
-                                </div>
+                            <div class="col-4 center-block pull-right">
+                                <input id="tagList" type="text " class="form-control pull-right">
                             </div>
                         </div>
                 </div>
