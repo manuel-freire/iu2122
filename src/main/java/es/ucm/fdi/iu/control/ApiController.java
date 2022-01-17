@@ -448,6 +448,9 @@ public class ApiController {
                 (o.getRealm().getId() != u.getRealm().getId() && ! u.hasRole(User.Role.ROOT))) {
             throw new ApiException("No such user: " + data.get("id"), null);
         }
+        if (o.getId() == u.getId()) {
+            throw new ApiException("You are not allowed to remove yourself", null);
+        }
 
         // remove from groups
         for (Group g : o.getGroups()) {
@@ -872,14 +875,18 @@ public class ApiController {
 
         // determine if user has standing: admin, self asking for invite, or group-owne
         if ( ! u.hasRole(User.Role.ADMIN)) {
-            if (o.getStatus() == Request.Status.AWAITING_GROUP
-                    && o.getUser().getId() != u.getId()) {
-                throw new ApiException(
-                        "Only admins can get someone else to apply to group", null);
-            } else if (o.getUser().getId() != o.getGroup().getOwner().getId()) {
-                //  Request.Status.AWAITING_USER
-                throw new ApiException(
-                        "Only owners & admins can invite to group", null);
+            if (o.getStatus() == Request.Status.AWAITING_GROUP) {
+                if (o.getGroup().getOwner().getId() != u.getId()) {
+                    throw new ApiException(
+                            "Only group owners & admins "+
+                            "can accept or reject AWAITING_GROUP invitations", null);
+                } 
+            } else if (o.getStatus() == Request.Status.AWAITING_GROUP) {
+                if (o.getUser().getId() != o.getGroup().getOwner().getId()) {
+                    throw new ApiException(
+                            "Only invited users & admins "+
+                            "can accept or reject AWAITING_USER invitations", null);
+                }
             }
         }
         if (status == Request.Status.ACCEPTED) {

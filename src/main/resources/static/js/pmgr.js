@@ -439,13 +439,15 @@ Pmgr.connect(serverUrl + "api/");
 
 // guarda el ID que usaste para hacer login en userId
 let userId = -1;
+let isAdmin = false;
 const login = (username, password) => {
     Pmgr.login(username, password)
         .then(d => {
             console.log("login ok!", d);
             update(d);
-            userId = Pmgr.state.users.find(u =>
-                u.username == username).id;
+            const u = Pmgr.state.users.find(u => u.username == username)
+            userId = u.id;
+            isAdmin = u.role.toLowerCase().indexOf("admin") >= 0;
         })
         .catch(e => {
             console.log(e, `error ${e.status} en login (revisa la URL: ${e.url}, y verifica que está vivo)`);
@@ -532,6 +534,7 @@ window.update = update;
 window.login = login;
 window.userId = userId;
 window.Pmgr = Pmgr;
+window.whoami = () => ({ userId, isAdmin })
 
 // ejecuta Pmgr.populate() en una consola para generar datos de prueba en servidor
 // ojo - hace *muchas* llamadas a la API (mira su cabecera para más detalles)
